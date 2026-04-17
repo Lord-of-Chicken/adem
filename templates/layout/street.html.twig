@@ -5,6 +5,39 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('assets/styles/ruelle.css') }}">
+    <style>
+        /* Force le texte des sections en blanc - override compilation */
+        .page-street .section__title,
+        .page-street .section__intro,
+        .page-street .section__subtitle,
+        .page-street .section__hint {
+            color: #fff !important;
+        }
+        
+        /* Ne pas affecter la section authentification (inscription/connexion) */
+        .page-street .section--auth .section__title,
+        .page-street .section--auth .section__intro,
+        .page-street .section--auth .section__subtitle,
+        .page-street .section--auth .section__hint {
+            color: var(--ink) !important;
+        }
+        
+        /* Ne pas affecter les prix, totaux et textes spécifiques */
+        .page-street .card__price,
+        .page-street .card__total,
+        .page-street .cart-total,
+        .page-street .form__hint,
+        .page-street .form__note {
+            color: inherit !important;
+        }
+        
+        /* Exceptions générales */
+        .page-street .site-footer__inner p,
+        .page-street .site-footer__text,
+        .page-street .btn {
+            color: inherit !important;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}

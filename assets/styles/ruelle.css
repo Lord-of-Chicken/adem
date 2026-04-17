@@ -476,9 +476,10 @@ body.page-street {
 .hero__eyebrow {
     margin: 0 0 0.5rem;
     font-family: var(--font-marker);
-    font-size: 5.35rem;
+    font-size: 4rem !important;        /* Taille du texte */
     color: var(--spray-lime);
     letter-spacing: 0.02em;
+    line-height: 0.9 !important; 
     text-shadow:
         3px 3px 0 var(--ink),
         -1px -1px 0 var(--ink);
@@ -1425,6 +1426,12 @@ qty-display {
     background: var(--ink);
 }
 
+.site-footer__inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+}
+
+.site-footer__inner p,
 .site-footer__text {
     margin: 0;
     font-family: var(--font-marker);
@@ -1435,9 +1442,45 @@ qty-display {
    CORRECTION FINALE : QUANTITÉS ET INTROS EN NOIR
    ============================================================ */
 
-/* Force l'intro en noir */
-.section__intro {
-    color: var(--ink) !important;
+/* Force le texte des sections en blanc */
+.page-street .section__title,
+.page-street .section__intro,
+.page-street .section__subtitle,
+.page-street .section__hint,
+.section__title,
+.section__intro,
+.section__subtitle,
+.section__hint {
+    color: #fff !important;
+}
+
+/* Force spécifique pour la section offres */
+#offres .section__title,
+#offres .section__intro,
+#don-libre .section__title,
+#don-libre .section__intro {
+    color: #fff !important;
+}
+
+/* Force tous les paragraphes dans les sections */
+.page-street .section p,
+.page-street .section .section__inner p {
+    color: #fff !important;
+}
+
+/* Force universel - TOUT le texte en blanc sur page-street */
+.page-street * {
+    color: #fff !important;
+}
+
+/* Exceptions - garder certaines couleurs */
+.page-street .site-footer__inner p,
+.page-street .site-footer__text,
+.page-street .btn,
+.page-street .spray-lime,
+.page-street [style*="color: var(--spray-lime)"],
+.page-street [style*="color:var(--spray-lime)"] {
+    color: inherit !important;
 }
 
 /* Force l'affichage du bloc quantité */
