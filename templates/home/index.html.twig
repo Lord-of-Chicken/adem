@@ -1,0 +1,207 @@
+{% extends 'layout/street.html.twig' %}
+
+{% block title %}Flower Power Crowdfunding | {{ site_brand.title }}{% endblock %}
+
+{% block street_main %}
+<main class="main" data-controller="street-tilt">
+    <section class="hero hero--spray" aria-labelledby="hero-title">
+        <div class="hero__content hero__content--pop">
+            <p class="hero__eyebrow">{{ hero.eyebrow }}</p>
+            <h1 id="hero-title" class="hero__title">
+                <span class="hero__title-line hero__title-line--1">{{ hero.title }}</span>
+            </h1>
+            <p class="hero__lead">{{ hero.lead }}</p>
+        </div>
+    </section>
+
+    <section class="section section--reveal" id="{{ sections.medias.id }}" style="--reveal: 2" aria-labelledby="medias-title">
+        <div class="section__inner">
+            <h2 id="medias-title" class="section__title section__title--tag">{{ sections.medias.title }}</h2>
+            <p class="section__intro">{{ sections.medias.intro }}</p>
+            {% if media_items is not empty %}
+                <div class="media-slider">
+                    <div class="media-slider__track">
+                        {% for media in media_items %}
+                            <div class="media-slider__slide">
+                                <img
+                                    src="{{ asset(media.assetPath) }}"
+                                    alt="{{ media.alt|default('La Ruelle dAdem') }}"
+                                    loading="lazy"
+                                    decoding="async"
+                                    width="800"
+                                    height="600"
+                                >
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <p class="section__hint">Les photos seront visibles après <code>php bin/console app:seed-ruelle</code> (base alimentée depuis <code>assets/img/ruelle</code>).</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="section section--reveal" id="{{ sections.offres.id }}" style="--reveal: 3" aria-labelledby="offres-title">
+        <div class="section__inner">
+            <h2 id="offres-title" class="section__title section__title--tag">{{ sections.offres.title }}</h2>
+            <p class="section__intro">{{ sections.offres.intro }}</p>
+            {% if not is_granted('ROLE_USER') %}
+                <p class="section__hint"><a href="{{ path('app_login') }}">Connecte-toi</a> ou <a href="{{ path('app_register') }}">crée un compte</a> pour ajouter des participations au panier.</p>
+            {% endif %}
+
+            <div class="grid grid--tiers">
+                {% for tier in tiers_standard %}
+                    <article
+                        class="card card--tier card--sticker"
+                        data-street-tilt-target="tilt"
+                        data-controller="home-quantity"
+                        style="--i: {{ loop.index0 }}"
+                    >
+                        <h3 class="card__title">{{ tier.title }}</h3>
+                        <p class="card__price">
+                            {{ tier.price }}&nbsp;{{ tier.price_unit }}
+                            {% if tier.price_suffix is not null %}
+                                <span class="card__unit">{{ tier.price_suffix }}</span>
+                            {% endif %}
+                        </p>
+                        <p class="card__detail">{{ tier.detail }}</p>
+                        {% if is_granted('ROLE_USER') %}
+                            {% if tier.priced_per_unit %}
+                                <div class="card__cart-controls">
+                                    <div class="qty-controls qty-controls--compact">
+                                        <button type="button" 
+                                                class="qty-btn qty-btn--minus qty-btn--small" 
+                                                data-tier-id="{{ tier.id }}"
+                                                data-min-qty="{{ tier.min_qty }}"
+                                                data-home-quantity-target="number"
+                                                data-action="click->home-quantity#minus"
+                                                aria-label="Diminuer la quantité">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M5 12h14"/>
+                                            </svg>
+                                        </button>
+                                        
+                                        <div class="qty-display qty-display--compact">
+                                            <span class="qty-number" data-tier-id="{{ tier.id }}" data-home-quantity-target="number">{{ tier.min_qty }}</span>
+                                            <span class="qty-label">pièce{% if tier.min_qty > 1 %}s{% endif %}</span>
+                                        </div>
+                                        
+                                        <button type="button" 
+                                                class="qty-btn qty-btn--plus qty-btn--small" 
+                                                data-tier-id="{{ tier.id }}"
+                                                data-max-qty="{{ tier.max_qty }}"
+                                                data-action="click->home-quantity#plus"
+                                                aria-label="Augmenter la quantité">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M12 5v14M5 12h14"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    
+                                    <form class="card__cart-form" method="post" action="{{ path('app_cart_add') }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('cart_add') }}">
+                                        <input type="hidden" name="tier_id" value="{{ tier.id }}">
+                                        <input type="hidden" name="quantity" id="hidden-qty-{{ tier.id }}" value="{{ tier.min_qty }}">
+                                        <button type="submit" class="btn btn--primary btn--small">Ajouter</button>
+                                    </form>
+                                </div>
+                            {% else %}
+                                <form class="card__cart-form" method="post" action="{{ path('app_cart_add') }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('cart_add') }}">
+                                    <input type="hidden" name="tier_id" value="{{ tier.id }}">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn--primary btn--small">Ajouter au panier</button>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="section section--vip section--reveal" id="{{ sections.vip.id }}" style="--reveal: 2" aria-labelledby="vip-title">
+        <div class="section__inner">
+            <h2 id="vip-title" class="section__title section__title--tag section__title--vip">{{ sections.vip.title }}</h2>
+            <p class="section__subtitle">{{ sections.vip.subtitle }}</p>
+
+            <div class="grid grid--tiers">
+                {% for tier in tiers_vip %}
+                    <article
+                        class="card card--tier card--featured card--sticker card--sticker--hot"
+                        data-street-tilt-target="tilt"
+                        style="--i: {{ loop.index0 }}"
+                    >
+                        <h3 class="card__title">{{ tier.title }}</h3>
+                        <p class="card__price">{{ tier.price }}&nbsp;{{ tier.price_unit }}</p>
+                        <p class="card__detail">{{ tier.detail }}</p>
+                        {% if is_granted('ROLE_USER') %}
+                            <form class="card__cart-form" method="post" action="{{ path('app_cart_add') }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('cart_add') }}">
+                                <input type="hidden" name="tier_id" value="{{ tier.id }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <label class="form__label" for="donor-{{ tier.id }}">Nom affiché (optionnel)</label>
+                                <input class="form__input" type="text" id="donor-{{ tier.id }}" name="donor_name" autocomplete="name" placeholder="Prénom Nom">
+                                <button type="submit" class="btn btn--primary btn--small">Ajouter au panier</button>
+                            </form>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="section section--reveal" id="{{ sections.don_libre.id }}" style="--reveal: 3" aria-labelledby="don-libre-title">
+        <div class="section__inner section__inner--narrow">
+            <h2 id="don-libre-title" class="section__title section__title--tag">{{ sections.don_libre.title }}</h2>
+            <p class="section__intro">{{ sections.don_libre.intro }}</p>
+            <form class="form" action="#" method="post" aria-label="Don libre">
+                <label class="form__label" for="free-amount">Montant (€)</label>
+                <input type="number" id="free-amount" name="amount" class="form__input form__input--amount" min="1" step="0.01" placeholder="Ex. 15">
+                <label class="form__label" for="free-donor-name">Nom du donateur <span class="form__hint">(facultatif)</span></label>
+                <input type="text" id="free-donor-name" name="donor_name" class="form__input" autocomplete="name" placeholder="Laisser vide pour rester anonyme">
+                <p class="form__note">Le paiement en ligne pourra être branché ici (HelloAsso, Stripe, etc.).</p>
+            </form>
+        </div>
+    </section>
+
+    <section class="section section--contact section--reveal" id="{{ sections.contact.id }}" style="--reveal: 4" aria-labelledby="contact-title">
+        <div class="section__inner section__inner--narrow">
+            <h2 id="contact-title" class="section__title section__title--tag">{{ sections.contact.title }}</h2>
+            <p class="section__intro">{{ sections.contact.intro }}</p>
+            <form class="form form--stack" action="#" method="post" aria-label="Formulaire de contact">
+                <label class="form__label" for="proposal">Ma proposition</label>
+                <textarea id="proposal" name="proposal" class="form__textarea" rows="5" required placeholder="Décris ton idée, ton offre de partenariat ou ta suggestion…"></textarea>
+                <div class="form__row">
+                    <div class="form__field">
+                        <label class="form__label" for="lastname">Nom</label>
+                        <input type="text" id="lastname" name="lastname" class="form__input" autocomplete="family-name">
+                    </div>
+                    <div class="form__field">
+                        <label class="form__label" for="firstname">Prénom</label>
+                        <input type="text" id="firstname" name="firstname" class="form__input" autocomplete="given-name">
+                    </div>
+                </div>
+                <label class="form__label" for="org">Association, société</label>
+                <input type="text" id="org" name="organization" class="form__input" autocomplete="organization">
+                <label class="form__label" for="email">Mail</label>
+                <input type="email" id="email" name="email" class="form__input" autocomplete="email" required>
+                <button type="submit" class="btn btn--primary">Envoyer</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="section section--newsletter section--reveal" id="{{ sections.newsletter.id }}" style="--reveal: 5" aria-labelledby="newsletter-title">
+        <div class="section__inner section__inner--narrow">
+            <h2 id="newsletter-title" class="section__title section__title--tag">{{ sections.newsletter.title }}</h2>
+            <p class="section__intro">{{ sections.newsletter.intro }}</p>
+            <form class="form form--inline form--newsletter" action="#" method="post" aria-label="Inscription mailing list">
+                <label class="visually-hidden" for="newsletter-email">Adresse e-mail</label>
+                <input type="email" id="newsletter-email" name="newsletter_email" class="form__input" autocomplete="email" required placeholder="ton@email.fr">
+                <button type="submit" class="btn btn--secondary">S’inscrire</button>
+            </form>
+        </div>
+    </section>
+
+    </main>
+{% endblock %}

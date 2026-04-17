@@ -1,0 +1,44 @@
+{% extends 'layout/street.html.twig' %}
+
+{% block title %}Connexion | La Ruelle d’Adem{% endblock %}
+
+{% block street_main %}
+<main class="main main--narrow">
+    <section class="section section--auth">
+        <div class="section__inner section__inner--narrow">
+            <h1 class="section__title section__title--tag">Connexion</h1>
+            <p class="section__intro">Connecte-toi pour gérer ton panier de participations.</p>
+
+            {% if error %}
+                <div class="flash flash--danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+
+            <form class="form form--stack" method="post" action="{{ path('app_login') }}">
+                <label class="form__label" for="inputEmail">E-mail</label>
+                <input
+                    type="email"
+                    value="{{ last_username }}"
+                    name="_username"
+                    id="inputEmail"
+                    class="form__input"
+                    autocomplete="email"
+                    required
+                    autofocus
+                >
+                <label class="form__label" for="inputPassword">Mot de passe</label>
+                <input
+                    type="password"
+                    name="_password"
+                    id="inputPassword"
+                    class="form__input"
+                    autocomplete="current-password"
+                    required
+                >
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <button class="btn btn--primary" type="submit">Se connecter</button>
+            </form>
+            <p class="section__hint">Pas encore de compte ? <a href="{{ path('app_register') }}">Inscription</a></p>
+        </div>
+    </section>
+</main>
+{% endblock %}

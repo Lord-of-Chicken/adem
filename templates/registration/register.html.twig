@@ -1,0 +1,23 @@
+{% extends 'layout/street.html.twig' %}
+
+{% block title %}Inscription | La Ruelle d’Adem{% endblock %}
+
+{% block street_main %}
+<main class="main main--narrow">
+    <section class="section section--auth">
+        <div class="section__inner section__inner--narrow">
+            <h1 class="section__title section__title--tag">Créer un compte</h1>
+            <p class="section__intro">Inscris-toi pour ajouter des formules au panier.</p>
+
+            {{ form_start(registrationForm, { attr: { class: 'form form--stack' } }) }}
+                {{ form_row(registrationForm.email, { row_attr: { class: 'form__field' }, attr: { class: 'form__input' } }) }}
+                {{ form_row(registrationForm.plainPassword.first, { row_attr: { class: 'form__field' }, attr: { class: 'form__input' } }) }}
+                {{ form_row(registrationForm.plainPassword.second, { row_attr: { class: 'form__field' }, attr: { class: 'form__input' } }) }}
+                <button type="submit" class="btn btn--primary">S’inscrire</button>
+            {{ form_end(registrationForm) }}
+
+            <p class="section__hint">Déjà inscrit ? <a href="{{ path('app_login') }}">Connexion</a></p>
+        </div>
+    </section>
+</main>
+{% endblock %}

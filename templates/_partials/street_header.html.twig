@@ -1,0 +1,42 @@
+{% set brand = brand|default(site_brand) %}
+{% set nav_links = nav_links|default([{ label: 'Médias', href: path('app_home') ~ '#medias' }]) %}
+{% set event_teaser = event_teaser|default({ label: 'Expo-happening Flower Power 2027', title_attr: 'À venir' }) %}
+{% set cta_newsletter = cta_newsletter|default({ href: path('app_home') ~ '#newsletter', label: '> Recevoir des notifications et invitations (mailing list)' }) %}
+
+<header class="site-header">
+    <div class="site-header__inner">
+        <a href="{{ path('app_home') }}" class="site-brand">
+            {% if brand.logo_asset is defined and brand.logo_asset %}
+                <img class="site-brand__logo" src="{{ asset(brand.logo_asset) }}" alt="" width="64" height="64" loading="lazy" decoding="async">
+            {% endif %}
+            <span class="site-brand__text">
+                <span class="site-brand__tagline">{{ brand.tagline }}</span>
+            </span>
+        </a>
+        <nav class="site-nav" aria-label="Navigation principale">
+            {% for link in nav_links %}
+                <a href="{{ link.href }}" class="site-nav__link">{{ link.label }}</a>
+            {% endfor %}
+            <span class="site-nav__muted" title="{{ event_teaser.title_attr }}">{{ event_teaser.label }}</span>
+        </nav>
+        <div class="site-header__account">
+            {% if is_granted('ROLE_USER') %}
+                <a href="{{ path('app_cart_index') }}" class="site-header__cart">
+                    Panier
+                    {% if cart_line_count > 0 %}
+                        <span class="site-header__cart-badge">{{ cart_line_count }}</span>
+                    {% endif %}
+                </a>
+                <span class="site-header__user" title="{{ app.user.userIdentifier }}">{{ app.user.userIdentifier }}</span>
+                <form method="post" action="{{ path('_logout_main') }}" class="site-header__logout-form">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                    <button type="submit" class="site-header__link-btn">Déconnexion</button>
+                </form>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="site-nav__link site-nav__link--compact">Connexion</a>
+                <a href="{{ path('app_register') }}" class="site-header__register">Inscription</a>
+            {% endif %}
+        </div>
+        <a href="{{ cta_newsletter.href }}" class="site-header__cta">{{ cta_newsletter.label }}</a>
+    </div>
+</header>

@@ -1,0 +1,10 @@
+twig:
+    file_name_pattern: '*.twig'
+    default_path: '%kernel.project_dir%/templates'
+    form_themes: ['form/street_form.html.twig']
+    globals:
+        stripe_publishable_key: '%env(STRIPE_PUBLISHABLE_KEY)%'
+
+when@test:
+    twig:
+        strict_variables: true

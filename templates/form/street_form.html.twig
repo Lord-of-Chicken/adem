@@ -1,0 +1,26 @@
+{% use 'form_div_layout.html.twig' %}
+
+{% block form_row %}
+    <div class="form__field{% if not valid %} form__field--error{% endif %}">
+        {{- form_label(form) -}}
+        {{- form_widget(form, { attr: form.vars.attr|merge({ class: (form.vars.attr.class|default('') ~ ' form__input')|trim }) }) -}}
+        {{- form_errors(form) -}}
+    </div>
+{% endblock %}
+
+{% block form_label %}
+    {% if label is not same as(false) %}
+        {% set label_attr = label_attr|merge({ class: (label_attr.class|default('') ~ ' form__label')|trim }) %}
+        {{- parent() -}}
+    {% endif %}
+{% endblock %}
+
+{% block form_errors %}
+    {%- if errors|length > 0 -%}
+        <ul class="form__errors">
+            {%- for error in errors -%}
+                <li class="form__error">{{ error.message }}</li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{% endblock %}

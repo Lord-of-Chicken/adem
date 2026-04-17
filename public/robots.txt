@@ -1,0 +1,41 @@
+# robots.txt pour La Ruelle d'Adem
+# Ce fichier empêche les robots d'indexer le site en développement
+
+User-agent: *
+Disallow: /
+
+# Autoriser les robots à lire les assets CSS/JS/images (pour l'affichage)
+Allow: /assets/
+Allow: /build/
+Allow: /bundles/
+
+# Interdire l'accès aux dossiers système
+Disallow: /var/
+Disallow: /vendor/
+Disallow: /src/
+Disallow: /config/
+Disallow: /templates/
+Disallow: /migrations/
+Disallow: /scripts/
+Disallow: /bin/
+Disallow: /.env*
+
+# Interdire l'accès aux pages d'administration
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+Disallow: /cart
+Disallow: /checkout
+Disallow: /payment/
+
+# Interdire l'accès aux webhooks et APIs
+Disallow: /stripe/
+Disallow: /webhook/
+Disallow: /api/
+
+# Sitemap (quand vous serez en production)
+# Sitemap: https://lordofchicken.com/sitemap.xml
+
+# Délai de crawl (optionnel)
+Crawl-delay: 1

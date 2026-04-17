@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body_class %}page-street{% endblock %}
+
+{% block body %}
+<div class="street-bg" aria-hidden="true"></div>
+<div class="street-splats" aria-hidden="true">
+    <span class="street-splats__blob street-splats__blob--1"></span>
+    <span class="street-splats__blob street-splats__blob--2"></span>
+    <span class="street-splats__blob street-splats__blob--3"></span>
+</div>
+
+{% include '_partials/street_header.html.twig' %}
+
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="flash flash--{{ label }}" role="status">{{ message }}</div>
+    {% endfor %}
+{% endfor %}
+
+{% block street_main %}{% endblock %}
+
+<footer class="site-footer">
+    <p class="site-footer__text">{{ footer_line|default('La Ruelle d’Adem — Flower Power') }}</p>
+</footer>
+{% endblock %}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}La Ruelle d’Adem{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Permanent+Marker&family=Rubik:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+    {% block stylesheets %}{% endblock %}
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% if app.current_route starts with 'app_checkout' or app.current_route starts with 'app_payment' %}
+            <script src="https://js.stripe.com/v3/"></script>
+            <script>
+                window.STRIPE_PUBLISHABLE_KEY = '{{ stripe_publishable_key }}';
+                
+                if (typeof Stripe !== 'undefined' && window.STRIPE_PUBLISHABLE_KEY) {
+                    window.stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY);
+                }
+            </script>
+        {% endif %}
+    {% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+{% block body %}{% endblock %}
+</body>
+</html>
