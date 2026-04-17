@@ -138,4 +138,17 @@ final class CartController extends AbstractController
 
         return $this->redirectToRoute('app_cart_index');
     }
+
+    #[Route('/panier/vider', name: 'app_cart_clear', methods: ['POST'])]
+    public function clear(Request $request, CartService $cart): Response
+    {
+        if (!$this->isCsrfTokenValid('cart_clear', (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
+
+        $cart->clear();
+        $this->addFlash('success', 'Le panier a été vidé.');
+        
+        return $this->redirectToRoute('app_cart_index');
+    }
 }
