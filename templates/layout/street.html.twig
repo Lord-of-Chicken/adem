@@ -3,19 +3,19 @@
 {% block body_class %}page-street{% endblock %}
 
 {% block body %}
-<div class="construction-banner" role="banner">
-    <div class="construction-banner__inner">
-        <span class="construction-banner__text">CHANTIER EN COURS</span>
-        <span class="construction-banner__pattern"></span>
-    </div>
-</div>
-
 <div class="street-bg" aria-hidden="true"></div>
 <div class="street-splats" aria-hidden="true">
     <span class="street-splats__blob street-splats__blob--1"></span>
     <span class="street-splats__blob street-splats__blob--2"></span>
     <span class="street-splats__blob street-splats__blob--3"></span>
 </div>
+
+<section class="section section--reveal" id="construction" style="--reveal: 1" aria-labelledby="construction-title">
+    <div class="section__inner section__inner--narrow">
+        <h2 id="construction-title" class="section__title section__title--tag">CHANTIER EN COURS</h2>
+        <p class="section__intro">Le site est actuellement en construction. Revenez bientôt pour découvrir la version finale !</p>
+    </div>
+</section>
 
 {% include '_partials/street_header.html.twig' %}
 

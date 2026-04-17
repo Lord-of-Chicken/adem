@@ -22,7 +22,7 @@ final class HomeController extends AbstractController
 
         return $this->render('home/index.html.twig', [
             'hero' => [
-                'eyebrow' => 'Flower Power',
+                'eyebrow' => 'Fait une fleur à La Ruelle d\'Adem',
                 'title' => 'Crowdfunding',
                 'lead' => 'Le crowdfunding, ou « financement participatif », est un mécanisme qui permet de lever des fonds auprès du grand public — c’est-à-dire auprès de toi.',
             ],

@@ -65,54 +65,88 @@
                             {% endif %}
                         </p>
                         <p class="card__detail">{{ tier.detail }}</p>
-                        {% if is_granted('ROLE_USER') %}
-                            {% if tier.priced_per_unit %}
-                                <div class="card__cart-controls">
-                                    <div class="qty-controls qty-controls--compact">
-                                        <button type="button" 
-                                                class="qty-btn qty-btn--minus qty-btn--small" 
-                                                data-tier-id="{{ tier.id }}"
-                                                data-min-qty="{{ tier.min_qty }}"
-                                                data-home-quantity-target="number"
-                                                data-action="click->home-quantity#minus"
-                                                aria-label="Diminuer la quantité">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path d="M5 12h14"/>
-                                            </svg>
-                                        </button>
-                                        
-                                        <div class="qty-display qty-display--compact">
-                                            <span class="qty-number" data-tier-id="{{ tier.id }}" data-home-quantity-target="number">{{ tier.min_qty }}</span>
-                                            <span class="qty-label">pièce{% if tier.min_qty > 1 %}s{% endif %}</span>
-                                        </div>
-                                        
-                                        <button type="button" 
-                                                class="qty-btn qty-btn--plus qty-btn--small" 
-                                                data-tier-id="{{ tier.id }}"
-                                                data-max-qty="{{ tier.max_qty }}"
-                                                data-action="click->home-quantity#plus"
-                                                aria-label="Augmenter la quantité">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path d="M12 5v14M5 12h14"/>
-                                            </svg>
-                                        </button>
+                        {% if tier.priced_per_unit %}
+                            <div class="card__cart-controls">
+                                <div class="qty-controls qty-controls--compact">
+                                    <button type="button" 
+                                            class="qty-btn qty-btn--minus qty-btn--small" 
+                                            data-tier-id="{{ tier.id }}"
+                                            data-min-qty="{{ tier.min_qty }}"
+                                            data-home-quantity-target="number"
+                                            data-action="click->home-quantity#minus"
+                                            aria-label="Diminuer la quantité">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M5 12h14"/>
+                                        </svg>
+                                    </button>
+                                    
+                                    <div class="qty-display qty-display--compact">
+                                        <span class="qty-number" data-tier-id="{{ tier.id }}" data-home-quantity-target="number">{{ tier.min_qty }}</span>
+                                        <span class="qty-label">pièce{% if tier.min_qty > 1 %}s{% endif %}</span>
                                     </div>
                                     
+                                    <button type="button" 
+                                            class="qty-btn qty-btn--plus qty-btn--small" 
+                                            data-tier-id="{{ tier.id }}"
+                                            data-max-qty="{{ tier.max_qty }}"
+                                            data-action="click->home-quantity#plus"
+                                            aria-label="Augmenter la quantité">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 5v14M5 12h14"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                
+                                {% if is_granted('ROLE_USER') %}
                                     <form class="card__cart-form" method="post" action="{{ path('app_cart_add') }}">
                                         <input type="hidden" name="_token" value="{{ csrf_token('cart_add') }}">
                                         <input type="hidden" name="tier_id" value="{{ tier.id }}">
                                         <input type="hidden" name="quantity" id="hidden-qty-{{ tier.id }}" value="{{ tier.min_qty }}">
                                         <button type="submit" class="btn btn--primary btn--small">Ajouter</button>
                                     </form>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <div class="card__cart-controls">
+                                <div class="qty-controls qty-controls--compact">
+                                    <button type="button" 
+                                            class="qty-btn qty-btn--minus qty-btn--small" 
+                                            data-tier-id="{{ tier.id }}"
+                                            data-min-qty="1"
+                                            data-home-quantity-target="number"
+                                            data-action="click->home-quantity#minus"
+                                            aria-label="Diminuer la quantité">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M5 12h14"/>
+                                        </svg>
+                                    </button>
+                                    
+                                    <div class="qty-display qty-display--compact">
+                                        <span class="qty-number" data-tier-id="{{ tier.id }}" data-home-quantity-target="number">1</span>
+                                        <span class="qty-label">pièce</span>
+                                    </div>
+                                    
+                                    <button type="button" 
+                                            class="qty-btn qty-btn--plus qty-btn--small" 
+                                            data-tier-id="{{ tier.id }}"
+                                            data-max-qty="10"
+                                            data-action="click->home-quantity#plus"
+                                            aria-label="Augmenter la quantité">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 5v14M5 12h14"/>
+                                        </svg>
+                                    </button>
                                 </div>
-                            {% else %}
-                                <form class="card__cart-form" method="post" action="{{ path('app_cart_add') }}">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('cart_add') }}">
-                                    <input type="hidden" name="tier_id" value="{{ tier.id }}">
-                                    <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="btn btn--primary btn--small">Ajouter au panier</button>
-                                </form>
-                            {% endif %}
+                                
+                                {% if is_granted('ROLE_USER') %}
+                                    <form class="card__cart-form" method="post" action="{{ path('app_cart_add') }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('cart_add') }}">
+                                        <input type="hidden" name="tier_id" value="{{ tier.id }}">
+                                        <input type="hidden" name="quantity" id="hidden-qty-{{ tier.id }}" value="1">
+                                        <button type="submit" class="btn btn--primary btn--small">Ajouter</button>
+                                    </form>
+                                {% endif %}
+                            </div>
                         {% endif %}
                     </article>
                 {% endfor %}
@@ -135,16 +169,48 @@
                         <h3 class="card__title">{{ tier.title }}</h3>
                         <p class="card__price">{{ tier.price }}&nbsp;{{ tier.price_unit }}</p>
                         <p class="card__detail">{{ tier.detail }}</p>
-                        {% if is_granted('ROLE_USER') %}
-                            <form class="card__cart-form" method="post" action="{{ path('app_cart_add') }}">
-                                <input type="hidden" name="_token" value="{{ csrf_token('cart_add') }}">
-                                <input type="hidden" name="tier_id" value="{{ tier.id }}">
-                                <input type="hidden" name="quantity" value="1">
-                                <label class="form__label" for="donor-{{ tier.id }}">Nom affiché (optionnel)</label>
-                                <input class="form__input" type="text" id="donor-{{ tier.id }}" name="donor_name" autocomplete="name" placeholder="Prénom Nom">
-                                <button type="submit" class="btn btn--primary btn--small">Ajouter au panier</button>
-                            </form>
-                        {% endif %}
+                        <div class="card__cart-controls">
+                            <div class="qty-controls qty-controls--compact">
+                                <button type="button" 
+                                        class="qty-btn qty-btn--minus qty-btn--small" 
+                                        data-tier-id="{{ tier.id }}"
+                                        data-min-qty="1"
+                                        data-home-quantity-target="number"
+                                        data-action="click->home-quantity#minus"
+                                        aria-label="Diminuer la quantité">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 12h14"/>
+                                    </svg>
+                                </button>
+                                
+                                <div class="qty-display qty-display--compact">
+                                    <span class="qty-number" data-tier-id="{{ tier.id }}" data-home-quantity-target="number">1</span>
+                                    <span class="qty-label">pièce</span>
+                                </div>
+                                
+                                <button type="button" 
+                                        class="qty-btn qty-btn--plus qty-btn--small" 
+                                        data-tier-id="{{ tier.id }}"
+                                        data-max-qty="10"
+                                        data-action="click->home-quantity#plus"
+                                        aria-label="Augmenter la quantité">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 5v14M5 12h14"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            {% if is_granted('ROLE_USER') %}
+                                <form class="card__cart-form" method="post" action="{{ path('app_cart_add') }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('cart_add') }}">
+                                    <input type="hidden" name="tier_id" value="{{ tier.id }}">
+                                    <input type="hidden" name="quantity" id="hidden-qty-{{ tier.id }}" value="1">
+                                    <label class="form__label" for="donor-{{ tier.id }}">Nom affiché (optionnel)</label>
+                                    <input class="form__input" type="text" id="donor-{{ tier.id }}" name="donor_name" autocomplete="name" placeholder="Prénom Nom">
+                                    <button type="submit" class="btn btn--primary btn--small">Ajouter</button>
+                                </form>
+                            {% endif %}
+                        </div>
                     </article>
                 {% endfor %}
             </div>
@@ -152,16 +218,29 @@
     </section>
 
     <section class="section section--reveal" id="{{ sections.don_libre.id }}" style="--reveal: 3" aria-labelledby="don-libre-title">
-        <div class="section__inner section__inner--narrow">
+        <div class="section__inner">
             <h2 id="don-libre-title" class="section__title section__title--tag">{{ sections.don_libre.title }}</h2>
             <p class="section__intro">{{ sections.don_libre.intro }}</p>
-            <form class="form" action="#" method="post" aria-label="Don libre">
-                <label class="form__label" for="free-amount">Montant (€)</label>
-                <input type="number" id="free-amount" name="amount" class="form__input form__input--amount" min="1" step="0.01" placeholder="Ex. 15">
-                <label class="form__label" for="free-donor-name">Nom du donateur <span class="form__hint">(facultatif)</span></label>
-                <input type="text" id="free-donor-name" name="donor_name" class="form__input" autocomplete="name" placeholder="Laisser vide pour rester anonyme">
-                <p class="form__note">Le paiement en ligne pourra être branché ici (HelloAsso, Stripe, etc.).</p>
-            </form>
+
+            <div class="grid grid--tiers">
+                <article
+                    class="card card--tier card--sticker"
+                    data-street-tilt-target="tilt"
+                    style="--i: 0"
+                >
+                    <h3 class="card__title">Don Libre</h3>
+                    <p class="card__price">Montant libre</p>
+                    <p class="card__detail">Soutiens le projet avec le montant de ton choix</p>
+                    <form class="form" action="#" method="post" aria-label="Don libre">
+                        <label class="form__label" for="free-amount">Montant (e)</label>
+                        <input type="number" id="free-amount" name="amount" class="form__input form__input--amount" min="1" step="0.01" placeholder="Ex. 15">
+                        <label class="form__label" for="free-donor-name">Nom du donateur <span class="form__hint">(facultatif)</span></label>
+                        <input type="text" id="free-donor-name" name="donor_name" class="form__input" autocomplete="name" placeholder="Laisser vide pour rester anonyme">
+                        <p class="form__note">Le paiement en ligne pourra être branché ici (HelloAsso, Stripe, etc.).</p>
+                        <button type="submit" class="btn btn--primary btn--small">Ajouter au panier</button>
+                    </form>
+                </article>
+            </div>
         </div>
     </section>
 
