@@ -68,7 +68,7 @@ ssh $USER@$SERVEUR << 'EOF'
     php bin/console cache:clear --env=prod
     php bin/console cache:warmup --env=prod
     
-    # Assets
+    # Assets (corrigé pour AssetMapper)
     php bin/console asset-map:compile --env=prod
     
     # Nettoyage

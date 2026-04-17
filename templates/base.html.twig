@@ -15,18 +15,15 @@
             <script src="https://js.stripe.com/v3/"></script>
             <script>
                 // Debug: Vérification de la clé Stripe
-                {% set stripeKey = stripe_publishable_key|default("pk_live_51TN7P85iTjBYeAUfPC5N7NH5AUluNrbzM5ByH12C6nZPP63NKp2OlXLsFdkPgFvy1Raz1TlZ9LoTFpS90uJEXJpd00tdU6HimQ") %}
-                window.STRIPE_PUBLISHABLE_KEY = '{{ stripeKey }}';
+                {% if app.environment == 'prod' %}
+                    window.STRIPE_PUBLISHABLE_KEY = 'pk_live_51TN7P85iTjBYeAUfPC5N7NH5AUluNrbzM5ByH12C6nZPP63NKp2OlXLsFdkPgFvy1Raz1TlZ9LoTFpS90uJEXJpd00tdU6HimQ';
+                {% else %}
+                    window.STRIPE_PUBLISHABLE_KEY = 'pk_test_51TN7P85iTjBYeAUfU0ZC0Xzw3obcr1NxR3vp6YeNP2BLjGCHmmeH4VEcWc3LvNCMndS48z9heNGd6aGyu2GMqibi00CmCNQuhJ';
+                {% endif %}
+                
                 console.log('Stripe key loaded:', window.STRIPE_PUBLISHABLE_KEY);
                 console.log('Environment:', '{{ app.environment }}');
-                console.log('Twig variable stripe_publishable_key:', '{{ stripe_publishable_key|default("NOT_SET") }}');
-                
-                // Vérification supplémentaire
-                if (!window.STRIPE_PUBLISHABLE_KEY || window.STRIPE_PUBLISHABLE_KEY === 'NOT_SET') {
-                    console.error('Stripe key is not properly set');
-                    window.STRIPE_PUBLISHABLE_KEY = 'pk_live_51TN7P85iTjBYeAUfPC5N7NH5AUluNrbzM5ByH12C6nZPP63NKp2OlXLsFdkPgFvy1Raz1TlZ9LoTFpS90uJEXJpd00tdU6HimQ';
-                    console.log('Using fallback Stripe key:', window.STRIPE_PUBLISHABLE_KEY);
-                }
+                console.log('Key type:', window.STRIPE_PUBLISHABLE_KEY.startsWith('pk_live_') ? 'LIVE' : 'TEST');
                 
                 if (typeof Stripe !== 'undefined' && window.STRIPE_PUBLISHABLE_KEY) {
                     try {

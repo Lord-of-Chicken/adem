@@ -25,7 +25,10 @@
                                 <p class="cart-line__meta">
                                     Qté : <span id="display-qty-{{ line.line_id }}">{{ line.quantity }}</span>
                                     {% if line.donor_name %}
-                                        · Nom : {{ line.donor_name }}
+                                        <br><strong>Nom du donateur :</strong> {{ line.donor_name }}
+                                    {% endif %}
+                                    {% if line.custom_price_cents %}
+                                        <br><strong>Montant personnalisé :</strong> {{ (line.custom_price_cents / 100)|number_format(2, '.', ',') }}&nbsp;$
                                     {% endif %}
                                 </p>
                                 <p class="cart-line__price">
@@ -77,7 +80,7 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('cart_clear') }}">
                         <button type="submit" class="btn btn--secondary">Vider le panier</button>
                     </form>
-                    <a href="{{ path('app_checkout') }}" class="btn btn--primary btn--large">Procéder au paiement</a>
+                    <a href="{{ path('app_checkout') }}" class="btn btn--primary btn--large" onclick="clearBrowserCacheAndProceed(event)">Procéder au paiement</a>
                 </div>
             {% endif %}
         </div>
@@ -88,6 +91,34 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+    /**
+     * Fonction pour vider le cache du navigateur avant de procéder au paiement
+     */
+    function clearBrowserCacheAndProceed(event) {
+        event.preventDefault();
+        
+        console.log('Vidage du cache du navigateur avant paiement...');
+        
+        // Forcer le rechargement des ressources
+        if ('caches' in window) {
+            caches.keys().then(function(names) {
+                names.forEach(function(name) {
+                    caches.delete(name);
+                });
+            });
+        }
+        
+        // Ajouter un timestamp pour forcer le rechargement
+        const url = event.target.href;
+        const separator = url.includes('?') ? '&' : '?';
+        const timestampedUrl = url + separator + 't=' + Date.now();
+        
+        console.log('Redirection vers:', timestampedUrl);
+        
+        // Redirection avec timestamp pour éviter le cache
+        window.location.href = timestampedUrl;
+    }
+    
     /**
      * Cette fonction fait la même chose que sur Home, 
      * mais elle communique aussi avec le serveur pour sauvegarder la quantité.

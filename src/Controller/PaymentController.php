@@ -41,7 +41,15 @@ class PaymentController extends AbstractController
             return $this->redirectToRoute('app_cart_index');
         }
 
-        $stripeKey = $_ENV['STRIPE_SECRET_KEY'] ?? null;
+        // Utiliser la clé secrète Stripe correcte selon l'environnement
+        if ($_ENV['APP_ENV'] === 'prod') {
+            // En production, utiliser la clé live
+            $stripeKey = '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';
+        } else {
+            // En développement, utiliser la clé de test
+            $stripeKey = 'sk_test_51TLQQ2DYTHdB6zQHNyEMb7AM04zjyhBUjDNlJO78yiw2toGSaWwP0E3VP3TUY5rpSdIxdFQiRMa1yjpQKu43NJoh00LAeqncaa';
+        }
+        
         if (!$stripeKey) {
             throw new \RuntimeException('La clé secrète Stripe n\'est pas configurée.');
         }
@@ -77,12 +85,30 @@ class PaymentController extends AbstractController
                 $description = $tier['detail'] ?? null;
             }
 
+            // Préparer les métadonnées personnalisées
+            $metadata = [
+                'tier_id' => $line['tier_id'],
+                'tier_title' => $tier['title'],
+            ];
+            
+            // Ajouter le nom du donateur si présent
+            if (!empty($line['donor_name'])) {
+                $metadata['donor_name'] = $line['donor_name'];
+                $description .= ' - Don de: ' . $line['donor_name'];
+            }
+            
+            // Ajouter le prix personnalisé si c'est un don libre
+            if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
+                $metadata['custom_price_eur'] = number_format($line['custom_price_cents'] / 100, 2, '.', '');
+            }
+
             $lineItems[] = [
                 'price_data' => [
                     'currency'     => 'eur',
                     'product_data' => [
                         'name' => $tier['title'],
                         'description' => $description,
+                        'metadata' => $metadata,
                     ],
                     'unit_amount'  => $unitAmount,
                 ],
