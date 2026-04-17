@@ -64,83 +64,42 @@
                             {% endif %}
                         </p>
                         <p class="card__detail">{{ tier.detail }}</p>
-                        {% if tier.priced_per_unit %}
-                            <div class="card__cart-controls">
-                                <div class="qty-controls qty-controls--compact">
-                                    <button type="button" 
-                                            class="qty-btn qty-btn--minus qty-btn--small" 
-                                            data-tier-id="{{ tier.id }}"
-                                            data-min-qty="{{ tier.min_qty }}"
-                                            aria-label="Diminuer la quantité">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M5 12h14"/>
-                                        </svg>
-                                    </button>
-                                    
-                                    <div class="qty-display qty-display--compact">
-                                        <span class="qty-number" data-tier-id="{{ tier.id }}">{{ tier.min_qty }}</span>
-                                        <span class="qty-label">pièce{% if tier.min_qty > 1 %}s{% endif %}</span>
-                                    </div>
-                                    
-                                    <button type="button" 
-                                            class="qty-btn qty-btn--plus qty-btn--small" 
-                                            data-tier-id="{{ tier.id }}"
-                                            data-max-qty="{{ tier.max_qty }}"
-                                            aria-label="Augmenter la quantité">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M12 5v14M5 12h14"/>
-                                        </svg>
-                                    </button>
+                        <div class="card__cart-controls">
+                            <div class="qty-controls qty-controls--compact">
+                                <button type="button"
+                                        class="qty-btn qty-btn--minus qty-btn--small"
+                                        data-tier-id="{{ tier.id }}"
+                                        data-min-qty="{{ tier.min_qty }}"
+                                        aria-label="Diminuer la quantité">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 12h14"/>
+                                    </svg>
+                                </button>
+
+                                <div class="qty-display qty-display--compact">
+                                    <span class="qty-number" data-tier-id="{{ tier.id }}">{{ tier.min_qty }}</span>
+                                    <span class="qty-label">pièce{% if tier.min_qty > 1 %}s{% endif %}</span>
                                 </div>
-                                
-                                <!-- Champ caché pour le JavaScript -->
-                                <input type="hidden" id="hidden-qty-{{ tier.id }}" value="{{ tier.min_qty }}">
-                                
-                                {% if is_granted('ROLE_USER') %}
-                                    <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')">
-                                        Ajouter
-                                    </button>
-                                {% endif %}
+
+                                <button type="button"
+                                        class="qty-btn qty-btn--plus qty-btn--small"
+                                        data-tier-id="{{ tier.id }}"
+                                        data-max-qty="{{ tier.max_qty }}"
+                                        aria-label="Augmenter la quantité">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 5v14M5 12h14"/>
+                                    </svg>
+                                </button>
                             </div>
-                        {% else %}
-                            <div class="card__cart-controls">
-                                <div class="qty-controls qty-controls--compact">
-                                    <button type="button" 
-                                            class="qty-btn qty-btn--minus qty-btn--small" 
-                                            data-tier-id="{{ tier.id }}"
-                                            data-min-qty="{{ tier.min_qty }}"
-                                            aria-label="Diminuer la quantité">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M5 12h14"/>
-                                        </svg>
-                                    </button>
-                                    
-                                    <div class="qty-display qty-display--compact">
-                                        <span class="qty-number" data-tier-id="{{ tier.id }}">1</span>
-                                        <span class="qty-label">pièce</span>
-                                    </div>
-                                    
-                                    <button type="button" 
-                                            class="qty-btn qty-btn--plus qty-btn--small" 
-                                            data-tier-id="{{ tier.id }}"
-                                            data-max-qty="{{ tier.max_qty }}"
-                                            aria-label="Augmenter la quantité">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M12 5v14M5 12h14"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                                
-                                <!-- Champ caché pour le JavaScript -->
-                                <input type="hidden" id="hidden-qty-{{ tier.id }}" value="1">
-                                
-                                {% if is_granted('ROLE_USER') %}
-                                    <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')">
-                                        Ajouter
-                                    </button>
-                                {% endif %}
-                            </div>
-                        {% endif %}
+
+                            <input type="hidden" class="hidden-qty" id="hidden-qty-{{ tier.id }}" value="{{ tier.min_qty }}" data-min-qty="{{ tier.min_qty }}">
+
+                            {% if is_granted('ROLE_USER') %}
+                                <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')">
+                                    Ajouter
+                                </button>
+                            {% endif %}
+                        </div>
                     </article>
                 {% endfor %}
             </div>
@@ -164,8 +123,8 @@
                         <p class="card__detail">{{ tier.detail }}</p>
                         <div class="card__cart-controls">
                             <div class="qty-controls qty-controls--compact">
-                                <button type="button" 
-                                        class="qty-btn qty-btn--minus qty-btn--small" 
+                                <button type="button"
+                                        class="qty-btn qty-btn--minus qty-btn--small"
                                         data-tier-id="{{ tier.id }}"
                                         data-min-qty="{{ tier.min_qty }}"
                                         aria-label="Diminuer la quantité">
@@ -173,14 +132,14 @@
                                         <path d="M5 12h14"/>
                                     </svg>
                                 </button>
-                                
+
                                 <div class="qty-display qty-display--compact">
-                                    <span class="qty-number" data-tier-id="{{ tier.id }}">1</span>
-                                    <span class="qty-label">pièce</span>
+                                    <span class="qty-number" data-tier-id="{{ tier.id }}">{{ tier.min_qty }}</span>
+                                    <span class="qty-label">pièce{% if tier.min_qty > 1 %}s{% endif %}</span>
                                 </div>
-                                
-                                <button type="button" 
-                                        class="qty-btn qty-btn--plus qty-btn--small" 
+
+                                <button type="button"
+                                        class="qty-btn qty-btn--plus qty-btn--small"
                                         data-tier-id="{{ tier.id }}"
                                         data-max-qty="{{ tier.max_qty }}"
                                         aria-label="Augmenter la quantité">
@@ -189,19 +148,18 @@
                                     </svg>
                                 </button>
                             </div>
-                            
-                            <!-- Champ caché pour le JavaScript -->
-                            <input type="hidden" id="hidden-qty-{{ tier.id }}" value="1">
-                            
+
+                            <input type="hidden" class="hidden-qty" id="hidden-qty-{{ tier.id }}" value="{{ tier.min_qty }}" data-min-qty="{{ tier.min_qty }}">
+
                             {% if is_granted('ROLE_USER') %}
-                                    <label class="form__label" for="donor-{{ tier.id }}">
-                                        Nom affiché 
-                                        {% if tier.donor_field %}<span class="form__required">*</span>{% else %}<span class="form__hint">(optionnel)</span>{% endif %}
-                                    </label>
-                                    <input class="form__input" type="text" id="donor-{{ tier.id }}" name="donor_name" autocomplete="name" placeholder="Prénom Nom" {% if tier.donor_field %}value="Anonyme"{% endif %}>
-                                    <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')">
-                                        Ajouter
-                                    </button>
+                                <label class="form__label" for="donor-{{ tier.id }}">
+                                    Nom affiché
+                                    {% if tier.donor_field %}<span class="form__required">*</span>{% else %}<span class="form__hint">(optionnel)</span>{% endif %}
+                                </label>
+                                <input class="form__input" type="text" id="donor-{{ tier.id }}" name="donor_name" autocomplete="name" placeholder="Prénom Nom" {% if tier.donor_field %}value="Anonyme"{% endif %}>
+                                <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')">
+                                    Ajouter
+                                </button>
                             {% endif %}
                         </div>
                     </article>
@@ -229,7 +187,7 @@
                             <input type="hidden" name="_token" value="{{ csrf_token('cart_add') }}">
                             <input type="hidden" name="tier_id" value="free_donation">
                             <input type="hidden" name="quantity" value="1">
-                            <label class="form__label" for="free-amount">Montant (e)</label>
+                            <label class="form__label" for="free-amount">Montant (€)</label>
                             <input type="number" id="free-amount" name="amount" class="form__input form__input--amount" min="1" step="0.01" placeholder="Ex. 15" required>
                             <label class="form__label" for="free-donor-name">Nom du donateur <span class="form__hint">(facultatif)</span></label>
                             <input type="text" id="free-donor-name" name="donor_name" class="form__input" autocomplete="name" placeholder="Laisser vide pour rester anonyme">
@@ -238,7 +196,7 @@
                         </form>
                     {% else %}
                         <div class="form">
-                            <label class="form__label" for="free-amount">Montant (e)</label>
+                            <label class="form__label" for="free-amount">Montant (€)</label>
                             <input type="number" id="free-amount" name="amount" class="form__input form__input--amount" min="1" step="0.01" placeholder="Ex. 15" disabled>
                             <label class="form__label" for="free-donor-name">Nom du donateur <span class="form__hint">(facultatif)</span></label>
                             <input type="text" id="free-donor-name" name="donor_name" class="form__input" autocomplete="name" placeholder="Laisser vide pour rester anonyme" disabled>
@@ -284,196 +242,140 @@
             <form class="form form--inline form--newsletter" action="#" method="post" aria-label="Inscription mailing list">
                 <label class="visually-hidden" for="newsletter-email">Adresse e-mail</label>
                 <input type="email" id="newsletter-email" name="newsletter_email" class="form__input" autocomplete="email" required placeholder="ton@email.fr">
-                <button type="submit" class="btn btn--secondary">S’inscrire</button>
+                <button type="submit" class="btn btn--secondary">S'inscrire</button>
             </form>
         </div>
     </section>
 
-    </main>
+</main>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Script simple pour les boutons + et -
+    document.addEventListener('DOMContentLoaded', function () {
+
+        function getMinQty(tierId) {
+            const input = document.getElementById(`hidden-qty-${tierId}`);
+            return input ? parseInt(input.dataset.minQty) || 1 : 1;
+        }
+
+        function getMaxQty(tierId) {
+            const btn = document.querySelector(`.qty-btn--plus[data-tier-id="${tierId}"]`);
+            return btn ? parseInt(btn.dataset.maxQty) || 99 : 99;
+        }
+
+        function updateDisplay(tierId, qty) {
+            const hiddenInput = document.getElementById(`hidden-qty-${tierId}`);
+            const numberDisplay = document.querySelector(`.qty-number[data-tier-id="${tierId}"]`);
+            const labelDisplay = numberDisplay?.nextElementSibling;
+            const minusBtn = document.querySelector(`.qty-btn--minus[data-tier-id="${tierId}"]`);
+            const plusBtn  = document.querySelector(`.qty-btn--plus[data-tier-id="${tierId}"]`);
+
+            if (hiddenInput)     hiddenInput.value       = qty;
+            if (numberDisplay)   numberDisplay.textContent = qty;
+            if (labelDisplay)    labelDisplay.textContent  = `pièce${qty > 1 ? 's' : ''}`;
+            if (minusBtn)        minusBtn.disabled = qty <= getMinQty(tierId);
+            if (plusBtn)         plusBtn.disabled  = qty >= getMaxQty(tierId);
+        }
+
         document.querySelectorAll('.qty-btn--plus').forEach(button => {
-            button.addEventListener('click', function(e) {
+            button.addEventListener('click', function (e) {
                 e.preventDefault();
                 const tierId = this.dataset.tierId;
-                const maxQty = parseInt(this.dataset.maxQty);
-                const hiddenInput = document.getElementById(`hidden-qty-${tierId}`);
-                const numberDisplay = document.querySelector(`[data-tier-id="${tierId}"].qty-number`);
-                const labelDisplay = numberDisplay?.nextElementSibling;
-                
-                // Vérifier si les éléments existent
-                if (!hiddenInput || !numberDisplay) {
-                    console.warn('Éléments manquants pour tierId:', tierId);
-                    return;
-                }
-                
-                let currentQty = parseInt(hiddenInput.value) || 1;
-                const newQty = Math.min(currentQty + 1, maxQty);
-                
-                hiddenInput.value = newQty;
-                numberDisplay.textContent = newQty;
-                if (labelDisplay) {
-                    labelDisplay.textContent = `pièce${newQty > 1 ? 's' : ''}`;
-                }
-                
-                // Synchroniser le champ quantity du formulaire s'il existe
-                const formQtyInput = document.getElementById(`form-qty-${tierId}`);
-                if (formQtyInput) {
-                    formQtyInput.value = newQty;
-                }
-                
-                // Mettre à jour l'état des boutons
-                const minusBtn = document.querySelector(`[data-tier-id="${tierId}"].qty-btn--minus`);
-                if (minusBtn) {
-                    minusBtn.disabled = newQty <= 1;
-                }
-                this.disabled = newQty >= maxQty;
+                const current = parseInt(document.getElementById(`hidden-qty-${tierId}`)?.value) || 1;
+                updateDisplay(tierId, Math.min(current + 1, getMaxQty(tierId)));
             });
         });
-        
+
         document.querySelectorAll('.qty-btn--minus').forEach(button => {
-            button.addEventListener('click', function(e) {
+            button.addEventListener('click', function (e) {
                 e.preventDefault();
                 const tierId = this.dataset.tierId;
-                const minQty = parseInt(this.dataset.minQty);
-                const hiddenInput = document.getElementById(`hidden-qty-${tierId}`);
-                const numberDisplay = document.querySelector(`[data-tier-id="${tierId}"].qty-number`);
-                const labelDisplay = numberDisplay?.nextElementSibling;
-                
-                // Vérifier si les éléments existent
-                if (!hiddenInput || !numberDisplay) {
-                    console.warn('Éléments manquants pour tierId:', tierId);
-                    return;
-                }
-                
-                let currentQty = parseInt(hiddenInput.value) || 1;
-                const newQty = Math.max(currentQty - 1, minQty);
-                
-                hiddenInput.value = newQty;
-                numberDisplay.textContent = newQty;
-                if (labelDisplay) {
-                    labelDisplay.textContent = `pièce${newQty > 1 ? 's' : ''}`;
-                }
-                
-                // Synchroniser le champ quantity du formulaire s'il existe
-                const formQtyInput = document.getElementById(`form-qty-${tierId}`);
-                if (formQtyInput) {
-                    formQtyInput.value = newQty;
-                }
-                
-                // Mettre à jour l'état des boutons
-                const plusBtn = document.querySelector(`[data-tier-id="${tierId}"].qty-btn--plus`);
-                if (plusBtn) {
-                    plusBtn.disabled = newQty >= parseInt(plusBtn.dataset.maxQty);
-                }
-                this.disabled = newQty <= minQty;
+                const current = parseInt(document.getElementById(`hidden-qty-${tierId}`)?.value) || 1;
+                updateDisplay(tierId, Math.max(current - 1, getMinQty(tierId)));
             });
+        });
+
+        // Initialiser l'état des boutons au chargement
+        document.querySelectorAll('.hidden-qty').forEach(input => {
+            const tierId = input.id.replace('hidden-qty-', '');
+            updateDisplay(tierId, parseInt(input.value) || 1);
         });
     });
-    
-    // Fonction pour ajouter un produit au panier via AJAX
+
     function addToCart(tierId) {
         const hiddenInput = document.getElementById(`hidden-qty-${tierId}`);
-        const donorInput = document.getElementById(`donor-${tierId}`);
-        
+        const donorInput  = document.getElementById(`donor-${tierId}`);
+
         if (!hiddenInput) {
             console.error('Champ quantité non trouvé pour', tierId);
             return;
         }
-        
-        const quantity = hiddenInput.value;
-        const donorName = donorInput ? donorInput.value : null;
-        
-        // Créer les données du formulaire
-        const formData = new FormData();
-        
-        // Récupérer le token CSRF depuis le premier formulaire disponible
+
+        const quantity  = hiddenInput.value;
+        const donorName = donorInput ? donorInput.value.trim() : null;
+
         const csrfToken = document.querySelector('input[name="_token"]')?.value || '';
-        formData.append('_token', csrfToken);
-        formData.append('tier_id', tierId);
-        formData.append('quantity', quantity);
+
+        const formData = new FormData();
+        formData.append('_token',    csrfToken);
+        formData.append('tier_id',   tierId);
+        formData.append('quantity',  quantity);
         if (donorName) {
             formData.append('donor_name', donorName);
         }
-        
-        // Envoyer la requête AJAX
+
         fetch('/panier/ajouter', {
             method: 'POST',
             body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Mettre à jour le badge du panier si nécessaire
                 updateCartBadge(data.cartCount);
-                
-                // Afficher un message de succès
                 showFlashMessage('success', 'Participation ajoutée au panier.');
-                
-                // Réinitialiser la quantité pour ce produit
                 resetQuantity(tierId);
             } else {
                 showFlashMessage('danger', data.message || 'Erreur lors de l\'ajout au panier.');
             }
         })
-        .catch(error => {
-            console.error('Erreur:', error);
-            showFlashMessage('danger', 'Erreur lors de l\'ajout au panier.');
-        });
+        .catch(() => showFlashMessage('danger', 'Erreur lors de l\'ajout au panier.'));
     }
-    
-    // Fonction pour réinitialiser la quantité d'un produit
+
     function resetQuantity(tierId) {
-        const hiddenInput = document.getElementById(`hidden-qty-${tierId}`);
-        const numberDisplay = document.querySelector(`[data-tier-id="${tierId}"].qty-number`);
-        const labelDisplay = numberDisplay?.nextElementSibling;
-        
-        if (hiddenInput && numberDisplay) {
-            const minQty = parseInt(numberDisplay.textContent) || 1;
-            hiddenInput.value = minQty;
-            numberDisplay.textContent = minQty;
-            if (labelDisplay) {
-                labelDisplay.textContent = `pièce${minQty > 1 ? 's' : ''}`;
-            }
-        }
+        const input  = document.getElementById(`hidden-qty-${tierId}`);
+        const minQty = input ? parseInt(input.dataset.minQty) || 1 : 1;
+
+        // Réinitialise l'affichage au minimum
+        const numberDisplay = document.querySelector(`.qty-number[data-tier-id="${tierId}"]`);
+        const labelDisplay  = numberDisplay?.nextElementSibling;
+        const minusBtn = document.querySelector(`.qty-btn--minus[data-tier-id="${tierId}"]`);
+        const plusBtn  = document.querySelector(`.qty-btn--plus[data-tier-id="${tierId}"]`);
+
+        if (input)         input.value               = minQty;
+        if (numberDisplay) numberDisplay.textContent = minQty;
+        if (labelDisplay)  labelDisplay.textContent  = `pièce${minQty > 1 ? 's' : ''}`;
+        if (minusBtn)      minusBtn.disabled = true;
+        if (plusBtn)       plusBtn.disabled  = false;
     }
-    
-    // Fonction pour mettre à jour le badge du panier
+
     function updateCartBadge(count) {
-        const cartBadge = document.querySelector('.site-header__cart-badge');
-        if (cartBadge) {
-            if (count > 0) {
-                cartBadge.textContent = count;
-                cartBadge.style.display = 'inline';
-            } else {
-                cartBadge.style.display = 'none';
-            }
+        const badge = document.querySelector('.site-header__cart-badge');
+        if (badge) {
+            badge.textContent    = count;
+            badge.style.display  = count > 0 ? 'inline' : 'none';
         }
     }
-    
-    // Fonction pour afficher un message flash
+
     function showFlashMessage(type, message) {
-        // Créer l'élément de message
-        const flashDiv = document.createElement('div');
-        flashDiv.className = `flash flash--${type}`;
-        flashDiv.textContent = message;
-        flashDiv.setAttribute('role', 'status');
-        
-        // Ajouter au début du body
-        document.body.insertBefore(flashDiv, document.body.firstChild);
-        
-        // Supprimer après 3 secondes
-        setTimeout(() => {
-            flashDiv.remove();
-        }, 3000);
+        const div = document.createElement('div');
+        div.className = `flash flash--${type}`;
+        div.textContent = message;
+        div.setAttribute('role', 'status');
+        document.body.insertBefore(div, document.body.firstChild);
+        setTimeout(() => div.remove(), 3000);
     }
     </script>
 {% endblock %}

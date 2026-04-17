@@ -10,147 +10,119 @@ final class CartService
 {
     private const SESSION_KEY = 'participation_cart_v1';
 
-    public function __construct(
-        private readonly RequestStack $requestStack,
-    ) {
-    }
+    public function __construct(private readonly RequestStack $requestStack) {}
 
+    /**
+     * Récupère la session de manière sécurisée
+     */
     private function session(): ?SessionInterface
     {
-        $request = $this->requestStack->getCurrentRequest();
-        if (null === $request) {
-            return null;
-        }
-
-        return $request->getSession();
+        return $this->requestStack->getCurrentRequest()?->getSession();
     }
 
     /**
-     * @return list<array{line_id: string, tier_id: string, quantity: int, donor_name: string|null}>
+     * Récupère toutes les lignes du panier
      */
     public function getLines(): array
     {
-        $session = $this->session();
-        if (null === $session) {
-            return [];
-        }
-
-        /** @var list<array{line_id: string, tier_id: string, quantity: int, donor_name: string|null}>|null $lines */
-        $lines = $session->get(self::SESSION_KEY);
-
-        return \is_array($lines) ? $lines : [];
+        return $this->session()?->get(self::SESSION_KEY) ?? [];
     }
 
-    public function countLines(): int
+    /**
+     * Calcule le total en centimes (basé sur unit_price_eur du Seeder)
+     */
+    public function totalCents(ParticipationCatalog $catalog): int
     {
-        return \count($this->getLines());
-    }
-
-    public function clear(): void
-    {
-        $session = $this->session();
-        if (null !== $session) {
-            $session->set(self::SESSION_KEY, []);
+        $total = 0;
+        foreach ($this->getLines() as $line) {
+            $tier = $catalog->require($line['tier_id']);
+            // Conversion forcée : "1.00" (string) -> 1.0 (float) -> 100 (int cents)
+            $priceCents = (int) (round((float)$tier['unit_price_eur'] * 100));
+            $total += $priceCents * $line['quantity'];
         }
+        return $total;
     }
 
+    /**
+     * Ajoute une ligne au panier
+     */
     public function addLine(string $tierId, int $quantity, ?string $donorName, ParticipationCatalog $catalog): void
     {
-        $tier = $catalog->require($tierId);
-        if ($tier['priced_per_unit']) {
-            $quantity = max($tier['min_qty'], min($tier['max_qty'], $quantity));
-        } else {
-            $quantity = 1;
-        }
-
-        $donorName = $this->normalizeDonor($donorName, $tier['donor_field']);
-
         $session = $this->session();
-        if (null === $session) {
-            throw new \LogicException('Session requise pour modifier le panier.');
-        }
+        if (!$session) return;
 
+        $tier = $catalog->require($tierId);
         $lines = $this->getLines();
-        // Vérifier si une ligne avec ce tier_id existe déjà
-        $existingLine = null;
-        foreach ($lines as $existingLine) {
-            if ($existingLine['tier_id'] === $tierId && $existingLine['donor_name'] === $donorName) {
-                $existingLine = $existingLine;
-                break;
-            }
-        }
-        
-        if ($existingLine) {
-            // Mettre à jour la quantité de la ligne existante
-            $existingLine['quantity'] += $quantity;
-            $session->set(self::SESSION_KEY, $lines);
-            return;
-        }
-        
+
+        // On génère un ID unique pour cette ligne (pour pouvoir la modifier/supprimer plus tard)
+        $lineId = bin2hex(random_bytes(8));
+
         $lines[] = [
-            'line_id' => $tierId . '_' . uniqid(),
-            'tier_id' => $tierId,
-            'quantity' => $quantity,
-            'donor_name' => $donorName,
+            'line_id'    => $lineId,
+            'tier_id'    => $tierId,
+            'quantity'   => max($tier['min_qty'], min($tier['max_qty'], $quantity)),
+            'donor_name' => $this->normalizeDonor($donorName, $tier['donor_field'] ?? false),
         ];
+
         $session->set(self::SESSION_KEY, $lines);
     }
 
-    public function removeLine(string $lineId): void
-    {
-        $session = $this->session();
-        if (null === $session) {
-            return;
-        }
-
-        $filtered = array_values(array_filter(
-            $this->getLines(),
-            static fn (array $line): bool => $line['line_id'] !== $lineId,
-        ));
-        $session->set(self::SESSION_KEY, $filtered);
-    }
-
+    /**
+     * Met à jour la quantité d'une ligne spécifique via son line_id
+     */
     public function updateQuantity(string $lineId, int $quantity, ParticipationCatalog $catalog): void
     {
         $session = $this->session();
-        if (null === $session) {
-            return;
-        }
+        if (!$session) return;
 
         $lines = $this->getLines();
         foreach ($lines as $i => $line) {
-            if ($line['line_id'] !== $lineId) {
-                continue;
-            }
-            $tier = $catalog->require($line['tier_id']);
-            if (!$tier['priced_per_unit']) {
+            if ($line['line_id'] === $lineId) {
+                $tier = $catalog->require($line['tier_id']);
+                $lines[$i]['quantity'] = max($tier['min_qty'], min($tier['max_qty'], $quantity));
+                $session->set(self::SESSION_KEY, $lines);
                 return;
             }
-            $lines[$i]['quantity'] = max($tier['min_qty'], min($tier['max_qty'], $quantity));
-            $session->set(self::SESSION_KEY, $lines);
-
-            return;
         }
     }
 
-    public function totalCents(ParticipationCatalog $catalog): int
+    /**
+     * Supprime une ligne du panier
+     */
+    public function removeLine(string $lineId): void
     {
-        $sum = 0;
-        foreach ($this->getLines() as $line) {
-            $tier = $catalog->require($line['tier_id']);
-            $sum += $catalog->lineTotalCents($tier, $line['quantity']);
-        }
+        $session = $this->session();
+        if (!$session) return;
 
-        return $sum;
+        $lines = array_filter($this->getLines(), fn($l) => $l['line_id'] !== $lineId);
+        
+        // array_values est important pour réinitialiser les index du tableau [0, 1, 2...]
+        $session->set(self::SESSION_KEY, array_values($lines));
     }
 
+    /**
+     * ✅ MÉTHODE AJOUTÉE : Vide complètement le panier (après paiement réussi)
+     */
+    public function clear(): void
+    {
+        $this->session()?->remove(self::SESSION_KEY);
+    }
+
+    /**
+     * Nettoie le nom du donateur ou renvoie null si non autorisé/vide
+     */
     private function normalizeDonor(?string $donorName, bool $allowed): ?string
     {
-        if (!$allowed) {
-            return null;
-        }
-        $trimmed = null === $donorName ? '' : trim($donorName);
+        if (!$allowed) return null;
+        $trimmed = trim($donorName ?? '');
+        return $trimmed === '' ? null : $trimmed;
+    }
 
-        return '' === $trimmed ? null : $trimmed;
+    /**
+     * Compte le nombre d'articles (lignes) dans le panier
+     */
+    public function countLines(): int 
+    { 
+        return count($this->getLines()); 
     }
 }

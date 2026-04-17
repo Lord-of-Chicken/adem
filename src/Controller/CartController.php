@@ -18,7 +18,7 @@ final class CartController extends AbstractController
     {
         $lines = [];
         foreach ($cart->getLines() as $line) {
-            $tier    = $catalog->require($line['tier_id']);
+            $tier = $catalog->require($line['tier_id']);
             $lines[] = [
                 'line'             => $line,
                 'tier'             => $tier,
@@ -39,10 +39,9 @@ final class CartController extends AbstractController
         $isAjax = $request->isXmlHttpRequest();
         
         if (!$this->isCsrfTokenValid('cart_add', (string) $request->request->get('_token'))) {
-            if ($isAjax) {
-                return $this->json(['success' => false, 'message' => 'Jeton CSRF invalide.'], 403);
-            }
-            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+            return $isAjax 
+                ? $this->json(['success' => false, 'message' => 'Jeton CSRF invalide.'], 403)
+                : throw $this->createAccessDeniedException('Jeton CSRF invalide.');
         }
 
         $tierId    = (string) $request->request->get('tier_id');
@@ -53,18 +52,15 @@ final class CartController extends AbstractController
         try {
             $cart->addLine($tierId, $quantity, $donorName, $catalog);
         } catch (\InvalidArgumentException) {
-            if ($isAjax) {
-                return $this->json(['success' => false, 'message' => 'Formule introuvable.']);
-            }
-            $this->addFlash('danger', 'Formule introuvable.');
-            return $this->redirectToRoute('app_home');
+            return $isAjax 
+                ? $this->json(['success' => false, 'message' => 'Formule introuvable.'])
+                : $this->redirectToRoute('app_home');
         }
 
         if ($isAjax) {
             return $this->json([
-                'success' => true, 
-                'message' => 'Participation ajoutée au panier.',
-                'cartCount' => $cart->lineCount()
+                'success'   => true,
+                'cartCount' => $cart->countLines(),
             ]);
         }
 
@@ -80,20 +76,37 @@ final class CartController extends AbstractController
         }
 
         $cart->removeLine($lineId);
-
         $this->addFlash('success', 'Ligne retirée du panier.');
+        
         return $this->redirectToRoute('app_cart_index');
     }
 
+    /**
+     * Mise à jour de la quantité (Supporte AJAX via Stimulus)
+     */
     #[Route('/panier/ligne/{lineId}/quantite', name: 'app_cart_quantity', methods: ['POST'])]
     public function setQuantity(string $lineId, Request $request, CartService $cart, ParticipationCatalog $catalog): Response
     {
+        $isAjax = $request->isXmlHttpRequest();
+
+        // Vérification du token CSRF (Crucial car ton script JS l'envoie via headers)
         if (!$this->isCsrfTokenValid('cart_quantity', (string) $request->request->get('_token'))) {
-            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+            return $isAjax 
+                ? $this->json(['success' => false, 'message' => 'CSRF Invalid'], 403)
+                : throw $this->createAccessDeniedException('Jeton CSRF invalide.');
         }
 
         $quantity = (int) $request->request->get('quantity', 1);
+        
+        // Mise à jour en session via le service
         $cart->updateQuantity($lineId, $quantity, $catalog);
+
+        if ($isAjax) {
+            return $this->json([
+                'success' => true,
+                'newTotalCents' => $cart->totalCents($catalog), // Pourrait servir à mettre à jour le total en JS
+            ]);
+        }
 
         return $this->redirectToRoute('app_cart_index');
     }

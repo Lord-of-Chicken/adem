@@ -1,81 +1,85 @@
-const nameCheck = /^[-_a-zA-Z0-9]{4,22}$/;
-const tokenCheck = /^[-_/+a-zA-Z0-9]{24,}$/;
+import { Controller } from '@hotwired/stimulus';
+import { generateCsrfHeaders } from './csrf-protection-controller'; // Ajustez le chemin vers votre fichier CSRF
 
-// Generate and double-submit a CSRF token in a form field and a cookie, as defined by Symfony's SameOriginCsrfTokenManager
-// Use `form.requestSubmit()` to ensure that the submit event is triggered. Using `form.submit()` will not trigger the event
-// and thus this event-listener will not be executed.
-document.addEventListener('submit', function (event) {
-    generateCsrfToken(event.target);
-}, true);
-
-// When @hotwired/turbo handles form submissions, send the CSRF token in a header in addition to a cookie
-// The `framework.csrf_protection.check_header` config option needs to be enabled for the header to be checked
-document.addEventListener('turbo:submit-start', function (event) {
-    const h = generateCsrfHeaders(event.detail.formSubmission.formElement);
-    Object.keys(h).map(function (k) {
-        event.detail.formSubmission.fetchRequest.headers[k] = h[k];
-    });
-});
-
-// When @hotwired/turbo handles form submissions, remove the CSRF cookie once a form has been submitted
-document.addEventListener('turbo:submit-end', function (event) {
-    removeCsrfToken(event.detail.formSubmission.formElement);
-});
-
-export function generateCsrfToken (formElement) {
-    const csrfField = formElement.querySelector('input[data-controller="csrf-protection"], input[name="_csrf_token"]');
-
-    if (!csrfField) {
-        return;
+export default class extends Controller {
+    connect() {
+        const minusBtn = this.element.querySelector('.qty-btn--minus');
+        const plusBtn = this.element.querySelector('.qty-btn--plus');
+        
+        this.tierId = minusBtn.dataset.tierId;
+        this.minQty = parseInt(minusBtn.dataset.minQty) || 1;
+        this.maxQty = parseInt(plusBtn.dataset.maxQty) || 500;
+        
+        this.updateButtonStates();
     }
 
-    let csrfCookie = csrfField.getAttribute('data-csrf-protection-cookie-value');
-    let csrfToken = csrfField.value;
-
-    if (!csrfCookie && nameCheck.test(csrfToken)) {
-        csrfField.setAttribute('data-csrf-protection-cookie-value', csrfCookie = csrfToken);
-        csrfField.defaultValue = csrfToken = btoa(String.fromCharCode.apply(null, (window.crypto || window.msCrypto).getRandomValues(new Uint8Array(18))));
+    plus(event) {
+        event.preventDefault();
+        this.changeQuantity(1);
     }
-    csrfField.dispatchEvent(new Event('change', { bubbles: true }));
 
-    if (csrfCookie && tokenCheck.test(csrfToken)) {
-        const cookie = csrfCookie + '_' + csrfToken + '=' + csrfCookie + '; path=/; samesite=strict';
-        document.cookie = window.location.protocol === 'https:' ? '__Host-' + cookie + '; secure' : cookie;
+    minus(event) {
+        event.preventDefault();
+        this.changeQuantity(-1);
+    }
+
+    changeQuantity(delta) {
+        const currentQty = this.getCurrentQuantity();
+        const newQty = currentQty + delta;
+
+        if (newQty >= this.minQty && newQty <= this.maxQty) {
+            this.setQuantity(newQty);
+        }
+    }
+
+    getCurrentQuantity() {
+        return parseInt(document.getElementById(`hidden-qty-${this.tierId}`).value) || 1;
+    }
+
+    async setQuantity(quantity) {
+        // 1. Mise à jour visuelle (Optimiste)
+        const hiddenInput = document.getElementById(`hidden-qty-${this.tierId}`);
+        hiddenInput.value = quantity;
+
+        const numberDisplay = this.element.querySelector(`[data-tier-id="${this.tierId}"].qty-number`);
+        if (numberDisplay) {
+            numberDisplay.textContent = quantity;
+            const label = numberDisplay.nextElementSibling;
+            if (label) label.textContent = `pièce${quantity > 1 ? 's' : ''}`;
+        }
+
+        this.updateButtonStates();
+
+        // 2. Gestion du CSRF pour Symfony
+        // On récupère les headers CSRF dynamiquement depuis le formulaire "Retirer" 
+        // ou tout autre champ CSRF présent dans la ligne
+        const headers = {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        };
+
+        // On cherche le champ CSRF dans la ligne pour générer les headers
+        const csrfHeaders = generateCsrfHeaders(this.element);
+        Object.assign(headers, csrfHeaders);
+
+        // 3. Envoi au serveur
+        try {
+            await fetch(`/cart/quantity/${this.tierId}`, {
+                method: 'POST',
+                headers: headers,
+                body: new URLSearchParams({ 'quantity': quantity })
+            });
+            
+            // Note : Si vous voulez mettre à jour le prix total global, 
+            // vous devrez peut-être rafraîchir la page ou renvoyer le nouveau total en JSON.
+        } catch (e) {
+            console.error("Erreur CSRF ou réseau", e);
+        }
+    }
+
+    updateButtonStates() {
+        const currentQty = this.getCurrentQuantity();
+        this.element.querySelector('.qty-btn--minus').disabled = currentQty <= this.minQty;
+        this.element.querySelector('.qty-btn--plus').disabled = currentQty >= this.maxQty;
     }
 }
-
-export function generateCsrfHeaders (formElement) {
-    const headers = {};
-    const csrfField = formElement.querySelector('input[data-controller="csrf-protection"], input[name="_csrf_token"]');
-
-    if (!csrfField) {
-        return headers;
-    }
-
-    const csrfCookie = csrfField.getAttribute('data-csrf-protection-cookie-value');
-
-    if (tokenCheck.test(csrfField.value) && nameCheck.test(csrfCookie)) {
-        headers[csrfCookie] = csrfField.value;
-    }
-
-    return headers;
-}
-
-export function removeCsrfToken (formElement) {
-    const csrfField = formElement.querySelector('input[data-controller="csrf-protection"], input[name="_csrf_token"]');
-
-    if (!csrfField) {
-        return;
-    }
-
-    const csrfCookie = csrfField.getAttribute('data-csrf-protection-cookie-value');
-
-    if (tokenCheck.test(csrfField.value) && nameCheck.test(csrfCookie)) {
-        const cookie = csrfCookie + '_' + csrfField.value + '=0; path=/; samesite=strict; max-age=0';
-
-        document.cookie = window.location.protocol === 'https:' ? '__Host-' + cookie + '; secure' : cookie;
-    }
-}
-
-/* stimulusFetch: 'lazy' */
-export default 'csrf-protection-controller';

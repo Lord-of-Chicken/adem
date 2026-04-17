@@ -29,51 +29,55 @@ class PaymentController extends AbstractController
     #[Route('/checkout', name: 'app_checkout')]
     public function checkout(): Response
     {
-        $lines = $this->cartService->getLines();
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
 
+        $lines = $this->cartService->getLines();
         if (empty($lines)) {
+            $this->addFlash('warning', 'Votre panier est vide.');
             return $this->redirectToRoute('app_cart_index');
         }
 
-        $totalCents = $this->cartService->totalCents($this->catalog);
+        $stripeKey = $_ENV['STRIPE_SECRET_KEY'] ?? null;
+        if (!$stripeKey) {
+            throw new \RuntimeException('La clé secrète Stripe n\'est pas configurée.');
+        }
+        Stripe::setApiKey($stripeKey);
 
-        /** @var User $user */
-        $user = $this->getUser();
-
-        Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
-
-        // ✅ Annuler toute commande non payée existante pour éviter les sessions Stripe orphelines
+        // ✅ Gestion des commandes orphelines (nettoyage avant nouvelle tentative)
         $existingOrder = $this->orderRepository->findUnpaidOrderByUser($user);
         if ($existingOrder) {
             try {
-                // ✅ retrieve() d'abord, puis expire() sur l'objet — pas en statique
                 $oldSession = Session::retrieve($existingOrder->getStripeCheckoutSessionId());
-                $oldSession->expire();
+                if ($oldSession->status === 'open') {
+                    $oldSession->expire();
+                }
             } catch (\Exception) {
-                // Session déjà expirée ou inconnue de Stripe, on ignore
+                // Session déjà expirée ou inexistante chez Stripe
             }
             $this->entityManager->remove($existingOrder);
             $this->entityManager->flush();
         }
 
+        // Préparation des articles pour Stripe
         $lineItems = [];
         foreach ($lines as $line) {
-            $tier      = $this->catalog->require($line['tier_id']);
-            $lineTotal = $this->catalog->lineTotalCents($tier, $line['quantity']);
-
-            $productData = [
-                'name' => $tier['title'],
-            ];
-
-            if (!empty($tier['description'])) {
-                $productData['description'] = $tier['description'];
-            }
+            $tier = $this->catalog->require($line['tier_id']);
+            
+            // Conversion unit_price_eur (ex: "20.00") -> cents (2000)
+            $unitAmount = (int) ((float)$tier['unit_price_eur'] * 100);
 
             $lineItems[] = [
                 'price_data' => [
                     'currency'     => 'eur',
-                    'product_data' => $productData,
-                    'unit_amount'  => (int) round($lineTotal / $line['quantity']),
+                    'product_data' => [
+                        'name' => $tier['title'],
+                        'description' => $tier['detail'] ?? null,
+                    ],
+                    'unit_amount'  => $unitAmount,
                 ],
                 'quantity' => $line['quantity'],
             ];
@@ -84,9 +88,9 @@ class PaymentController extends AbstractController
                 'payment_method_types' => ['card'],
                 'line_items'           => $lineItems,
                 'mode'                 => 'payment',
-                'customer_email'       => $user->getUserIdentifier(),
+                'customer_email'       => $user->getEmail(),
                 'metadata'             => [
-                    'donor_name' => $user->getUserIdentifier(),
+                    'order_user_id' => $user->getId(),
                 ],
                 'success_url' => $this->generateUrl(
                     'app_payment_success',
@@ -100,44 +104,20 @@ class PaymentController extends AbstractController
                 ),
             ]);
 
+            // Création de la commande en base de données (statut non payé par défaut)
             $order = new Order();
-            $order->setTotalCents($totalCents);
+            $order->setTotalCents($this->cartService->totalCents($this->catalog));
             $order->setCartData($lines);
             $order->setStripeCheckoutSessionId($checkoutSession->id);
-
-            if ($user instanceof User) {
-                $order->setUser($user);
-            }
+            $order->setUser($user);
 
             $this->entityManager->persist($order);
             $this->entityManager->flush();
 
             return $this->redirect($checkoutSession->url, 303);
 
-        } catch (\Stripe\Exception\AuthenticationException $e) {
-            $this->addFlash('error', 'Erreur d\'authentification Stripe : clé API invalide.');
-            error_log('Stripe Authentication Error: ' . $e->getMessage());
-            return $this->redirectToRoute('app_cart_index');
-
-        } catch (\Stripe\Exception\InvalidRequestException $e) {
-            $this->addFlash('error', 'Requête Stripe invalide : ' . $e->getMessage());
-            error_log('Stripe Invalid Request Error: ' . $e->getMessage());
-            return $this->redirectToRoute('app_cart_index');
-
-        } catch (\Stripe\Exception\ApiConnectionException $e) {
-            $this->addFlash('error', 'Erreur de connexion à l\'API Stripe.');
-            error_log('Stripe Connection Error: ' . $e->getMessage());
-            return $this->redirectToRoute('app_cart_index');
-
-        } catch (\Stripe\Exception\ApiErrorException $e) {
-            $this->addFlash('error', 'Erreur API Stripe : ' . $e->getMessage());
-            error_log('Stripe API Error: ' . $e->getMessage());
-            return $this->redirectToRoute('app_cart_index');
-
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Erreur inattendue : ' . $e->getMessage());
-            error_log('Unexpected Error in Payment: ' . $e->getMessage());
-            error_log('Stack trace: ' . $e->getTraceAsString());
+            $this->addFlash('error', 'Erreur Stripe : ' . $e->getMessage());
             return $this->redirectToRoute('app_cart_index');
         }
     }
@@ -146,21 +126,13 @@ class PaymentController extends AbstractController
     public function success(Request $request): Response
     {
         $sessionId = $request->query->get('session_id');
-
         if (!$sessionId) {
             return $this->redirectToRoute('app_cart_index');
         }
 
-        $order = $this->orderRepository->findByStripeCheckoutSessionId($sessionId);
+        $order = $this->orderRepository->findOneBy(['stripeCheckoutSessionId' => $sessionId]);
 
-        if (!$order) {
-            $this->addFlash('error', 'Commande non trouvée.');
-            return $this->redirectToRoute('app_cart_index');
-        }
-
-        // Éviter de retraiter une commande déjà payée
-        if ($order->isPaid()) {
-            $this->addFlash('success', 'Votre commande a déjà été confirmée.');
+        if (!$order || $order->isPaid()) {
             return $this->redirectToRoute('app_home');
         }
 
@@ -170,59 +142,54 @@ class PaymentController extends AbstractController
             $session = Session::retrieve($sessionId);
 
             if ($session->payment_status === 'paid') {
-                $order->markAsPaid();
+                $order->markAsPaid(); // Assurez-vous que cette méthode existe dans l'entité Order
                 $this->entityManager->flush();
-
+                
+                // On vide le panier en session
                 $this->cartService->clear();
 
-                $this->addFlash('success', 'Paiement réussi ! Merci pour votre participation.');
-                return $this->redirectToRoute('app_home');
+                $this->addFlash('success', 'Merci ! Votre participation a bien été enregistrée.');
             }
         } catch (\Exception $e) {
-            error_log('Stripe success verification error: ' . $e->getMessage());
-            $this->addFlash('error', 'Erreur lors de la vérification du paiement.');
+            $this->addFlash('error', 'Impossible de vérifier le paiement.');
         }
 
-        return $this->redirectToRoute('app_cart_index');
+        return $this->redirectToRoute('app_home');
     }
 
+    /**
+     * ✅ ROUTE AJOUTÉE : Gestion de l'annulation par l'utilisateur
+     */
     #[Route('/payment/cancel', name: 'app_payment_cancel')]
     public function cancel(): Response
     {
-        $this->addFlash('info', 'Le paiement a été annulé. Vous pouvez modifier votre panier et réessayer.');
+        $this->addFlash('info', 'Le paiement a été annulé. Ton panier est toujours là !');
         return $this->redirectToRoute('app_cart_index');
     }
 
-    #[Route('/stripe/webhook', name: 'app_stripe_webhook')]
+    #[Route('/stripe/webhook', name: 'app_stripe_webhook', methods: ['POST'])]
     public function webhook(Request $request): Response
     {
         $payload   = $request->getContent();
         $sigHeader = $request->headers->get('stripe-signature');
+        $webhookSecret = $_ENV['STRIPE_WEBHOOK_SECRET'] ?? null;
 
         try {
-            $event = \Stripe\Webhook::constructEvent(
-                $payload,
-                $sigHeader,
-                $_ENV['STRIPE_WEBHOOK_SECRET']
-            );
-        } catch (\UnexpectedValueException $e) {
-            return new Response('Invalid payload', 400);
-        } catch (\Stripe\Exception\SignatureVerificationException $e) {
-            return new Response('Invalid signature', 400);
+            $event = \Stripe\Webhook::constructEvent($payload, $sigHeader, $webhookSecret);
+        } catch (\Exception $e) {
+            return new Response('Invalid webhook', 400);
         }
 
-        switch ($event->type) {
-            case 'checkout.session.completed':
-                $session = $event->data->object;
-                $order   = $this->orderRepository->findByStripeCheckoutSessionId($session->id);
+        if ($event->type === 'checkout.session.completed') {
+            $session = $event->data->object;
+            $order = $this->orderRepository->findOneBy(['stripeCheckoutSessionId' => $session->id]);
 
-                if ($order && !$order->isPaid()) {
-                    $order->markAsPaid();
-                    $this->entityManager->flush();
-                }
-                break;
+            if ($order && !$order->isPaid()) {
+                $order->markAsPaid();
+                $this->entityManager->flush();
+            }
         }
 
-        return new Response('Webhook received', 200);
+        return new Response('Event handled', 200);
     }
 }

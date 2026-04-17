@@ -7,7 +7,6 @@
     <section class="section">
         <div class="section__inner">
             <h1 class="section__title section__title--tag">Panier</h1>
-            <p class="section__intro">Récapitulatif de tes participations (paiement à brancher ensuite).</p>
 
             {% if lines is empty %}
                 <p class="section__hint">Ton panier est vide. <a href="{{ path('app_home') }}#offres">Voir les offres</a></p>
@@ -16,53 +15,52 @@
                     {% for row in lines %}
                         {% set line = row.line %}
                         {% set tier = row.tier %}
-                        <li class="cart-line card card--sticker">
+                        
+                        {# CONFIGURATION STIMULUS PAR LIGNE #}
+                        <li class="cart-line card card--sticker" 
+                            data-controller="cart-quantity"
+                            data-cart-quantity-quantity-value="{{ line.quantity }}"
+                            data-cart-quantity-update-url-value="{{ path('app_cart_quantity', { lineId: line.line_id }) }}"
+                            data-cart-quantity-csrf-token-value="{{ csrf_token('cart_quantity') }}"
+                            data-cart-quantity-min-value="{{ tier.min_qty|default(1) }}"
+                            data-cart-quantity-max-value="{{ tier.max_qty|default(500) }}">
+
                             <div class="cart-line__main">
                                 <h2 class="cart-line__title">{{ tier.title }}</h2>
                                 <p class="cart-line__meta">
-                                    Qté : {{ line.quantity }}
+                                    Qté : <span data-cart-quantity-target="display">{{ line.quantity }}</span>
                                     {% if line.donor_name %}
-                                        · Nom affiché : {{ line.donor_name }}
+                                        · Nom : {{ line.donor_name }}
                                     {% endif %}
                                 </p>
-                                <p class="cart-line__price">{{ catalog.formatEurosFromCents(row.line_total_cents) }}&nbsp;€</p>
+                                <p class="cart-line__price">
+                                    <span data-cart-quantity-target="linePrice">{{ catalog.formatEurosFromCents(row.line_total_cents) }}</span>&nbsp;€
+                                </p>
                             </div>
+
                             <div class="cart-line__actions">
-                                {% if tier.priced_per_unit %}
-                                    <div class="qty-controls">
-                                        <form class="qty-form" method="post" action="{{ path('app_cart_quantity', { lineId: line.line_id }) }}">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('cart_quantity') }}">
-                                            <input type="hidden" name="quantity" value="{{ line.quantity - 1 }}" class="qty-input-hidden">
-                                            <button type="submit" 
-                                                    class="qty-btn qty-btn--minus" 
-                                                    {% if line.quantity <= tier.min_qty %}disabled{% endif %}
-                                                    aria-label="Diminuer la quantité">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M5 12h14"/>
-                                                </svg>
-                                            </button>
-                                        </form>
-                                        
-                                        <div class="qty-display">
-                                            <span class="qty-number">{{ line.quantity }}</span>
-                                            <span class="qty-label">pièce{% if line.quantity > 1 %}s{% endif %}</span>
-                                        </div>
-                                        
-                                        <form class="qty-form" method="post" action="{{ path('app_cart_quantity', { lineId: line.line_id }) }}">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('cart_quantity') }}">
-                                            <input type="hidden" name="quantity" value="{{ line.quantity + 1 }}" class="qty-input-hidden">
-                                            <button type="submit" 
-                                                    class="qty-btn qty-btn--plus" 
-                                                    {% if line.quantity >= tier.max_qty %}disabled{% endif %}
-                                                    aria-label="Augmenter la quantité">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M12 5v14M5 12h14"/>
-                                                </svg>
-                                            </button>
-                                        </form>
+                                <div class="qty-controls">
+                                    <button type="button" class="qty-btn" 
+                                            data-action="click->cart-quantity#minus"
+                                            data-cart-quantity-target="minusBtn"
+                                            {% if line.quantity <= tier.min_qty %}disabled{% endif %}>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg>
+                                    </button>
+
+                                    <div class="qty-display">
+                                        <span class="qty-number" data-cart-quantity-target="display">{{ line.quantity }}</span>
+                                        <span class="qty-label" data-cart-quantity-target="label">pièce{{ line.quantity > 1 ? 's' : '' }}</span>
                                     </div>
-                                {% endif %}
-                                <form method="post" action="{{ path('app_cart_remove', { lineId: line.line_id }) }}" onsubmit="return confirm('Retirer cette ligne ?');">
+
+                                    <button type="button" class="qty-btn" 
+                                            data-action="click->cart-quantity#plus"
+                                            data-cart-quantity-target="plusBtn"
+                                            {% if line.quantity >= tier.max_qty %}disabled{% endif %}>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                                    </button>
+                                </div>
+
+                                <form method="post" action="{{ path('app_cart_remove', { lineId: line.line_id }) }}">
                                     <input type="hidden" name="_token" value="{{ csrf_token('cart_remove') }}">
                                     <button type="submit" class="site-header__link-btn">Retirer</button>
                                 </form>
@@ -70,12 +68,13 @@
                         </li>
                     {% endfor %}
                 </ul>
-                <p class="cart-total"><strong>Total estimé : {{ catalog.formatEurosFromCents(total_cents) }}&nbsp;€</strong></p>
+
+                <p class="cart-total">
+                    <strong>Total estimé : <span id="cart-total-display">{{ catalog.formatEurosFromCents(total_cents) }}</span>&nbsp;€</strong>
+                </p>
                 
                 <div class="cart-actions">
-                    <a href="{{ path('app_checkout') }}" class="btn btn--primary btn--large">
-                        Procéder au paiement
-                    </a>
+                    <a href="{{ path('app_checkout') }}" class="btn btn--primary btn--large">Procéder au paiement</a>
                 </div>
             {% endif %}
         </div>
