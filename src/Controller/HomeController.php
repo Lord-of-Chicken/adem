@@ -33,11 +33,7 @@ final class HomeController extends AbstractController
                 'label' => 'Expo-happening Flower Power 2027',
                 'title_attr' => 'À venir',
             ],
-            'cta_newsletter' => [
-                'href' => '#newsletter',
-                'label' => '> Recevoir des notifications et invitations (mailing list)',
-            ],
-            'sections' => [
+                        'sections' => [
                 'offres' => [
                     'id' => 'offres',
                     'title' => 'Offres de soutien',
