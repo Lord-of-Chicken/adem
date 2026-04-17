@@ -1,0 +1,85 @@
+# Symfony
+#
+# .gitignore pour projet Symfony
+
+# Répertoires de cache et logs
+/var/cache/*
+/var/log/*
+!var/cache/.gitkeep
+!var/log/.gitkeep
+
+# Répertoires de build et dépendances
+/build/
+/vendor/
+/node_modules/
+
+# Fichiers de configuration sensibles
+.env
+.env.local
+.env.*.local
+
+# Fichiers temporaires
+/tmp/
+*.tmp
+*.temp
+
+# Fichiers IDE et éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Fichiers système macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Assets compilés et fichiers publics générés
+/public/assets/
+!/public/assets/.gitkeep
+/public/bundles/
+/public/uploads/
+!/public/uploads/.gitkeep
+
+# Fichiers de lock et dépendances
+composer.lock
+package-lock.json
+yarn.lock
+
+# Fichiers de test et couverture
+/coverage/
+/phpunit.xml
+/.phpunit.result.cache
+
+# Fichiers de déploiement
+*.tar.gz
+*.zip
+
+# Logs Symfony spécifiques
+/var/log/*.log
+/var/log/dev.log
+/var/log/prod.log
+/var/log/error.log
+
+# Profiler Symfony
+/var/cache/dev/profiler/*
+
+# Sessions PHP
+/var/sessions/*
+
+# Fichiers de configuration spécifiques à l'environnement
+/config/secrets/prod/prod.decrypt.private.php
+/config/packages/local/
+
+# Base de données locales
+*.sqlite
+*.sqlite3
+*.db
+
+# Docker (si utilisé)
+docker-compose.override.yml
