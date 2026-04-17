@@ -54,7 +54,6 @@
                     <article
                         class="card card--tier card--sticker"
                         data-street-tilt-target="tilt"
-                        data-controller="home-quantity"
                         style="--i: {{ loop.index0 }}"
                     >
                         <h3 class="card__title">{{ tier.title }}</h3>
@@ -72,8 +71,6 @@
                                             class="qty-btn qty-btn--minus qty-btn--small" 
                                             data-tier-id="{{ tier.id }}"
                                             data-min-qty="{{ tier.min_qty }}"
-                                            data-home-quantity-target="number"
-                                            data-action="click->home-quantity#minus"
                                             aria-label="Diminuer la quantité">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M5 12h14"/>
@@ -81,7 +78,7 @@
                                     </button>
                                     
                                     <div class="qty-display qty-display--compact">
-                                        <span class="qty-number" data-tier-id="{{ tier.id }}" data-home-quantity-target="number">{{ tier.min_qty }}</span>
+                                        <span class="qty-number" data-tier-id="{{ tier.id }}">{{ tier.min_qty }}</span>
                                         <span class="qty-label">pièce{% if tier.min_qty > 1 %}s{% endif %}</span>
                                     </div>
                                     
@@ -89,7 +86,6 @@
                                             class="qty-btn qty-btn--plus qty-btn--small" 
                                             data-tier-id="{{ tier.id }}"
                                             data-max-qty="{{ tier.max_qty }}"
-                                            data-action="click->home-quantity#plus"
                                             aria-label="Augmenter la quantité">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M12 5v14M5 12h14"/>
@@ -97,13 +93,13 @@
                                     </button>
                                 </div>
                                 
+                                <!-- Champ caché pour le JavaScript -->
+                                <input type="hidden" id="hidden-qty-{{ tier.id }}" value="{{ tier.min_qty }}">
+                                
                                 {% if is_granted('ROLE_USER') %}
-                                    <form class="card__cart-form" method="post" action="{{ path('app_cart_add') }}">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('cart_add') }}">
-                                        <input type="hidden" name="tier_id" value="{{ tier.id }}">
-                                        <input type="hidden" name="quantity" id="hidden-qty-{{ tier.id }}" value="{{ tier.min_qty }}">
-                                        <button type="submit" class="btn btn--primary btn--small">Ajouter</button>
-                                    </form>
+                                    <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')">
+                                        Ajouter
+                                    </button>
                                 {% endif %}
                             </div>
                         {% else %}
@@ -112,9 +108,7 @@
                                     <button type="button" 
                                             class="qty-btn qty-btn--minus qty-btn--small" 
                                             data-tier-id="{{ tier.id }}"
-                                            data-min-qty="1"
-                                            data-home-quantity-target="number"
-                                            data-action="click->home-quantity#minus"
+                                            data-min-qty="{{ tier.min_qty }}"
                                             aria-label="Diminuer la quantité">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M5 12h14"/>
@@ -122,15 +116,14 @@
                                     </button>
                                     
                                     <div class="qty-display qty-display--compact">
-                                        <span class="qty-number" data-tier-id="{{ tier.id }}" data-home-quantity-target="number">1</span>
+                                        <span class="qty-number" data-tier-id="{{ tier.id }}">1</span>
                                         <span class="qty-label">pièce</span>
                                     </div>
                                     
                                     <button type="button" 
                                             class="qty-btn qty-btn--plus qty-btn--small" 
                                             data-tier-id="{{ tier.id }}"
-                                            data-max-qty="10"
-                                            data-action="click->home-quantity#plus"
+                                            data-max-qty="{{ tier.max_qty }}"
                                             aria-label="Augmenter la quantité">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M12 5v14M5 12h14"/>
@@ -138,13 +131,13 @@
                                     </button>
                                 </div>
                                 
+                                <!-- Champ caché pour le JavaScript -->
+                                <input type="hidden" id="hidden-qty-{{ tier.id }}" value="1">
+                                
                                 {% if is_granted('ROLE_USER') %}
-                                    <form class="card__cart-form" method="post" action="{{ path('app_cart_add') }}">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('cart_add') }}">
-                                        <input type="hidden" name="tier_id" value="{{ tier.id }}">
-                                        <input type="hidden" name="quantity" id="hidden-qty-{{ tier.id }}" value="1">
-                                        <button type="submit" class="btn btn--primary btn--small">Ajouter</button>
-                                    </form>
+                                    <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')">
+                                        Ajouter
+                                    </button>
                                 {% endif %}
                             </div>
                         {% endif %}
@@ -174,9 +167,7 @@
                                 <button type="button" 
                                         class="qty-btn qty-btn--minus qty-btn--small" 
                                         data-tier-id="{{ tier.id }}"
-                                        data-min-qty="1"
-                                        data-home-quantity-target="number"
-                                        data-action="click->home-quantity#minus"
+                                        data-min-qty="{{ tier.min_qty }}"
                                         aria-label="Diminuer la quantité">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M5 12h14"/>
@@ -184,15 +175,14 @@
                                 </button>
                                 
                                 <div class="qty-display qty-display--compact">
-                                    <span class="qty-number" data-tier-id="{{ tier.id }}" data-home-quantity-target="number">1</span>
+                                    <span class="qty-number" data-tier-id="{{ tier.id }}">1</span>
                                     <span class="qty-label">pièce</span>
                                 </div>
                                 
                                 <button type="button" 
                                         class="qty-btn qty-btn--plus qty-btn--small" 
                                         data-tier-id="{{ tier.id }}"
-                                        data-max-qty="10"
-                                        data-action="click->home-quantity#plus"
+                                        data-max-qty="{{ tier.max_qty }}"
                                         aria-label="Augmenter la quantité">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M12 5v14M5 12h14"/>
@@ -200,15 +190,18 @@
                                 </button>
                             </div>
                             
+                            <!-- Champ caché pour le JavaScript -->
+                            <input type="hidden" id="hidden-qty-{{ tier.id }}" value="1">
+                            
                             {% if is_granted('ROLE_USER') %}
-                                <form class="card__cart-form" method="post" action="{{ path('app_cart_add') }}">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('cart_add') }}">
-                                    <input type="hidden" name="tier_id" value="{{ tier.id }}">
-                                    <input type="hidden" name="quantity" id="hidden-qty-{{ tier.id }}" value="1">
-                                    <label class="form__label" for="donor-{{ tier.id }}">Nom affiché (optionnel)</label>
-                                    <input class="form__input" type="text" id="donor-{{ tier.id }}" name="donor_name" autocomplete="name" placeholder="Prénom Nom">
-                                    <button type="submit" class="btn btn--primary btn--small">Ajouter</button>
-                                </form>
+                                    <label class="form__label" for="donor-{{ tier.id }}">
+                                        Nom affiché 
+                                        {% if tier.donor_field %}<span class="form__required">*</span>{% else %}<span class="form__hint">(optionnel)</span>{% endif %}
+                                    </label>
+                                    <input class="form__input" type="text" id="donor-{{ tier.id }}" name="donor_name" autocomplete="name" placeholder="Prénom Nom" {% if tier.donor_field %}value="Anonyme"{% endif %}>
+                                    <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')">
+                                        Ajouter
+                                    </button>
                             {% endif %}
                         </div>
                     </article>
@@ -231,14 +224,28 @@
                     <h3 class="card__title">Don Libre</h3>
                     <p class="card__price">Montant libre</p>
                     <p class="card__detail">Soutiens le projet avec le montant de ton choix</p>
-                    <form class="form" action="#" method="post" aria-label="Don libre">
-                        <label class="form__label" for="free-amount">Montant (e)</label>
-                        <input type="number" id="free-amount" name="amount" class="form__input form__input--amount" min="1" step="0.01" placeholder="Ex. 15">
-                        <label class="form__label" for="free-donor-name">Nom du donateur <span class="form__hint">(facultatif)</span></label>
-                        <input type="text" id="free-donor-name" name="donor_name" class="form__input" autocomplete="name" placeholder="Laisser vide pour rester anonyme">
-                        <p class="form__note">Le paiement en ligne pourra être branché ici (HelloAsso, Stripe, etc.).</p>
-                        <button type="submit" class="btn btn--primary btn--small">Ajouter au panier</button>
-                    </form>
+                    {% if is_granted('ROLE_USER') %}
+                        <form class="form" method="post" action="{{ path('app_cart_add') }}" aria-label="Don libre">
+                            <input type="hidden" name="_token" value="{{ csrf_token('cart_add') }}">
+                            <input type="hidden" name="tier_id" value="free_donation">
+                            <input type="hidden" name="quantity" value="1">
+                            <label class="form__label" for="free-amount">Montant (e)</label>
+                            <input type="number" id="free-amount" name="amount" class="form__input form__input--amount" min="1" step="0.01" placeholder="Ex. 15" required>
+                            <label class="form__label" for="free-donor-name">Nom du donateur <span class="form__hint">(facultatif)</span></label>
+                            <input type="text" id="free-donor-name" name="donor_name" class="form__input" autocomplete="name" placeholder="Laisser vide pour rester anonyme">
+                            <p class="form__note">Le montant indiqué sera ajouté à votre panier.</p>
+                            <button type="submit" class="btn btn--primary btn--small">Ajouter au panier</button>
+                        </form>
+                    {% else %}
+                        <div class="form">
+                            <label class="form__label" for="free-amount">Montant (e)</label>
+                            <input type="number" id="free-amount" name="amount" class="form__input form__input--amount" min="1" step="0.01" placeholder="Ex. 15" disabled>
+                            <label class="form__label" for="free-donor-name">Nom du donateur <span class="form__hint">(facultatif)</span></label>
+                            <input type="text" id="free-donor-name" name="donor_name" class="form__input" autocomplete="name" placeholder="Laisser vide pour rester anonyme" disabled>
+                            <p class="form__note">Connectez-vous pour pouvoir faire un don.</p>
+                            <a href="{{ path('app_login') }}" class="btn btn--primary btn--small">Connectez-vous</a>
+                        </div>
+                    {% endif %}
                 </article>
             </div>
         </div>
@@ -283,4 +290,190 @@
     </section>
 
     </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Script simple pour les boutons + et -
+        document.querySelectorAll('.qty-btn--plus').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const tierId = this.dataset.tierId;
+                const maxQty = parseInt(this.dataset.maxQty);
+                const hiddenInput = document.getElementById(`hidden-qty-${tierId}`);
+                const numberDisplay = document.querySelector(`[data-tier-id="${tierId}"].qty-number`);
+                const labelDisplay = numberDisplay?.nextElementSibling;
+                
+                // Vérifier si les éléments existent
+                if (!hiddenInput || !numberDisplay) {
+                    console.warn('Éléments manquants pour tierId:', tierId);
+                    return;
+                }
+                
+                let currentQty = parseInt(hiddenInput.value) || 1;
+                const newQty = Math.min(currentQty + 1, maxQty);
+                
+                hiddenInput.value = newQty;
+                numberDisplay.textContent = newQty;
+                if (labelDisplay) {
+                    labelDisplay.textContent = `pièce${newQty > 1 ? 's' : ''}`;
+                }
+                
+                // Synchroniser le champ quantity du formulaire s'il existe
+                const formQtyInput = document.getElementById(`form-qty-${tierId}`);
+                if (formQtyInput) {
+                    formQtyInput.value = newQty;
+                }
+                
+                // Mettre à jour l'état des boutons
+                const minusBtn = document.querySelector(`[data-tier-id="${tierId}"].qty-btn--minus`);
+                if (minusBtn) {
+                    minusBtn.disabled = newQty <= 1;
+                }
+                this.disabled = newQty >= maxQty;
+            });
+        });
+        
+        document.querySelectorAll('.qty-btn--minus').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const tierId = this.dataset.tierId;
+                const minQty = parseInt(this.dataset.minQty);
+                const hiddenInput = document.getElementById(`hidden-qty-${tierId}`);
+                const numberDisplay = document.querySelector(`[data-tier-id="${tierId}"].qty-number`);
+                const labelDisplay = numberDisplay?.nextElementSibling;
+                
+                // Vérifier si les éléments existent
+                if (!hiddenInput || !numberDisplay) {
+                    console.warn('Éléments manquants pour tierId:', tierId);
+                    return;
+                }
+                
+                let currentQty = parseInt(hiddenInput.value) || 1;
+                const newQty = Math.max(currentQty - 1, minQty);
+                
+                hiddenInput.value = newQty;
+                numberDisplay.textContent = newQty;
+                if (labelDisplay) {
+                    labelDisplay.textContent = `pièce${newQty > 1 ? 's' : ''}`;
+                }
+                
+                // Synchroniser le champ quantity du formulaire s'il existe
+                const formQtyInput = document.getElementById(`form-qty-${tierId}`);
+                if (formQtyInput) {
+                    formQtyInput.value = newQty;
+                }
+                
+                // Mettre à jour l'état des boutons
+                const plusBtn = document.querySelector(`[data-tier-id="${tierId}"].qty-btn--plus`);
+                if (plusBtn) {
+                    plusBtn.disabled = newQty >= parseInt(plusBtn.dataset.maxQty);
+                }
+                this.disabled = newQty <= minQty;
+            });
+        });
+    });
+    
+    // Fonction pour ajouter un produit au panier via AJAX
+    function addToCart(tierId) {
+        const hiddenInput = document.getElementById(`hidden-qty-${tierId}`);
+        const donorInput = document.getElementById(`donor-${tierId}`);
+        
+        if (!hiddenInput) {
+            console.error('Champ quantité non trouvé pour', tierId);
+            return;
+        }
+        
+        const quantity = hiddenInput.value;
+        const donorName = donorInput ? donorInput.value : null;
+        
+        // Créer les données du formulaire
+        const formData = new FormData();
+        
+        // Récupérer le token CSRF depuis le premier formulaire disponible
+        const csrfToken = document.querySelector('input[name="_token"]')?.value || '';
+        formData.append('_token', csrfToken);
+        formData.append('tier_id', tierId);
+        formData.append('quantity', quantity);
+        if (donorName) {
+            formData.append('donor_name', donorName);
+        }
+        
+        // Envoyer la requête AJAX
+        fetch('/panier/ajouter', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Mettre à jour le badge du panier si nécessaire
+                updateCartBadge(data.cartCount);
+                
+                // Afficher un message de succès
+                showFlashMessage('success', 'Participation ajoutée au panier.');
+                
+                // Réinitialiser la quantité pour ce produit
+                resetQuantity(tierId);
+            } else {
+                showFlashMessage('danger', data.message || 'Erreur lors de l\'ajout au panier.');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            showFlashMessage('danger', 'Erreur lors de l\'ajout au panier.');
+        });
+    }
+    
+    // Fonction pour réinitialiser la quantité d'un produit
+    function resetQuantity(tierId) {
+        const hiddenInput = document.getElementById(`hidden-qty-${tierId}`);
+        const numberDisplay = document.querySelector(`[data-tier-id="${tierId}"].qty-number`);
+        const labelDisplay = numberDisplay?.nextElementSibling;
+        
+        if (hiddenInput && numberDisplay) {
+            const minQty = parseInt(numberDisplay.textContent) || 1;
+            hiddenInput.value = minQty;
+            numberDisplay.textContent = minQty;
+            if (labelDisplay) {
+                labelDisplay.textContent = `pièce${minQty > 1 ? 's' : ''}`;
+            }
+        }
+    }
+    
+    // Fonction pour mettre à jour le badge du panier
+    function updateCartBadge(count) {
+        const cartBadge = document.querySelector('.site-header__cart-badge');
+        if (cartBadge) {
+            if (count > 0) {
+                cartBadge.textContent = count;
+                cartBadge.style.display = 'inline';
+            } else {
+                cartBadge.style.display = 'none';
+            }
+        }
+    }
+    
+    // Fonction pour afficher un message flash
+    function showFlashMessage(type, message) {
+        // Créer l'élément de message
+        const flashDiv = document.createElement('div');
+        flashDiv.className = `flash flash--${type}`;
+        flashDiv.textContent = message;
+        flashDiv.setAttribute('role', 'status');
+        
+        // Ajouter au début du body
+        document.body.insertBefore(flashDiv, document.body.firstChild);
+        
+        // Supprimer après 3 secondes
+        setTimeout(() => {
+            flashDiv.remove();
+        }, 3000);
+    }
+    </script>
 {% endblock %}

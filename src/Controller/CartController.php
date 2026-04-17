@@ -36,7 +36,12 @@ final class CartController extends AbstractController
     #[Route('/panier/ajouter', name: 'app_cart_add', methods: ['POST'])]
     public function add(Request $request, CartService $cart, ParticipationCatalog $catalog): Response
     {
+        $isAjax = $request->isXmlHttpRequest();
+        
         if (!$this->isCsrfTokenValid('cart_add', (string) $request->request->get('_token'))) {
+            if ($isAjax) {
+                return $this->json(['success' => false, 'message' => 'Jeton CSRF invalide.'], 403);
+            }
             throw $this->createAccessDeniedException('Jeton CSRF invalide.');
         }
 
@@ -48,8 +53,19 @@ final class CartController extends AbstractController
         try {
             $cart->addLine($tierId, $quantity, $donorName, $catalog);
         } catch (\InvalidArgumentException) {
+            if ($isAjax) {
+                return $this->json(['success' => false, 'message' => 'Formule introuvable.']);
+            }
             $this->addFlash('danger', 'Formule introuvable.');
             return $this->redirectToRoute('app_home');
+        }
+
+        if ($isAjax) {
+            return $this->json([
+                'success' => true, 
+                'message' => 'Participation ajoutée au panier.',
+                'cartCount' => $cart->lineCount()
+            ]);
         }
 
         $this->addFlash('success', 'Participation ajoutée au panier.');
