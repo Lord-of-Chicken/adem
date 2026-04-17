@@ -67,15 +67,22 @@ class PaymentController extends AbstractController
         foreach ($lines as $line) {
             $tier = $this->catalog->require($line['tier_id']);
             
-            // Conversion unit_price_eur (ex: "20.00") -> cents (2000)
-            $unitAmount = (int) ((float)$tier['unit_price_eur'] * 100);
+            // Gestion des dons libres avec prix personnalisé
+            if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
+                $unitAmount = $line['custom_price_cents']; // Prix personnalisé en cents
+                $description = 'Don libre de ' . ($line['custom_price_cents'] / 100) . '€';
+            } else {
+                // Conversion unit_price_eur (ex: "20.00") -> cents (2000)
+                $unitAmount = (int) ((float)$tier['unit_price_eur'] * 100);
+                $description = $tier['detail'] ?? null;
+            }
 
             $lineItems[] = [
                 'price_data' => [
                     'currency'     => 'eur',
                     'product_data' => [
                         'name' => $tier['title'],
-                        'description' => $tier['detail'] ?? null,
+                        'description' => $description,
                     ],
                     'unit_amount'  => $unitAmount,
                 ],

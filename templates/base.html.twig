@@ -11,13 +11,36 @@
     {% block stylesheets %}{% endblock %}
     {% block javascripts %}
         {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% if app.current_route starts with 'app_checkout' or app.current_route starts with 'app_payment' %}
+        {% if app.current_route starts with 'app_checkout' or app.current_route starts with 'app_payment' or app.current_route starts with 'app_cart' %}
             <script src="https://js.stripe.com/v3/"></script>
             <script>
-                window.STRIPE_PUBLISHABLE_KEY = '{{ stripe_publishable_key }}';
+                // Debug: Vérification de la clé Stripe
+                {% set stripeKey = stripe_publishable_key|default("pk_live_51TN7P85iTjBYeAUfPC5N7NH5AUluNrbzM5ByH12C6nZPP63NKp2OlXLsFdkPgFvy1Raz1TlZ9LoTFpS90uJEXJpd00tdU6HimQ") %}
+                window.STRIPE_PUBLISHABLE_KEY = '{{ stripeKey }}';
+                console.log('Stripe key loaded:', window.STRIPE_PUBLISHABLE_KEY);
+                console.log('Environment:', '{{ app.environment }}');
+                console.log('Twig variable stripe_publishable_key:', '{{ stripe_publishable_key|default("NOT_SET") }}');
+                
+                // Vérification supplémentaire
+                if (!window.STRIPE_PUBLISHABLE_KEY || window.STRIPE_PUBLISHABLE_KEY === 'NOT_SET') {
+                    console.error('Stripe key is not properly set');
+                    window.STRIPE_PUBLISHABLE_KEY = 'pk_live_51TN7P85iTjBYeAUfPC5N7NH5AUluNrbzM5ByH12C6nZPP63NKp2OlXLsFdkPgFvy1Raz1TlZ9LoTFpS90uJEXJpd00tdU6HimQ';
+                    console.log('Using fallback Stripe key:', window.STRIPE_PUBLISHABLE_KEY);
+                }
                 
                 if (typeof Stripe !== 'undefined' && window.STRIPE_PUBLISHABLE_KEY) {
-                    window.stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY);
+                    try {
+                        window.stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY);
+                        console.log('Stripe initialized successfully with key:', window.STRIPE_PUBLISHABLE_KEY.substring(0, 10) + '...');
+                    } catch (error) {
+                        console.error('Stripe initialization error:', error);
+                    }
+                } else {
+                    console.error('Stripe initialization failed:', {
+                        stripeDefined: typeof Stripe !== 'undefined',
+                        keyExists: !!window.STRIPE_PUBLISHABLE_KEY,
+                        keyValue: window.STRIPE_PUBLISHABLE_KEY ? window.STRIPE_PUBLISHABLE_KEY.substring(0, 10) + '...' : 'NULL'
+                    });
                 }
             </script>
         {% endif %}

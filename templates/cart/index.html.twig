@@ -120,24 +120,35 @@
         formData.append('quantity', newQty);
         formData.append('_token', csrfToken);
 
+        console.log('Envoi requête modification quantité:', { lineId, newQty });
         fetch(`/panier/ligne/${lineId}/quantite`, {
             method: 'POST',
             body: formData,
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('Réponse reçue:', response.status, response.statusText);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('Données reçues:', data);
             if (data.success) {
                 // 3. On met à jour les prix avec les valeurs calculées par PHP
                 document.getElementById(`line-total-${lineId}`).textContent = data.newLineTotal;
                 document.getElementById('cart-total-display').textContent = data.newTotalHtml;
+                console.log('Mise à jour réussie:', { newLineTotal: data.newLineTotal, newTotalHtml: data.newTotalHtml });
             } else {
+                console.error('Erreur serveur:', data);
                 alert('Erreur: ' + (data.message || 'Impossible de mettre à jour'));
                 location.reload(); // En cas d'erreur, on recharge la page
             }
         })
         .catch(error => {
-            console.error('Erreur:', error);
+            console.error('Erreur réseau ou JavaScript:', error);
+            alert('Erreur technique: ' + error.message);
             location.reload();
         });
     }

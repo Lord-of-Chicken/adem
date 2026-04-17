@@ -1468,7 +1468,7 @@ qty-display {
 /* Exceptions - garder certaines couleurs */
 .page-street .site-footer__inner p,
 .page-street .site-footer__text,
-.page-street .btn,
+.page-street .btn:not(.btn--primary):not(.btn--secondary),
 .page-street .spray-lime,
 .page-street [style*="color: var(--spray-lime)"],
 .page-street [style*="color:var(--spray-lime)"] {

@@ -69,7 +69,7 @@ ssh $USER@$SERVEUR << 'EOF'
     php bin/console cache:warmup --env=prod
     
     # Assets
-    php bin/console asset:install --symlink --relative public
+    php bin/console asset-map:compile --env=prod
     
     # Nettoyage
     rm /tmp/ruelle-dadem-deploy.tar.gz
