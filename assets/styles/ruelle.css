@@ -1444,33 +1444,25 @@ qty-display {
 
 /* Force le texte des sections en blanc */
 .page-street .section__title,
-.page-street .section__intro,
 .page-street .section__subtitle,
 .page-street .section__hint,
-.section__title,
-.section__intro,
-.section__subtitle,
-.section__hint {
-    color: #fff !important;
-}
-
-/* Force spécifique pour la section offres */
+#medias .section__title,
+#medias .section__subtitle,
+#medias .section__hint,
 #offres .section__title,
-#offres .section__intro,
+#offres .section__subtitle,
+#offres .section__hint,
 #don-libre .section__title,
+#don-libre .section__subtitle,
+#don-libre .section__hint {
+    color: var(--paper) !important;
+}
+
+/* Textes intro en gris 50% au lieu de blanc */
+#medias .section__intro,
+#offres .section__intro,
 #don-libre .section__intro {
-    color: #fff !important;
-}
-
-/* Force tous les paragraphes dans les sections */
-.page-street .section p,
-.page-street .section .section__inner p {
-    color: #fff !important;
-}
-
-/* Force universel - TOUT le texte en blanc sur page-street */
-.page-street * {
-    color: #fff !important;
+    color: rgba(244, 241, 234, 0.5) !important;
 }
 
 /* Exceptions - garder certaines couleurs */
