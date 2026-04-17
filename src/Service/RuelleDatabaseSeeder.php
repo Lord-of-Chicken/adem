@@ -115,17 +115,33 @@ final class RuelleDatabaseSeeder
                 'donor_field' => true,
                 'sort_order' => 20,
             ],
+[
+            'id' => 'free_donation',
+            'title' => 'Don Libre',
+            'detail' => 'Soutien personnalisé au projet.',
+            'price_label' => 'Libre',
+            'price_unit' => '€',
+            'price_suffix' => null,
+            'unit_price_eur' => '0.00', // Le prix sera écrasé par la saisie utilisateur
+            'priced_per_unit' => false,
+            'min_qty' => 1,
+            'max_qty' => 1,
+            'tier_group' => 'standard',
+            'donor_field' => true, // On autorise le nom pour le don libre
+            'sort_order' => 100,
+        ],
         ];
     }
 
     private function seedSiteSettings(EntityManagerInterface $em): void
     {
-        $defaults = [
-            'brand.title' => 'La Ruelle d’Adem',
-            'brand.tagline' => 'Fait une fleur à \nLa Ruelle d’Adem',
-            'brand.logo_asset' => 'img/Panneau/IMG_0197.png',
-            'section.medias.intro' => 'Quelques images de la ruelle — le lieu du projet, tel qu’on le vit au quotidien.',
-        ];
+     $defaults = [
+        'brand.title' => 'La Ruelle d’Adem',
+        // Remplace 'Fait une fleur à \nLa Ruelle d’Adem' par ceci :
+        'brand.tagline' => 'Fait une fleur à La Ruelle d’Adem', 
+        'brand.logo_asset' => 'img/Panneau/IMG_0197.png',
+        'section.medias.intro' => 'Quelques images de la ruelle — le lieu du projet, tel qu’on le vit au quotidien.',
+    ];
 
         foreach ($defaults as $key => $value) {
             $row = $em->find(SiteSetting::class, $key);

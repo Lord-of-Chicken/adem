@@ -17,23 +17,21 @@ final class HomeController extends AbstractController
         MediaItemRepository $mediaItemRepository,
         SiteSettingRepository $siteSettingRepository,
     ): Response {
+        $brandTagline = $siteSettingRepository->get('brand.tagline') ?: 'Fait une fleur à la Ruelle d\'Adem';
         $mediasIntro = $siteSettingRepository->get('section.medias.intro')
             ?: 'Quelques images de la ruelle — le lieu du projet, tel qu’on le vit au quotidien.';
 
         return $this->render('home/index.html.twig', [
             'hero' => [
-                'eyebrow' => 'Fait une fleur à La Ruelle d\'Adem',
+                // ✅ Remplacement de \n par un espace (plus de <br>)
+                'eyebrow' => str_replace('\n', ' ', $brandTagline), 
                 'title' => 'Crowdfunding',
                 'lead' => 'Le crowdfunding, ou « financement participatif », est un mécanisme qui permet de lever des fonds auprès du grand public — c’est-à-dire auprès de toi.',
             ],
             'nav_links' => [
-                ['label' => 'Médias', 'href' => '#medias'],
+                ['label' => 'Offres', 'href' => '#offres'],
             ],
-            'event_teaser' => [
-                'label' => 'Expo-happening Flower Power 2027',
-                'title_attr' => 'À venir',
-            ],
-                        'sections' => [
+            'sections' => [
                 'offres' => [
                     'id' => 'offres',
                     'title' => 'Offres de soutien',
@@ -47,28 +45,28 @@ final class HomeController extends AbstractController
                 'don_libre' => [
                     'id' => 'don-libre',
                     'title' => 'Don libre',
-                    'intro' => 'Avec ou sans indication du nom du donateur.',
+                    'intro' => 'Envie de contribuer différemment ? Contactez-nous pour un don libre.',
                 ],
                 'contact' => [
                     'id' => 'contact',
-                    'title' => 'Proposition, don, sponsoring & suggestion',
+                    'title' => 'Proposition & Contact',
                     'intro' => 'Quelque chose à proposer ou à suggérer à Adem ?',
                 ],
                 'newsletter' => [
                     'id' => 'newsletter',
                     'title' => 'Notifications & invitations',
-                    'intro' => 'Inscris-toi pour recevoir les nouvelles du projet et les invitations aux événements.',
+                    'intro' => 'Inscris-toi pour recevoir les nouvelles du projet.',
                 ],
                 'medias' => [
                     'id' => 'medias',
-                    'title' => 'Médias',
+                    'title' => 'La Galerie',
                     'intro' => $mediasIntro,
                 ],
             ],
             'tiers_standard' => $catalog->standardForHome(),
             'tiers_vip' => $catalog->vipForHome(),
             'media_items' => $mediaItemRepository->findPublishedOrdered(),
-            'footer_line' => 'La Ruelle d’Adem — Flower Power',
+            'footer_line' => $siteSettingRepository->get('brand.title') ?: 'La Ruelle d’Adem',
         ]);
     }
 }

@@ -19,25 +19,35 @@ final class RegistrationController extends AbstractController
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
     ): Response {
+        // Sécurité : on empêche un utilisateur déjà connecté de se ré-inscrire
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_home');
+        }
+
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var string $plainPassword */
+            // Extraction du mot de passe en clair depuis le champ non-mappé du formulaire
             $plainPassword = $form->get('plainPassword')->getData();
+            
+            // Hachage sécurisé
             $user->setPassword($passwordHasher->hashPassword($user, $plainPassword));
-            $user->setRoles([]);
+            
+            // On s'assure que l'utilisateur a au moins le rôle de base
+            $user->setRoles(['ROLE_USER']);
+
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Compte créé. Connecte-toi pour ajouter des participations au panier.');
+            $this->addFlash('success', 'Bienvenue ! Ton compte est créé. Tu peux maintenant te connecter.');
 
             return $this->redirectToRoute('app_login');
         }
 
         return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form,
+            'registrationForm' => $form, // Plus besoin de .createView()
         ]);
     }
 }

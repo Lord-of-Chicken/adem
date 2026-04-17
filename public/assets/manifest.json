@@ -1,12 +1,10 @@
 {
-    "@symfony\/stimulus-bundle\/controllers.js": "\/assets\/@symfony\/stimulus-bundle\/controllers-_HTA6d8.js",
+    "@symfony\/stimulus-bundle\/controllers.js": "\/assets\/@symfony\/stimulus-bundle\/controllers-DVECPBe.js",
     "@symfony\/stimulus-bundle\/loader.js": "\/assets\/@symfony\/stimulus-bundle\/loader-IOzBDLu.js",
     "@symfony\/ux-turbo\/turbo_controller.js": "\/assets\/@symfony\/ux-turbo\/turbo_controller-bFCo5ub.js",
     "@symfony\/ux-turbo\/turbo_stream_controller.js": "\/assets\/@symfony\/ux-turbo\/turbo_stream_controller-WxKuxpf.js",
     "app.js": "\/assets\/app-brrgzi-.js",
-    "controllers\/csrf_protection_controller.js": "\/assets\/controllers\/csrf_protection_controller-6ynUAeX.js",
     "controllers\/hello_controller.js": "\/assets\/controllers\/hello_controller-VYgvytJ.js",
-    "controllers\/home_quantity_controller.js": "\/assets\/controllers\/home_quantity_controller-3OiDaTr.js",
     "controllers\/street_tilt_controller.js": "\/assets\/controllers\/street_tilt_controller-QF79eq5.js",
     "img\/Panneau\/IMG_0197.png": "\/assets\/img\/Panneau\/IMG_0197-yzoZwhL.png",
     "img\/ruelle\/IMG_0187.jpeg": "\/assets\/img\/ruelle\/IMG_0187-PYIMrA9.jpeg",
@@ -22,7 +20,7 @@
     "img\/ruelle\/IMG_0200.jpeg": "\/assets\/img\/ruelle\/IMG_0200-EtC9lQs.jpeg",
     "stimulus_bootstrap.js": "\/assets\/stimulus_bootstrap-nu4pE_W.js",
     "styles\/app.css": "\/assets\/styles\/app-s7vgiqb.css",
-    "styles\/ruelle.css": "\/assets\/styles\/ruelle-iiE1BaR.css",
+    "styles\/ruelle.css": "\/assets\/styles\/ruelle-0Ixa7HA.css",
     "vendor\/@hotwired\/stimulus\/stimulus.index.js": "\/assets\/vendor\/@hotwired\/stimulus\/stimulus.index-S4zNcea.js",
     "vendor\/@hotwired\/turbo\/turbo.index.js": "\/assets\/vendor\/@hotwired\/turbo\/turbo.index-pT15T6h.js"
 }

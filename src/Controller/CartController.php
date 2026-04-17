@@ -19,10 +19,18 @@ final class CartController extends AbstractController
         $lines = [];
         foreach ($cart->getLines() as $line) {
             $tier = $catalog->require($line['tier_id']);
+            
+            // Calcul du total de la ligne (Don Libre ou Standard)
+            if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
+                $lineTotal = $line['custom_price_cents'] * $line['quantity'];
+            } else {
+                $lineTotal = $catalog->lineTotalCents($tier, $line['quantity']);
+            }
+
             $lines[] = [
                 'line'             => $line,
                 'tier'             => $tier,
-                'line_total_cents' => $catalog->lineTotalCents($tier, $line['quantity']),
+                'line_total_cents' => $lineTotal,
             ];
         }
 
@@ -49,8 +57,20 @@ final class CartController extends AbstractController
         $donorRaw  = $request->request->get('donor_name');
         $donorName = \is_string($donorRaw) ? $donorRaw : null;
 
+        $customPriceCents = null;
+        if ($tierId === 'free_donation') {
+            $amount = (float) $request->request->get('amount');
+            if ($amount <= 0) {
+                return $isAjax 
+                    ? $this->json(['success' => false, 'message' => 'Montant invalide.'])
+                    : $this->redirectToRoute('app_home');
+            }
+            $customPriceCents = (int) round($amount * 100);
+            $quantity = 1;
+        }
+
         try {
-            $cart->addLine($tierId, $quantity, $donorName, $catalog);
+            $cart->addLine($tierId, $quantity, $donorName, $catalog, $customPriceCents);
         } catch (\InvalidArgumentException) {
             return $isAjax 
                 ? $this->json(['success' => false, 'message' => 'Formule introuvable.'])
@@ -64,7 +84,6 @@ final class CartController extends AbstractController
             ]);
         }
 
-        $this->addFlash('success', 'Participation ajoutée au panier.');
         return $this->redirectToRoute('app_home');
     }
 
@@ -82,14 +101,13 @@ final class CartController extends AbstractController
     }
 
     /**
-     * Mise à jour de la quantité (Supporte AJAX via Stimulus)
+     * ✅ CORRIGÉ : Renvoie newLineTotal et newTotalHtml pour Stimulus
      */
     #[Route('/panier/ligne/{lineId}/quantite', name: 'app_cart_quantity', methods: ['POST'])]
     public function setQuantity(string $lineId, Request $request, CartService $cart, ParticipationCatalog $catalog): Response
     {
         $isAjax = $request->isXmlHttpRequest();
 
-        // Vérification du token CSRF (Crucial car ton script JS l'envoie via headers)
         if (!$this->isCsrfTokenValid('cart_quantity', (string) $request->request->get('_token'))) {
             return $isAjax 
                 ? $this->json(['success' => false, 'message' => 'CSRF Invalid'], 403)
@@ -97,14 +115,24 @@ final class CartController extends AbstractController
         }
 
         $quantity = (int) $request->request->get('quantity', 1);
-        
-        // Mise à jour en session via le service
         $cart->updateQuantity($lineId, $quantity, $catalog);
 
         if ($isAjax) {
+            // On calcule le nouveau prix de la ligne spécifique pour le renvoyer au JS
+            $newLineTotalFormatted = '0,00';
+            foreach ($cart->getLines() as $line) {
+                if ($line['line_id'] === $lineId) {
+                    $tier = $catalog->require($line['tier_id']);
+                    $price = $line['custom_price_cents'] ?? (int)round((float)$tier['unit_price_eur'] * 100);
+                    $newLineTotalFormatted = $catalog->formatEurosFromCents($price * $line['quantity']);
+                    break;
+                }
+            }
+
             return $this->json([
                 'success' => true,
-                'newTotalCents' => $cart->totalCents($catalog), // Pourrait servir à mettre à jour le total en JS
+                'newLineTotal' => $newLineTotalFormatted, // Mis à jour dans la ligne
+                'newTotalHtml' => $catalog->formatEurosFromCents($cart->totalCents($catalog)), // Mis à jour en bas de page
             ]);
         }
 

@@ -8,7 +8,7 @@
         "type": "js"
     },
     "\/assets\/@symfony\/stimulus-bundle\/controllers.js": {
-        "path": "\/assets\/@symfony\/stimulus-bundle\/controllers-_HTA6d8.js",
+        "path": "\/assets\/@symfony\/stimulus-bundle\/controllers-DVECPBe.js",
         "type": "js"
     },
     "\/assets\/@symfony\/ux-turbo\/turbo_controller.js": {
@@ -23,20 +23,12 @@
         "path": "\/assets\/controllers\/street_tilt_controller-QF79eq5.js",
         "type": "js"
     },
-    "\/assets\/controllers\/home_quantity_controller.js": {
-        "path": "\/assets\/controllers\/home_quantity_controller-3OiDaTr.js",
-        "type": "js"
-    },
-    "\/assets\/controllers\/csrf_protection_controller.js": {
-        "path": "\/assets\/controllers\/csrf_protection_controller-6ynUAeX.js",
-        "type": "js"
-    },
     "\/assets\/styles\/app.css": {
         "path": "\/assets\/styles\/app-s7vgiqb.css",
         "type": "css"
     },
     "\/assets\/styles\/ruelle.css": {
-        "path": "\/assets\/styles\/ruelle-iiE1BaR.css",
+        "path": "\/assets\/styles\/ruelle-0Ixa7HA.css",
         "type": "css"
     },
     "@hotwired\/stimulus": {

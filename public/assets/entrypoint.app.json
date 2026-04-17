@@ -8,6 +8,5 @@
     "\/assets\/@symfony\/stimulus-bundle\/controllers.js",
     "\/assets\/@symfony\/ux-turbo\/turbo_controller.js",
     "\/assets\/controllers\/hello_controller.js",
-    "\/assets\/controllers\/home_quantity_controller.js",
     "@hotwired\/turbo"
 ]

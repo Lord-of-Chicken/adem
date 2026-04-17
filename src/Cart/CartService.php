@@ -12,32 +12,31 @@ final class CartService
 
     public function __construct(private readonly RequestStack $requestStack) {}
 
-    /**
-     * Récupère la session de manière sécurisée
-     */
     private function session(): ?SessionInterface
     {
         return $this->requestStack->getCurrentRequest()?->getSession();
     }
 
-    /**
-     * Récupère toutes les lignes du panier
-     */
     public function getLines(): array
     {
         return $this->session()?->get(self::SESSION_KEY) ?? [];
     }
 
     /**
-     * Calcule le total en centimes (basé sur unit_price_eur du Seeder)
+     * Calcule le total en tenant compte des prix personnalisés (Don Libre)
      */
     public function totalCents(ParticipationCatalog $catalog): int
     {
         $total = 0;
         foreach ($this->getLines() as $line) {
-            $tier = $catalog->require($line['tier_id']);
-            // Conversion forcée : "1.00" (string) -> 1.0 (float) -> 100 (int cents)
-            $priceCents = (int) (round((float)$tier['unit_price_eur'] * 100));
+            // PRIORITÉ : Si un prix personnalisé (Don Libre) est stocké dans la ligne
+            if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
+                $priceCents = (int) $line['custom_price_cents'];
+            } else {
+                // SINON : On prend le prix du catalogue
+                $tier = $catalog->require($line['tier_id']);
+                $priceCents = (int) (round((float)$tier['unit_price_eur'] * 100));
+            }
             $total += $priceCents * $line['quantity'];
         }
         return $total;
@@ -46,30 +45,47 @@ final class CartService
     /**
      * Ajoute une ligne au panier
      */
-    public function addLine(string $tierId, int $quantity, ?string $donorName, ParticipationCatalog $catalog): void
-    {
+    public function addLine(
+        string $tierId, 
+        int $quantity, 
+        ?string $donorName, 
+        ParticipationCatalog $catalog, 
+        ?int $customPriceCents = null
+    ): void {
         $session = $this->session();
         if (!$session) return;
 
         $tier = $catalog->require($tierId);
         $lines = $this->getLines();
+        $normalizedDonor = $this->normalizeDonor($donorName, $tier['donor_field'] ?? false);
 
-        // On génère un ID unique pour cette ligne (pour pouvoir la modifier/supprimer plus tard)
-        $lineId = bin2hex(random_bytes(8));
+        // --- OPTIMISATION : Fusion des lignes identiques ---
+        // Si on ajoute le même produit (même tier, même prix custom, même nom), on incrémente la quantité
+        foreach ($lines as $i => $line) {
+            if ($line['tier_id'] === $tierId && 
+                $line['donor_name'] === $normalizedDonor && 
+                ($line['custom_price_cents'] ?? null) === $customPriceCents) {
+                
+                $newQty = $line['quantity'] + $quantity;
+                $lines[$i]['quantity'] = max($tier['min_qty'], min($tier['max_qty'], $newQty));
+                
+                $session->set(self::SESSION_KEY, $lines);
+                return;
+            }
+        }
 
+        // --- SINON : Création d'une nouvelle ligne ---
         $lines[] = [
-            'line_id'    => $lineId,
+            'line_id'    => bin2hex(random_bytes(8)),
             'tier_id'    => $tierId,
             'quantity'   => max($tier['min_qty'], min($tier['max_qty'], $quantity)),
-            'donor_name' => $this->normalizeDonor($donorName, $tier['donor_field'] ?? false),
+            'donor_name' => $normalizedDonor,
+            'custom_price_cents' => $customPriceCents,
         ];
 
         $session->set(self::SESSION_KEY, $lines);
     }
 
-    /**
-     * Met à jour la quantité d'une ligne spécifique via son line_id
-     */
     public function updateQuantity(string $lineId, int $quantity, ParticipationCatalog $catalog): void
     {
         $session = $this->session();
@@ -79,6 +95,7 @@ final class CartService
         foreach ($lines as $i => $line) {
             if ($line['line_id'] === $lineId) {
                 $tier = $catalog->require($line['tier_id']);
+                // Pour un don libre, min et max qty sont souvent 1 (défini dans le Seeder)
                 $lines[$i]['quantity'] = max($tier['min_qty'], min($tier['max_qty'], $quantity));
                 $session->set(self::SESSION_KEY, $lines);
                 return;
@@ -86,31 +103,20 @@ final class CartService
         }
     }
 
-    /**
-     * Supprime une ligne du panier
-     */
     public function removeLine(string $lineId): void
     {
         $session = $this->session();
         if (!$session) return;
 
         $lines = array_filter($this->getLines(), fn($l) => $l['line_id'] !== $lineId);
-        
-        // array_values est important pour réinitialiser les index du tableau [0, 1, 2...]
         $session->set(self::SESSION_KEY, array_values($lines));
     }
 
-    /**
-     * ✅ MÉTHODE AJOUTÉE : Vide complètement le panier (après paiement réussi)
-     */
     public function clear(): void
     {
         $this->session()?->remove(self::SESSION_KEY);
     }
 
-    /**
-     * Nettoie le nom du donateur ou renvoie null si non autorisé/vide
-     */
     private function normalizeDonor(?string $donorName, bool $allowed): ?string
     {
         if (!$allowed) return null;
@@ -118,9 +124,6 @@ final class CartService
         return $trimmed === '' ? null : $trimmed;
     }
 
-    /**
-     * Compte le nombre d'articles (lignes) dans le panier
-     */
     public function countLines(): int 
     { 
         return count($this->getLines()); 
