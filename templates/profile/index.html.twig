@@ -1,0 +1,70 @@
+{% extends 'layout/street.html.twig' %}
+
+{% block title %}Mon Profil | La Ruelle d'Adem{% endblock %}
+
+{% block street_main %}
+<main class="main">
+    <section class="section">
+        <div class="section__inner">
+            <h1 class="section__title">Mon Profil</h1>
+            
+            <div class="card">
+                <h2 class="card__title">Informations personnelles</h2>
+                <dl class="profile-info">
+                    <dt>Prénom :</dt>
+                    <dd>{{ app.user.firstName ?? '-' }}</dd>
+                    
+                    <dt>Nom :</dt>
+                    <dd>{{ app.user.lastName ?? '-' }}</dd>
+                    
+                    <dt>E-mail :</dt>
+                    <dd>{{ app.user.email }}</dd>
+                </dl>
+                
+                <h3 class="card__title" style="margin-top: 2rem;">Actions</h3>
+                <div class="profile-actions">
+                    <a href="{{ path('app_profile_edit') }}" class="btn btn--primary">Modifier mon profil</a>
+                    <a href="{{ path('app_profile_change_password') }}" class="btn btn--secondary">Changer mon mot de passe</a>
+                </div>
+                
+                <div class="profile-actions">
+                    <form method="post" action="{{ path('_logout_main') }}" style="display: inline;">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                        <button type="submit" class="btn btn--secondary" style="background: var(--spray-magenta); color: var(--paper);">Déconnexion</button>
+                    </form>
+                </div>
+                
+                <div class="profile-actions">
+                    <form method="post" action="{{ path('app_profile_delete') }}" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible et toutes vos données seront supprimées.');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete_profile') }}">
+                        <button type="submit" class="btn btn--secondary" style="background: #b00020; color: var(--paper);">Supprimer mon compte</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .profile-info {
+            margin: 1.5rem 0;
+        }
+        .profile-info dt {
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        .profile-info dd {
+            margin-left: 0;
+            margin-bottom: 0.5rem;
+        }
+        .profile-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+    </style>
+{% endblock %}

@@ -35,25 +35,6 @@
         </div>
     </section>
 
-    {# SECTION INFORMATION INSCRIPTION #}
-    <section class="section" id="inscription-info">
-        <div class="section__inner">
-            <h2 class="section__title section__title--tag">Rejoignez-nous !</h2>
-            <p class="section__intro">
-                Pour soutenir le projet et passer commande, <strong>créez votre compte gratuitement</strong>.<br>
-                Cela vous permettra d'ajouter des articles au panier et de finaliser votre participation en toute sécurité.
-            </p>
-            <div class="section__actions">
-                {% if not is_granted('ROLE_USER') %}
-                    <a href="{{ path('app_register') }}" class="btn btn--primary">S'inscrire gratuitement</a>
-                    <a href="{{ path('app_login') }}" class="btn btn--secondary">Se connecter</a>
-                {% else %}
-                    <p class="section__hint">✅ Vous êtes connecté ! Vous pouvez maintenant ajouter des articles au panier.</p>
-                {% endif %}
-            </div>
-        </div>
-    </section>
-
     {# SECTION OFFRES STANDARD #}
     <section class="section" id="offres">
         <div class="section__inner">
@@ -139,6 +120,17 @@
                     </button>
                 </div>
             </article>
+        </div>
+    </section>
+
+    {# SECTION NEWSLETTER #}
+    <section class="section section--newsletter" id="newsletter">
+        <div class="section__inner">
+            <h2 class="section__title section__title--tag">Restez informé</h2>
+            <p class="section__intro">Recevez des notifications et des invitations pour les événements à venir.</p>
+            <div class="section__actions">
+                <a href="{{ path('app_register') }}" class="btn btn--primary">Créer un compte pour recevoir les infos</a>
+            </div>
         </div>
     </section>
 </main>

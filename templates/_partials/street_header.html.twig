@@ -1,6 +1,5 @@
 {% set brand = brand|default(site_brand) %}
 {% set nav_links = nav_links|default([{ label: 'Médias', href: path('app_home') ~ '#medias' }]) %}
-{% set event_teaser = event_teaser|default({ label: 'Expo-happening Flower Power 2027', title_attr: 'À venir' }) %}
 {% set cta_newsletter = cta_newsletter|default({ href: path('app_home') ~ '#newsletter', label: '> Recevoir des notifications et invitations (mailing list)' }) %}
 
 <header class="site-header">
@@ -18,7 +17,6 @@
             {% for link in nav_links %}
                 <a href="{{ link.href }}" class="site-nav__link">{{ link.label }}</a>
             {% endfor %}
-            <span class="site-nav__muted" title="{{ event_teaser.title_attr }}">{{ event_teaser.label }}</span>
         </nav>
 
         <div class="site-header__account">
@@ -31,13 +29,7 @@
             </a>
 
             {% if is_granted('ROLE_USER') %}
-                <span class="site-header__user" title="{{ app.user.userIdentifier }}">
-                    {{ app.user.userIdentifier|slice(0, 15) }}{{ app.user.userIdentifier|length > 15 ? '...' : '' }}
-                </span>
-                <form method="post" action="{{ path('_logout_main') }}" class="site-header__logout-form" style="display: inline;">
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
-                    <button type="submit" class="site-header__link-btn">Déconnexion</button>
-                </form>
+                <a href="{{ path('app_profile') }}" class="site-nav__link site-nav__link--compact">Profil</a>
             {% else %}
                 <a href="{{ path('app_login') }}" class="site-nav__link site-nav__link--compact">Connexion</a>
                 <a href="{{ path('app_register') }}" class="site-header__register">Inscription</a>

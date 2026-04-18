@@ -329,6 +329,11 @@ body.page-street {
     justify-content: flex-start;
 }
 
+.site-header__account > * {
+    display: flex;
+    align-items: center;
+}
+
 .site-header__cart {
     display: inline-flex;
     align-items: center;
@@ -397,6 +402,101 @@ body.page-street {
 .site-nav__link--compact {
     padding: 0.2rem 0.45rem;
     font-size: 0.78rem;
+}
+
+/* Profile dropdown menu */
+.site-header__profile-menu {
+    position: relative;
+}
+
+.site-header__profile-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.55rem;
+    background: var(--spray-cyan);
+    border: 2px solid var(--ink);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.site-header__profile-toggle:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 var(--ink);
+}
+
+.site-header__profile-toggle[aria-expanded="true"] {
+    background: var(--spray-magenta);
+    color: var(--paper);
+}
+
+.site-header__dropdown-icon {
+    transition: transform 0.2s ease;
+}
+
+.site-header__profile-toggle[aria-expanded="true"] .site-header__dropdown-icon {
+    transform: rotate(180deg);
+}
+
+.site-header__dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    min-width: 200px;
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--ink);
+    z-index: 100;
+    padding: 0.5rem 0;
+}
+
+.site-header__dropdown:not([hidden]) {
+    display: block;
+}
+
+.site-header__dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    text-align: left;
+    background: none;
+    border: none;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--ink);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.site-header__dropdown-item:hover {
+    background: var(--spray-cyan);
+}
+
+.site-header__dropdown-item--logout {
+    color: #b00020;
+}
+
+.site-header__dropdown-item--logout:hover {
+    background: var(--spray-magenta);
+    color: var(--paper);
+}
+
+.site-header__dropdown-divider {
+    height: 2px;
+    background: var(--ink);
+    margin: 0.5rem 0;
+}
+
+.site-header__dropdown-form {
+    margin: 0;
+    padding: 0;
 }
 
 @media (min-width: 768px) {
