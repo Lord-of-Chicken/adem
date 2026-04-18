@@ -14,27 +14,20 @@
         {% if app.current_route starts with 'app_checkout' or app.current_route starts with 'app_payment' or app.current_route starts with 'app_cart' %}
             <script src="https://js.stripe.com/v3/"></script>
             <script>
-                // Debug: Vérification de la clé Stripe
                 window.STRIPE_PUBLISHABLE_KEY = '{{ stripe_publishable_key }}';
-                
-                console.log('Stripe key loaded:', window.STRIPE_PUBLISHABLE_KEY);
-                console.log('Environment:', '{{ app.environment }}');
-                console.log('Key type:', window.STRIPE_PUBLISHABLE_KEY.startsWith('pk_live_') ? 'LIVE' : 'TEST');
-                
-                if (typeof Stripe !== 'undefined' && window.STRIPE_PUBLISHABLE_KEY) {
-                    try {
-                        window.stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY);
-                        console.log('Stripe initialized successfully with key:', window.STRIPE_PUBLISHABLE_KEY.substring(0, 10) + '...');
-                    } catch (error) {
-                        console.error('Stripe initialization error:', error);
+
+                function initStripe() {
+                    if (typeof Stripe !== 'undefined' && window.STRIPE_PUBLISHABLE_KEY && window.STRIPE_PUBLISHABLE_KEY !== '') {
+                        try {
+                            window.stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY);
+                        } catch (error) {
+                        }
+                    } else {
+                        setTimeout(initStripe, 100);
                     }
-                } else {
-                    console.error('Stripe initialization failed:', {
-                        stripeDefined: typeof Stripe !== 'undefined',
-                        keyExists: !!window.STRIPE_PUBLISHABLE_KEY,
-                        keyValue: window.STRIPE_PUBLISHABLE_KEY ? window.STRIPE_PUBLISHABLE_KEY.substring(0, 10) + '...' : 'NULL'
-                    });
                 }
+
+                document.addEventListener('DOMContentLoaded', initStripe);
             </script>
         {% endif %}
     {% endblock %}

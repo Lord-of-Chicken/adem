@@ -1,1 +1,11 @@
 services:
+parameters:
+    # On récupère les valeurs depuis le fichier .env
+    stripe_publishable_key: '%env(STRIPE_PUBLIC_KEY)%'
+    stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
+
+framework:
+    messenger:
+        # Si tu utilises les webhooks plus tard, tu pourras configurer ici
+        # routing:
+        #     'App\Message\StripeWebhookMessage': async

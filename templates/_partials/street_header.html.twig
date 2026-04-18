@@ -13,22 +13,28 @@
                 <span class="site-brand__tagline">{{ brand.tagline }}</span>
             </span>
         </a>
+
         <nav class="site-nav" aria-label="Navigation principale">
             {% for link in nav_links %}
                 <a href="{{ link.href }}" class="site-nav__link">{{ link.label }}</a>
             {% endfor %}
             <span class="site-nav__muted" title="{{ event_teaser.title_attr }}">{{ event_teaser.label }}</span>
         </nav>
+
         <div class="site-header__account">
             <a href="{{ path('app_cart_index') }}" class="site-header__cart">
                 Panier
-                {% if cart_line_count > 0 %}
+                {# On affiche le badge seulement s'il y a des articles #}
+                {% if cart_line_count is defined and cart_line_count > 0 %}
                     <span class="site-header__cart-badge">{{ cart_line_count }}</span>
                 {% endif %}
             </a>
+
             {% if is_granted('ROLE_USER') %}
-                <span class="site-header__user" title="{{ app.user.userIdentifier }}">{{ app.user.userIdentifier }}</span>
-                <form method="post" action="{{ path('_logout_main') }}" class="site-header__logout-form">
+                <span class="site-header__user" title="{{ app.user.userIdentifier }}">
+                    {{ app.user.userIdentifier|slice(0, 15) }}{{ app.user.userIdentifier|length > 15 ? '...' : '' }}
+                </span>
+                <form method="post" action="{{ path('_logout_main') }}" class="site-header__logout-form" style="display: inline;">
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
                     <button type="submit" class="site-header__link-btn">Déconnexion</button>
                 </form>
@@ -36,5 +42,6 @@
                 <a href="{{ path('app_login') }}" class="site-nav__link site-nav__link--compact">Connexion</a>
                 <a href="{{ path('app_register') }}" class="site-header__register">Inscription</a>
             {% endif %}
-
+        </div> {# Fermeture de site-header__account #}
+    </div> {# Fermeture de site-header__inner #}
 </header>

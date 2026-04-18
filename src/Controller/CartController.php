@@ -38,6 +38,7 @@ final class CartController extends AbstractController
             'total_cents' => $cart->totalCents($catalog),
             'catalog'     => $catalog,
             'cart_line_count' => $cart->countLines(),
+            'stripe_publishable_key' => $_ENV['STRIPE_PUBLISHABLE_KEY'] ?? null,
         ]);
     }
 

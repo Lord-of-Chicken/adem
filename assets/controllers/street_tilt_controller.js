@@ -7,35 +7,36 @@ export default class extends Controller {
 
     connect() {
         this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (this.reducedMotion) {
-            return;
-        }
-        this.onMove = this.onMove.bind(this);
-        this.onLeave = this.onLeave.bind(this);
-        this.tiltTargets.forEach((el) => {
-            el.addEventListener('mousemove', this.onMove);
-            el.addEventListener('mouseleave', this.onLeave);
-        });
     }
 
-    disconnect() {
-        this.tiltTargets.forEach((el) => {
-            el.removeEventListener('mousemove', this.onMove);
-            el.removeEventListener('mouseleave', this.onLeave);
-            el.style.transform = '';
-        });
-    }
-
+    // On utilise les méthodes directement appelées par le HTML (Actions)
     onMove(event) {
-        const el = event.currentTarget;
-        const r = el.getBoundingClientRect();
-        const x = (event.clientX - r.left) / r.width - 0.5;
-        const y = (event.clientY - r.top) / r.height - 0.5;
-        el.style.transform =
-            `perspective(880px) rotateY(${x * maxTilt * 2}deg) rotateX(${-y * maxTilt * 2}deg) translateZ(6px)`;
+        if (this.reducedMotion) return;
+
+        // On utilise requestAnimationFrame pour une fluidité maximale (60fps)
+        if (this.ticking) return;
+        this.ticking = true;
+
+        requestAnimationFrame(() => {
+            const el = event.currentTarget;
+            const r = el.getBoundingClientRect();
+            const x = (event.clientX - r.left) / r.width - 0.5;
+            const y = (event.clientY - r.top) / r.height - 0.5;
+            
+            el.style.transform = `perspective(880px) 
+                                  rotateY(${x * maxTilt * 2}deg) 
+                                  rotateX(${-y * maxTilt * 2}deg) 
+                                  translateZ(10px)`;
+            this.ticking = false;
+        });
     }
 
     onLeave(event) {
-        event.currentTarget.style.transform = '';
+        event.currentTarget.style.transform = 'perspective(880px) rotateY(0deg) rotateX(0deg) translateZ(0px)';
+    }
+
+    disconnect() {
+        // On remet à zéro tous les targets lors du démontage du composant
+        this.tiltTargets.forEach(el => el.style.transform = '');
     }
 }

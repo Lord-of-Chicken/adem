@@ -4,7 +4,7 @@
 
 {% block street_main %}
 <main class="main main--narrow">
-    {# On récupère un jeton CSRF pour les appels AJAX (important pour la sécurité Symfony) #}
+    {# Jeton CSRF pour les mises à jour de quantité en AJAX #}
     <input type="hidden" id="cart-csrf-token" value="{{ csrf_token('cart_quantity') }}">
 
     <section class="section">
@@ -22,24 +22,22 @@
                         <li class="cart-line card card--sticker">
                             <div class="cart-line__main">
                                 <h2 class="cart-line__title">{{ tier.title }}</h2>
-                                <p class="cart-line__meta">
-                                    Qté : <span id="display-qty-{{ line.line_id }}">{{ line.quantity }}</span>
+                                <div class="cart-line__meta">
+                                    <p>Qté : <span id="display-qty-{{ line.line_id }}">{{ line.quantity }}</span></p>
                                     {% if line.donor_name %}
-                                        <br><strong>Nom du donateur :</strong> {{ line.donor_name }}
+                                        <p><strong>Donateur :</strong> {{ line.donor_name }}</p>
                                     {% endif %}
                                     {% if line.custom_price_cents %}
-                                        <br><strong>Montant personnalisé :</strong> {{ (line.custom_price_cents / 100)|number_format(2, '.', ',') }}&nbsp;$
+                                        <p><strong>Montant libre :</strong> {{ (line.custom_price_cents / 100)|number_format(2, ',', ' ') }}&nbsp;€</p>
                                     {% endif %}
-                                </p>
+                                </div>
                                 <p class="cart-line__price">
-                                    {# ID unique pour mettre à jour le prix de la ligne #}
                                     <span id="line-total-{{ line.line_id }}">{{ catalog.formatEurosFromCents(row.line_total_cents) }}</span>&nbsp;€
                                 </p>
                             </div>
 
                             <div class="cart-line__actions">
                                 <div class="qty-controls">
-                                    {# BOUTON MOINS #}
                                     <button type="button" class="qty-btn" 
                                             id="btn-minus-{{ line.line_id }}"
                                             onclick="updateCartQty('{{ line.line_id }}', -1, {{ tier.min_qty|default(1) }}, {{ tier.max_qty|default(500) }})"
@@ -48,12 +46,10 @@
                                     </button>
 
                                     <div class="qty-display">
-                                        {# ID unique pour mettre à jour le chiffre au centre #}
                                         <span class="qty-number" id="number-{{ line.line_id }}">{{ line.quantity }}</span>
                                         <span class="qty-label" id="label-{{ line.line_id }}">pièce{{ line.quantity > 1 ? 's' : '' }}</span>
                                     </div>
 
-                                    {# BOUTON PLUS #}
                                     <button type="button" class="qty-btn" 
                                             id="btn-plus-{{ line.line_id }}"
                                             onclick="updateCartQty('{{ line.line_id }}', 1, {{ tier.min_qty|default(1) }}, {{ tier.max_qty|default(500) }})"
@@ -71,18 +67,22 @@
                     {% endfor %}
                 </ul>
 
-                <p class="cart-total">
-                    <strong>Total estimé : <span id="cart-total-display">{{ catalog.formatEurosFromCents(total_cents) }}</span>&nbsp;€</strong>
-                </p>
-                
-                <div class="cart-actions">
-                    <form method="post" action="{{ path('app_cart_clear') }}" onsubmit="return confirm('Êtes-vous sûr de vouloir vider tout le panier ?');" style="display: inline-block; margin-right: 1rem;">
-                        <input type="hidden" name="_token" value="{{ csrf_token('cart_clear') }}">
-                        <button type="submit" class="btn btn--secondary">Vider le panier</button>
-                    </form>
-                    <form method="get" action="{{ path('app_checkout') }}">
-                        <button type="submit" class="btn btn--primary btn--large">Procéder au paiement</button>
-                    </form>
+                <div class="cart-summary card">
+                    <p class="cart-total">
+                        <strong>Total estimé : <span id="cart-total-display">{{ catalog.formatEurosFromCents(total_cents) }}</span>&nbsp;€</strong>
+                    </p>
+                    
+                    <div class="cart-actions">
+                        <form method="post" action="{{ path('app_cart_clear') }}" onsubmit="return confirm('Voulez-vous vider tout le panier ?');" style="display: inline-block;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('cart_clear') }}">
+                            <button type="submit" class="btn btn--secondary">Vider le panier</button>
+                        </form>
+                        
+                        {# Lien direct vers le checkout PHP #}
+                        <a href="{{ path('app_checkout') }}" class="btn btn--primary btn--large">
+                            Procéder au paiement
+                        </a>
+                    </div>
                 </div>
             {% endif %}
         </div>
@@ -92,98 +92,67 @@
 
 {% block javascripts %}
     {{ parent() }}
+    
+    {# 1. Chargement du SDK Stripe #}
+    <script src="https://js.stripe.com/v3/"></script>
+    
     <script>
-    /**
-     * Fonction pour vider le cache du navigateur avant de procéder au paiement
-     */
-    function clearBrowserCacheAndProceed(event) {
-        event.preventDefault();
-        
-        console.log('Vidage du cache du navigateur avant paiement...');
-        
-        // Forcer le rechargement des ressources
-        if ('caches' in window) {
-            caches.keys().then(function(names) {
-                names.forEach(function(name) {
-                    caches.delete(name);
-                });
+        {# 2. Initialisation pour éviter l'erreur "apiKey is not set" #}
+        const stripeKey = "{{ stripe_publishable_key }}";
+        if (stripeKey) {
+            const stripe = Stripe(stripeKey);
+        } else {
+            console.error("Stripe : La clé publique est manquante dans les variables d'environnement.");
+        }
+
+        /**
+         * Met à jour la quantité d'une ligne du panier via AJAX
+         */
+        function updateCartQty(lineId, delta, min, max) {
+            const numberSpan = document.getElementById(`number-${lineId}`);
+            const displaySpan = document.getElementById(`display-qty-${lineId}`);
+            const labelSpan = document.getElementById(`label-${lineId}`);
+            const btnMinus = document.getElementById(`btn-minus-${lineId}`);
+            const btnPlus = document.getElementById(`btn-plus-${lineId}`);
+
+            let currentQty = parseInt(numberSpan.textContent);
+            let newQty = currentQty + delta;
+
+            if (newQty < min || newQty > max) return;
+
+            // Interface réactive (optimiste)
+            numberSpan.textContent = newQty;
+            displaySpan.textContent = newQty;
+            labelSpan.textContent = newQty > 1 ? 'pièces' : 'pièce';
+            btnMinus.disabled = (newQty <= min);
+            btnPlus.disabled = (newQty >= max);
+
+            const csrfToken = document.getElementById('cart-csrf-token').value;
+            const formData = new FormData();
+            formData.append('quantity', newQty);
+            formData.append('_token', csrfToken);
+
+            fetch(`/panier/ligne/${lineId}/quantite`, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Erreur réseau');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    document.getElementById(`line-total-${lineId}`).textContent = data.newLineTotal;
+                    document.getElementById('cart-total-display').textContent = data.newTotalHtml;
+                } else {
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Erreur AJAX:', error);
+                location.reload();
             });
         }
-        
-        // Ajouter un timestamp pour forcer le rechargement
-        const url = event.target.href;
-        const separator = url.includes('?') ? '&' : '?';
-        const timestampedUrl = url + separator + 't=' + Date.now();
-        
-        console.log('Redirection vers:', timestampedUrl);
-        
-        // Redirection avec timestamp pour éviter le cache
-        window.location.href = timestampedUrl;
-    }
-    
-    /**
-     * Cette fonction fait la même chose que sur Home, 
-     * mais elle communique aussi avec le serveur pour sauvegarder la quantité.
-     */
-    function updateCartQty(lineId, delta, min, max) {
-        const numberSpan = document.getElementById(`number-${lineId}`);
-        const displaySpan = document.getElementById(`display-qty-${lineId}`);
-        const labelSpan = document.getElementById(`label-${lineId}`);
-        const btnMinus = document.getElementById(`btn-minus-${lineId}`);
-        const btnPlus = document.getElementById(`btn-plus-${lineId}`);
-
-        let currentQty = parseInt(numberSpan.textContent);
-        let newQty = currentQty + delta;
-
-        // On vérifie les limites avant d'envoyer
-        if (newQty < min || newQty > max) return;
-
-        // 1. Mise à jour visuelle immédiate (mode optimiste)
-        numberSpan.textContent = newQty;
-        displaySpan.textContent = newQty;
-        labelSpan.textContent = newQty > 1 ? 'pièces' : 'pièce';
-        
-        // On gère l'état des boutons
-        btnMinus.disabled = (newQty <= min);
-        btnPlus.disabled = (newQty >= max);
-
-        // 2. Envoi au serveur Symfony via AJAX
-        const csrfToken = document.getElementById('cart-csrf-token').value;
-        const formData = new FormData();
-        formData.append('quantity', newQty);
-        formData.append('_token', csrfToken);
-
-        console.log('Envoi requête modification quantité:', { lineId, newQty });
-        fetch(`/panier/ligne/${lineId}/quantite`, {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(response => {
-            console.log('Réponse reçue:', response.status, response.statusText);
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Données reçues:', data);
-            if (data.success) {
-                // 3. On met à jour les prix avec les valeurs calculées par PHP
-                document.getElementById(`line-total-${lineId}`).textContent = data.newLineTotal;
-                document.getElementById('cart-total-display').textContent = data.newTotalHtml;
-                console.log('Mise à jour réussie:', { newLineTotal: data.newLineTotal, newTotalHtml: data.newTotalHtml });
-            } else {
-                console.error('Erreur serveur:', data);
-                alert('Erreur: ' + (data.message || 'Impossible de mettre à jour'));
-                location.reload(); // En cas d'erreur, on recharge la page
-            }
-        })
-        .catch(error => {
-            console.error('Erreur réseau ou JavaScript:', error);
-            alert('Erreur technique: ' + error.message);
-            location.reload();
-        });
-    }
     </script>
 {% endblock %}

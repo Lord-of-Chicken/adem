@@ -177,7 +177,11 @@ class PaymentController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
-        Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
+        $stripeKey = $_ENV['STRIPE_SECRET_KEY'] ?? null;
+        if (!$stripeKey) {
+            throw new \RuntimeException('La clé secrète Stripe n\'est pas configurée.');
+        }
+        Stripe::setApiKey($stripeKey);
 
         try {
             $session = Session::retrieve($sessionId);
