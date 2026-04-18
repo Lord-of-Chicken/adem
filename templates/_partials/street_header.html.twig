@@ -6,7 +6,7 @@
     <div class="site-header__inner">
         <a href="{{ path('app_home') }}" class="site-brand">
             {% if brand.logo_asset is defined and brand.logo_asset %}
-                <img class="site-brand__logo" src="{{ asset(brand.logo_asset) }}" alt="" width="64" height="64" loading="lazy" decoding="async">
+                <img class="site-brand__logo" src="{{ asset(brand.logo_asset) }}" alt="" width="128" height="128" loading="lazy" decoding="async">
             {% endif %}
             <span class="site-brand__text">
                 <span class="site-brand__tagline">{{ brand.tagline }}</span>
@@ -17,6 +17,7 @@
             {% for link in nav_links %}
                 <a href="{{ link.href }}" class="site-nav__link">{{ link.label }}</a>
             {% endfor %}
+            <a href="{{ path('app_contact') }}" class="site-nav__link">Contact</a>
         </nav>
 
         <div class="site-header__account">
@@ -31,8 +32,8 @@
             {% if is_granted('ROLE_USER') %}
                 <a href="{{ path('app_profile') }}" class="site-nav__link site-nav__link--compact">Profil</a>
             {% else %}
-                <a href="{{ path('app_login') }}" class="site-nav__link site-nav__link--compact">Connexion</a>
-                <a href="{{ path('app_register') }}" class="site-header__register">Inscription</a>
+                <a href="{{ path('app_login') }}" class="site-nav__link site-nav__link--compact site-nav__link--red">Connexion</a>
+                <a href="{{ path('app_register') }}" class="site-nav__link site-nav__link--compact site-nav__link--red">Inscription</a>
             {% endif %}
         </div> {# Fermeture de site-header__account #}
     </div> {# Fermeture de site-header__inner #}

@@ -136,11 +136,10 @@ final class RuelleDatabaseSeeder
     private function seedSiteSettings(EntityManagerInterface $em): void
     {
      $defaults = [
-        'brand.title' => 'La Ruelle d’Adem',
-        // Remplace 'Fait une fleur à \nLa Ruelle d’Adem' par ceci :
-        'brand.tagline' => 'Fait une fleur à La Ruelle d’Adem', 
+        'brand.title' => 'La Ruelle d\'Adem',
+        'brand.tagline' => 'Fait une fleur\nà La Ruelle d\'Adem',
         'brand.logo_asset' => 'img/Panneau/IMG_0197.png',
-        'section.medias.intro' => 'Quelques images de la ruelle — le lieu du projet, tel qu’on le vit au quotidien.',
+        'section.medias.intro' => 'Quelques images de la ruelle — le lieu du projet, tel qu\'on le vit au quotidien.',
     ];
 
         foreach ($defaults as $key => $value) {

@@ -26,7 +26,7 @@ final class HomeController extends AbstractController
         return $this->render('home/index.html.twig', [
             'hero' => [
                 'eyebrow' => str_replace('\n', ' ', $brandTagline), 
-                'title' => 'Crowdfunding',
+                'title' => ' Crowdfunding',
                 'lead' => 'Le crowdfunding est un mécanisme qui permet de lever des fonds auprès du grand public — c\'est-à-dire auprès de toi.',
             ],
             'nav_links' => [

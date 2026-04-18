@@ -35,7 +35,7 @@ final class TwigGlobalsSubscriber implements EventSubscriberInterface
 
         $this->twig->addGlobal('site_brand', [
             'title' => $this->siteSettings->get('brand.title') ?: 'La Ruelle d\'Adem',
-            'tagline' => $this->siteSettings->get('brand.tagline') ?: 'Fait une fleur àLa Ruelle d\'Adem',
+            'tagline' => $this->siteSettings->get('brand.tagline') ?: 'Fait une fleur\nà La Ruelle d\'Adem',
             'logo_asset' => $this->siteSettings->get('brand.logo_asset'),
         ]);
         $this->twig->addGlobal('cart_line_count', $this->cartService->countLines());

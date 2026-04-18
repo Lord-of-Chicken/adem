@@ -2,9 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -12,50 +10,43 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
-final class ProfileFormType extends AbstractType
+final class ContactFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('firstName', TextType::class, [
-                'label' => 'Prénom',
-                'required' => false,
-                'constraints' => [
-                    new Length(max: 100),
-                ],
-            ])
-            ->add('lastName', TextType::class, [
+            ->add('name', TextType::class, [
                 'label' => 'Nom',
-                'required' => false,
                 'constraints' => [
+                    new NotBlank(message: 'Veuillez entrer votre nom.'),
                     new Length(max: 100),
-                ],
-            ])
-            ->add('address', TextareaType::class, [
-                'label' => 'Adresse',
-                'required' => false,
-                'attr' => ['rows' => 3],
-                'constraints' => [
-                    new Length(max: 255),
                 ],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'E-mail',
                 'constraints' => [
-                    new Email(),
+                    new NotBlank(message: 'Veuillez entrer votre e-mail.'),
+                    new Email(message: 'Veuillez entrer une adresse e-mail valide.'),
                 ],
             ])
-            ->add('newsletter', CheckboxType::class, [
-                'label' => 'Voulez-vous être tenu informé des événements à venir ?',
-                'required' => false,
+            ->add('message', TextareaType::class, [
+                'label' => 'Message',
+                'attr' => ['rows' => 5],
+                'constraints' => [
+                    new NotBlank(message: 'Veuillez entrer votre message.'),
+                    new Length(min: 10, max: 1000),
+                ],
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+            'csrf_token_id' => 'contact_form',
         ]);
     }
 }

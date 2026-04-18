@@ -22,6 +22,28 @@ final class ProfileController extends AbstractController
         return $this->render('profile/index.html.twig');
     }
 
+    #[Route('/profil/newsletter', name: 'app_profile_toggle_newsletter', methods: ['POST'])]
+    public function toggleNewsletter(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid('toggle_newsletter', $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Token CSRF invalide.');
+            return $this->redirectToRoute('app_profile');
+        }
+
+        $user->setNewsletter(!$user->isNewsletter());
+        $entityManager->flush();
+
+        $message = $user->isNewsletter() 
+            ? 'Vous êtes maintenant inscrit à la newsletter.' 
+            : 'Vous êtes maintenant désinscrit de la newsletter.';
+        
+        $this->addFlash('success', $message);
+
+        return $this->redirectToRoute('app_profile');
+    }
+
     #[Route('/profil/modifier', name: 'app_profile_edit')]
     public function edit(Request $request, EntityManagerInterface $entityManager): Response
     {

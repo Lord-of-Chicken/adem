@@ -24,6 +24,17 @@
                     <dd>{{ app.user.email }}</dd>
                 </dl>
                 
+                <h3 class="card__title" style="margin-top: 2rem;">Notifications</h3>
+                <div class="profile-info">
+                    <p>Statut newsletter : <strong>{{ app.user.newsletter ? 'Inscrit' : 'Non inscrit' }}</strong></p>
+                    <form method="post" action="{{ path('app_profile_toggle_newsletter') }}" style="display: inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('toggle_newsletter') }}">
+                        <button type="submit" class="btn btn--primary" style="margin-top: 0.5rem;">
+                            {{ app.user.newsletter ? 'Se désinscrire de la newsletter' : 'S\'inscrire à la newsletter' }}
+                        </button>
+                    </form>
+                </div>
+
                 <h3 class="card__title" style="margin-top: 2rem;">Actions</h3>
                 <div class="profile-actions">
                     <a href="{{ path('app_profile_edit') }}" class="btn btn--primary">Modifier mon profil</a>

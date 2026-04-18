@@ -1,0 +1,75 @@
+{% extends 'layout/street.html.twig' %}
+
+{% block title %}Contact | La Ruelle d'Adem{% endblock %}
+
+{% block street_main %}
+<main class="main main--narrow">
+    <section class="section section--contact">
+        <div class="section__inner">
+            <h1 class="section__title">Contactez-nous</h1>
+            <p class="section__intro">Une question ? Une suggestion ? N'hésitez pas à nous envoyer un message.</p>
+            
+            <div class="card">
+                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                    
+                    <div class="form-group">
+                        {{ form_label(form.name) }}
+                        {{ form_widget(form.name, {'attr': {'class': 'form__input'}}) }}
+                        {{ form_errors(form.name) }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.email) }}
+                        {{ form_widget(form.email, {'attr': {'class': 'form__input'}}) }}
+                        {{ form_errors(form.email) }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.message) }}
+                        {{ form_widget(form.message, {'attr': {'class': 'form__input'}}) }}
+                        {{ form_errors(form.message) }}
+                    </div>
+                    
+                    <button type="submit" class="btn btn--primary">Envoyer le message</button>
+                    
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form__label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form__input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--ink);
+            background: #fff;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        
+        .form__input:focus {
+            outline: none;
+            border-color: var(--spray-cyan);
+        }
+        
+        .form__errors {
+            color: #b00020;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+{% endblock %}

@@ -17,7 +17,7 @@
                 {{ form_row(registrationForm.plainPassword.first, { row_attr: { class: 'form__field' }, attr: { class: 'form__input' } }) }}
                 {{ form_row(registrationForm.plainPassword.second, { row_attr: { class: 'form__field' }, attr: { class: 'form__input' } }) }}
                 {{ form_row(registrationForm.newsletter, { row_attr: { class: 'form__field' } }) }}
-                <button type="submit" class="btn btn--primary btn--large">S'inscrire</button>
+                <button type="submit" class="btn btn--red">S'inscrire</button>
             {{ form_end(registrationForm) }}
 
             <p class="section__hint" style="margin-top: 2rem;">Déjà inscrit ? <a href="{{ path('app_login') }}">Connexion</a></p>

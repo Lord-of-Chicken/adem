@@ -8,7 +8,65 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Permanent+Marker&family=Rubik:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
-    {% block stylesheets %}{% endblock %}
+    {% block stylesheets %}
+        <style>
+            .construction-banner {
+                background: repeating-linear-gradient(
+                    45deg,
+                    #ffd700,
+                    #ffd700 20px,
+                    #000 20px,
+                    #000 40px
+                );
+                padding: 1rem;
+                text-align: center;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            }
+
+            .construction-banner__text {
+                color: #000;
+                font-weight: 900;
+                font-size: 1.2rem;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                background: #ffd700;
+                display: inline-block;
+                padding: 0.5rem 2rem;
+                border: 3px solid #000;
+                box-shadow: 4px 4px 0 #000;
+            }
+
+            body {
+                padding-top: 60px;
+            }
+
+            .site-nav__link--red {
+                background: #ff0000;
+                color: #fff;
+            }
+
+            .site-nav__link--red:hover {
+                transform: translate(-2px, -2px);
+                box-shadow: 5px 5px 0 var(--ink);
+            }
+
+            .btn--red {
+                background: #ff0000;
+                color: #fff;
+                box-shadow: 6px 6px 0 var(--ink);
+            }
+
+            .btn--red:hover {
+                transform: translate(-2px, -2px);
+                box-shadow: 8px 8px 0 var(--ink);
+            }
+        </style>
+    {% endblock %}
     {% block javascripts %}
         {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% if app.current_route starts with 'app_checkout' or app.current_route starts with 'app_payment' or app.current_route starts with 'app_cart' %}
@@ -33,6 +91,11 @@
     {% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
-{% block body %}{% endblock %}
+    {# Bandeau chantier #}
+    <div class="construction-banner">
+        <div class="construction-banner__text">🚧 SITE EN CHANTIER - TRAVAUX EN COURS 🚧</div>
+    </div>
+
+    {% block body %}{% endblock %}
 </body>
 </html>

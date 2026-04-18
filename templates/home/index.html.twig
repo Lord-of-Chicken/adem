@@ -1,6 +1,6 @@
 {% extends 'layout/street.html.twig' %}
 
-{% block title %}Flower Power Crowdfunding | {{ site_brand.title }}{% endblock %}
+{% block title %}Flower Power  Crowdfunding | {{ site_brand.title }}{% endblock %}
 
 {% block street_main %}
 <main class="main">
@@ -129,7 +129,11 @@
             <h2 class="section__title section__title--tag">Restez informé</h2>
             <p class="section__intro">Recevez des notifications et des invitations pour les événements à venir.</p>
             <div class="section__actions">
-                <a href="{{ path('app_register') }}" class="btn btn--primary">Créer un compte pour recevoir les infos</a>
+                {% if is_granted('ROLE_USER') %}
+                    <a href="{{ path('app_profile') }}" class="btn btn--primary">Voir mon profil</a>
+                {% else %}
+                    <a href="/inscription" class="btn btn--primary">Créer un compte pour recevoir les infos</a>
+                {% endif %}
             </div>
         </div>
     </section>
