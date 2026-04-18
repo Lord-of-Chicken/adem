@@ -199,17 +199,17 @@ body.page-street {
     z-index: 20;
     background: var(--paper);
     color: var(--ink);
-    border-bottom: var(--outline);
-    box-shadow: 6px 6px 0 var(--ink);
+    border-bottom: none;
+    box-shadow: none;
     transform: rotate(-0.25deg);
-    margin: 0 0.05rem 0;
+    margin: 0;
 }
 
 
 .site-header__inner {
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: 0.85rem 0.5rem;
+    padding: 0 0.5rem;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
@@ -228,14 +228,15 @@ body.page-street {
 }
 
 .site-brand__logo {
-    width: 128px !important;
-    height: 128px !important;
+    width: 256px !important;
+    height: 256px !important;
     object-fit: contain;
     border: none;
     border-radius: 0;
     box-shadow: none;
     background: transparent;
     padding: 0;
+    margin: -64px 0;
     flex-shrink: 0;
     transition: transform 0.2s ease;
 }
