@@ -30,6 +30,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $lastName = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $address = null;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $newsletter = false;
+
     /**
      * @var list<string> The user roles
      */
@@ -93,6 +99,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(?string $lastName): static
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): static
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function isNewsletter(): bool
+    {
+        return $this->newsletter;
+    }
+
+    public function setNewsletter(bool $newsletter): static
+    {
+        $this->newsletter = $newsletter;
 
         return $this;
     }
