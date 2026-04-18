@@ -1242,8 +1242,8 @@ qty-display {
 .media-slider {
     position: relative;
     width: 100%;
-    max-width: 800px;
-    margin: 2rem auto 0;
+    max-width: none;
+    margin: 2rem 0 0;
     overflow: hidden;
     border-radius: var(--radius-tape);
     box-shadow: var(--outline);

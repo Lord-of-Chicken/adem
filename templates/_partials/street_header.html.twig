@@ -20,13 +20,13 @@
             <span class="site-nav__muted" title="{{ event_teaser.title_attr }}">{{ event_teaser.label }}</span>
         </nav>
         <div class="site-header__account">
+            <a href="{{ path('app_cart_index') }}" class="site-header__cart">
+                Panier
+                {% if cart_line_count > 0 %}
+                    <span class="site-header__cart-badge">{{ cart_line_count }}</span>
+                {% endif %}
+            </a>
             {% if is_granted('ROLE_USER') %}
-                <a href="{{ path('app_cart_index') }}" class="site-header__cart">
-                    Panier
-                    {% if cart_line_count > 0 %}
-                        <span class="site-header__cart-badge">{{ cart_line_count }}</span>
-                    {% endif %}
-                </a>
                 <span class="site-header__user" title="{{ app.user.userIdentifier }}">{{ app.user.userIdentifier }}</span>
                 <form method="post" action="{{ path('_logout_main') }}" class="site-header__logout-form">
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">

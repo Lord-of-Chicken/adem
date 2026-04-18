@@ -15,11 +15,7 @@
             <script src="https://js.stripe.com/v3/"></script>
             <script>
                 // Debug: Vérification de la clé Stripe
-                {% if app.environment == 'prod' %}
-                    window.STRIPE_PUBLISHABLE_KEY = 'pk_live_51TN7P85iTjBYeAUfPC5N7NH5AUluNrbzM5ByH12C6nZPP63NKp2OlXLsFdkPgFvy1Raz1TlZ9LoTFpS90uJEXJpd00tdU6HimQ';
-                {% else %}
-                    window.STRIPE_PUBLISHABLE_KEY = 'pk_test_51TN7P85iTjBYeAUfU0ZC0Xzw3obcr1NxR3vp6YeNP2BLjGCHmmeH4VEcWc3LvNCMndS48z9heNGd6aGyu2GMqibi00CmCNQuhJ';
-                {% endif %}
+                window.STRIPE_PUBLISHABLE_KEY = '{{ stripe_publishable_key }}';
                 
                 console.log('Stripe key loaded:', window.STRIPE_PUBLISHABLE_KEY);
                 console.log('Environment:', '{{ app.environment }}');

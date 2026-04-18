@@ -1,41 +1,51 @@
-# robots.txt pour La Ruelle d'Adem
-# Ce fichier empêche les robots d'indexer le site en développement
+# robots.txt pour La Ruelle d'Adem - Production
+# Configuration pour l'indexation par les moteurs de recherche
 
 User-agent: *
-Disallow: /
+Allow: /
 
-# Autoriser les robots à lire les assets CSS/JS/images (pour l'affichage)
-Allow: /assets/
-Allow: /build/
-Allow: /bundles/
+# Autoriser les pages principales pour le référencement
+Allow: /$
+Allow: /connexion
+Allow: /inscription
+Allow: /offres
+Allow: /medias
+Allow: /panier
+Allow: /checkout
+Allow: /payment/success
+Allow: /payment/cancel
 
-# Interdire l'accès aux dossiers système
-Disallow: /var/
+# Interdire l'accès aux zones sensibles et techniques
+Disallow: /panier/ligne/
+Disallow: /panier/vider
+Disallow: /panier/ajouter
+Disallow: /stripe/webhook
+Disallow: /_profiler/
+Disallow: /_error/
+Disallow: /admin/
+Disallow: /api/
 Disallow: /vendor/
 Disallow: /src/
+Disallow: /var/
 Disallow: /config/
 Disallow: /templates/
 Disallow: /migrations/
-Disallow: /scripts/
 Disallow: /bin/
+Disallow: /composer.*
 Disallow: /.env*
+Disallow: /assets/styles/
 
-# Interdire l'accès aux pages d'administration
-Disallow: /admin/
-Disallow: /login
-Disallow: /register
-Disallow: /profile
-Disallow: /cart
-Disallow: /checkout
-Disallow: /payment/
+# Autoriser les assets publics
+Allow: /assets/
+Allow: /assets/img/
+Allow: /assets/styles/
 
-# Interdire l'accès aux webhooks et APIs
-Disallow: /stripe/
-Disallow: /webhook/
-Disallow: /api/
+# Sitemap pour les moteurs de recherche
+Sitemap: https://ruelledadem.com/sitemap.xml
 
-# Sitemap (quand vous serez en production)
-# Sitemap: https://lordofchicken.com/sitemap.xml
+# Informations de contact pour les webmasters
+# Site: La Ruelle d'Adem - Street art / Graffiti crowdfunding
+# Contact: via formulaire de contact sur le site
 
 # Délai de crawl (optionnel)
 Crawl-delay: 1

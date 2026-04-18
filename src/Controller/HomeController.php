@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Cart\CartService;
 use App\Participation\ParticipationCatalog;
 use App\Repository\MediaItemRepository;
 use App\Repository\SiteSettingRepository;
@@ -13,6 +14,7 @@ final class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
     public function index(
+        CartService $cart,
         ParticipationCatalog $catalog,
         MediaItemRepository $mediaItemRepository,
         SiteSettingRepository $siteSettingRepository,
@@ -23,10 +25,10 @@ final class HomeController extends AbstractController
 
         return $this->render('home/index.html.twig', [
             'hero' => [
-                // ✅ Remplacement de \n par un espace (plus de <br>)
+                // Remplacement de \n par un espace (plus de <br>)
                 'eyebrow' => str_replace('\n', ' ', $brandTagline), 
                 'title' => 'Crowdfunding',
-                'lead' => 'Le crowdfunding, ou « financement participatif », est un mécanisme qui permet de lever des fonds auprès du grand public — c’est-à-dire auprès de toi.',
+                'lead' => 'Le crowdfunding, ou « financement participatif », est un mécanisme qui permet de lever des fonds auprès du grand public — c\'est-à-dire auprès de toi.',
             ],
             'nav_links' => [
                 ['label' => 'Offres', 'href' => '#offres'],
@@ -66,7 +68,8 @@ final class HomeController extends AbstractController
             'tiers_standard' => $catalog->standardForHome(),
             'tiers_vip' => $catalog->vipForHome(),
             'media_items' => $mediaItemRepository->findPublishedOrdered(),
-            'footer_line' => $siteSettingRepository->get('brand.title') ?: 'La Ruelle d’Adem',
+            'cart_line_count' => $cart->countLines(),
+            'footer_line' => $siteSettingRepository->get('brand.title') ?: 'La Ruelle d\'Adem',
         ]);
     }
 }

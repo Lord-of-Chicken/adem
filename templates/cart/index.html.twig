@@ -80,7 +80,9 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('cart_clear') }}">
                         <button type="submit" class="btn btn--secondary">Vider le panier</button>
                     </form>
-                    <a href="{{ path('app_checkout') }}" class="btn btn--primary btn--large" onclick="clearBrowserCacheAndProceed(event)">Procéder au paiement</a>
+                    <form method="get" action="{{ path('app_checkout') }}">
+                        <button type="submit" class="btn btn--primary btn--large">Procéder au paiement</button>
+                    </form>
                 </div>
             {% endif %}
         </div>

@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_USER')]
 final class CartController extends AbstractController
 {
     #[Route('/panier', name: 'app_cart_index', methods: ['GET'])]
@@ -38,6 +37,7 @@ final class CartController extends AbstractController
             'lines'       => $lines,
             'total_cents' => $cart->totalCents($catalog),
             'catalog'     => $catalog,
+            'cart_line_count' => $cart->countLines(),
         ]);
     }
 

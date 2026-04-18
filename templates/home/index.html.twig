@@ -76,9 +76,7 @@
                                 <button type="button" class="qty-btn" id="plus-{{ tier.id }}" onclick="updateQty('{{ tier.id }}', 1, {{ tier.min_qty }}, {{ tier.max_qty }})">+</button>
                             </div>
                             <input type="hidden" id="qty-{{ tier.id }}" value="{{ tier.min_qty }}">
-                            {% if is_granted('ROLE_USER') %}
-                                <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')">Ajouter</button>
-                            {% endif %}
+                            <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')">Ajouter</button>
                         </div>
                     </article>
                     {% endif %}
@@ -109,15 +107,13 @@
                             </div>
                             <input type="hidden" id="qty-{{ tier.id }}" value="{{ tier.min_qty }}">
                             
-                            {% if is_granted('ROLE_USER') %}
-                                <div class="form-group" style="margin-top: 1rem;">
-                                    <label class="form__label">Nom affiché :</label>
-                                    <input type="text" id="donor-{{ tier.id }}" class="form__input" placeholder="Ton nom ou Anonyme">
-                                </div>
-                                <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')" style="margin-top: 0.5rem;">
-                                    Ajouter au panier
-                                </button>
-                            {% endif %}
+                            <div class="form-group" style="margin-top: 1rem;">
+                                <label class="form__label">Nom affiché :</label>
+                                <input type="text" id="donor-{{ tier.id }}" class="form__input" placeholder="Ton nom ou Anonyme">
+                            </div>
+                            <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')" style="margin-top: 0.5rem;">
+                                Ajouter au panier
+                            </button>
                         </div>
                     </article>
                 {% endfor %}
@@ -138,11 +134,9 @@
                     <label class="form__label" style="margin-top: 1rem; display: block;">Nom affiché :</label>
                     <input type="text" id="donor-free_donation" class="form__input" placeholder="Anonyme">
                     
-                    {% if is_granted('ROLE_USER') %}
-                        <button type="button" class="btn btn--primary btn--small" onclick="addToCart('free_donation')" style="margin-top: 1rem; width: 100%;">
-                            Ajouter au panier
-                        </button>
-                    {% endif %}
+                    <button type="button" class="btn btn--primary btn--small" onclick="addToCart('free_donation')" style="margin-top: 1rem; width: 100%;">
+                        Ajouter au panier
+                    </button>
                 </div>
             </article>
         </div>

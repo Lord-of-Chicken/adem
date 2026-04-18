@@ -31,9 +31,6 @@ class PaymentController extends AbstractController
     {
         /** @var User|null $user */
         $user = $this->getUser();
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
-        }
 
         $lines = $this->cartService->getLines();
         if (empty($lines)) {
@@ -41,14 +38,8 @@ class PaymentController extends AbstractController
             return $this->redirectToRoute('app_cart_index');
         }
 
-        // Utiliser la clé secrète Stripe correcte selon l'environnement
-        if ($_ENV['APP_ENV'] === 'prod') {
-            // En production, utiliser la clé live
-            $stripeKey = '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';
-        } else {
-            // En développement, utiliser la clé de test
-            $stripeKey = 'sk_test_51TLQQ2DYTHdB6zQHNyEMb7AM04zjyhBUjDNlJO78yiw2toGSaWwP0E3VP3TUY5rpSdIxdFQiRMa1yjpQKu43NJoh00LAeqncaa';
-        }
+        // Utiliser la clé secrète Stripe depuis les variables d'environnement
+        $stripeKey = $_ENV['STRIPE_SECRET_KEY'] ?? null;
         
         if (!$stripeKey) {
             throw new \RuntimeException('La clé secrète Stripe n\'est pas configurée.');
@@ -56,18 +47,20 @@ class PaymentController extends AbstractController
         Stripe::setApiKey($stripeKey);
 
         // ✅ Gestion des commandes orphelines (nettoyage avant nouvelle tentative)
-        $existingOrder = $this->orderRepository->findUnpaidOrderByUser($user);
-        if ($existingOrder) {
-            try {
-                $oldSession = Session::retrieve($existingOrder->getStripeCheckoutSessionId());
-                if ($oldSession->status === 'open') {
-                    $oldSession->expire();
+        if ($user) {
+            $existingOrder = $this->orderRepository->findUnpaidOrderByUser($user);
+            if ($existingOrder) {
+                try {
+                    $oldSession = Session::retrieve($existingOrder->getStripeCheckoutSessionId());
+                    if ($oldSession->status === 'open') {
+                        $oldSession->expire();
+                    }
+                } catch (\Exception) {
+                    // Session déjà expirée ou inexistante chez Stripe
                 }
-            } catch (\Exception) {
-                // Session déjà expirée ou inexistante chez Stripe
+                $this->entityManager->remove($existingOrder);
+                $this->entityManager->flush();
             }
-            $this->entityManager->remove($existingOrder);
-            $this->entityManager->flush();
         }
 
         // Préparation des articles pour Stripe
@@ -117,14 +110,10 @@ class PaymentController extends AbstractController
         }
 
         try {
-            $checkoutSession = Session::create([
+            $sessionData = [
                 'payment_method_types' => ['card'],
                 'line_items'           => $lineItems,
                 'mode'                 => 'payment',
-                'customer_email'       => $user->getEmail(),
-                'metadata'             => [
-                    'order_user_id' => $user->getId(),
-                ],
                 'success_url' => $this->generateUrl(
                     'app_payment_success',
                     ['session_id' => '{CHECKOUT_SESSION_ID}'],
@@ -135,7 +124,24 @@ class PaymentController extends AbstractController
                     [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
-            ]);
+            ];
+
+            // Ajouter l'email et les métadonnées utilisateur seulement si connecté
+            if ($user) {
+                $sessionData['customer_email'] = $user->getEmail();
+                $sessionData['metadata'] = [
+                    'order_user_id' => $user->getId(),
+                ];
+            }
+
+            $checkoutSession = Session::create($sessionData);
+
+            // Debug : Log la session Stripe
+            error_log('Stripe session created: ' . json_encode([
+                'id' => $checkoutSession->id,
+                'url' => $checkoutSession->url,
+                'status' => $checkoutSession->status
+            ]));
 
             // Création de la commande en base de données (statut non payé par défaut)
             $order = new Order();
@@ -147,9 +153,11 @@ class PaymentController extends AbstractController
             $this->entityManager->persist($order);
             $this->entityManager->flush();
 
+            error_log('Redirecting to Stripe: ' . $checkoutSession->url);
             return $this->redirect($checkoutSession->url, 303);
 
         } catch (\Exception $e) {
+            error_log('Stripe error: ' . $e->getMessage());
             $this->addFlash('error', 'Erreur Stripe : ' . $e->getMessage());
             return $this->redirectToRoute('app_cart_index');
         }
