@@ -36,14 +36,14 @@
     </section>
 
     {# SECTION OFFRES STANDARD #}
-    <section class="section" id="offres">
+    <section class="section section--offres" id="offres">
         <div class="section__inner">
             <h2 class="section__title section__title--tag">{{ sections.offres.title }}</h2>
             <p class="section__intro">{{ sections.offres.intro }}</p>
             <div class="grid grid--tiers">
                 {% for tier in tiers_standard %}
                     {% if tier.id != 'free_donation' %}
-                    <article class="card card--tier card--sticker">
+                    <article class="card card--tier {% if tier.id == 'begonia_unit' or tier.id == 'pack_3' %}card--featured {% endif %}card--sticker">
                         <h3 class="card__title">{{ tier.title }}</h3>
                         <p class="card__price">{{ tier.price }}&nbsp;{{ tier.price_unit }}</p>
                         <p class="card__detail">{{ tier.detail }}</p>

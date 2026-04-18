@@ -761,8 +761,14 @@ body.page-street {
 
 .section--vip {
     background: linear-gradient(180deg, rgba(0, 232, 255, 0.06), transparent);
-    border-top: 2px dashed rgba(244, 241, 234, 0.15);
-    border-bottom: 2px dashed rgba(244, 241, 234, 0.15);
+    border-top: 2px dashed var(--spray-cyan);
+    border-bottom: 2px dashed var(--spray-cyan);
+}
+
+.section--offres {
+    background: linear-gradient(180deg, rgba(0, 232, 255, 0.06), transparent);
+    border-top: 2px dashed var(--spray-cyan);
+    border-bottom: 2px dashed var(--spray-cyan);
 }
 
 .section--contact {
