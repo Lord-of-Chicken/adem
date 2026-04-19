@@ -73,7 +73,7 @@
                     </p>
                     
                     <div class="cart-actions">
-                        <form method="post" action="{{ path('app_cart_clear') }}" onsubmit="return confirm('Voulez-vous vider tout le panier ?');" style="display: inline-block;">
+                        <form method="post" action="{{ path('app_cart_clear') }}" onsubmit="return confirm('Voulez-vous vider tout le panier ?');" class="display-inline-block">
                             <input type="hidden" name="_token" value="{{ csrf_token('cart_clear') }}">
                             <button type="submit" class="btn btn--secondary">Vider le panier</button>
                         </form>

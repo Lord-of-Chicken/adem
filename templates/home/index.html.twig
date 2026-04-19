@@ -88,11 +88,11 @@
                             </div>
                             <input type="hidden" id="qty-{{ tier.id }}" value="{{ tier.min_qty }}">
 
-                            <div class="form-group" style="margin-top: 1rem;">
+                            <div class="form-group margin-top-1">
                                 <label class="form__label">Nom affiché :</label>
                                 <input type="text" id="donor-{{ tier.id }}" class="form__input" placeholder="Ton nom ou Anonyme">
                             </div>
-                            <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')" style="margin-top: 0.5rem;">
+                            <button type="button" class="btn btn--primary btn--small margin-top-0-5" onclick="addToCart('{{ tier.id }}')">
                                 Ajouter au panier
                             </button>
                         </div>
@@ -107,15 +107,15 @@
         <div class="section__inner">
             <h2 class="section__title section__title--tag">{{ sections.don_libre.title }}</h2>
             <p class="section__intro">{{ sections.don_libre.intro }}</p>
-            <article class="card card--tier card--featured card--sticker" style="max-width: 500px; margin: 0 auto;">
+            <article class="card card--tier card--featured card--sticker card--center">
                 <div class="form">
                     <label class="form__label">Montant (€) :</label>
                     <input type="number" id="free-amount" class="form__input form__input--don-libre" placeholder="Ex: 15" min="1">
 
-                    <label class="form__label" style="margin-top: 1rem; display: block;">Nom affiché :</label>
+                    <label class="form__label margin-top-1">Nom affiché :</label>
                     <input type="text" id="donor-free_donation" class="form__input form__input--don-libre" placeholder="Anonyme">
 
-                    <button type="button" class="btn btn--primary btn--small" onclick="addToCart('free_donation')" style="margin-top: 1rem;">
+                    <button type="button" class="btn btn--primary btn--small margin-top-1" onclick="addToCart('free_donation')">
                         Ajouter au panier
                     </button>
                 </div>

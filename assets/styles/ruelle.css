@@ -916,6 +916,11 @@ body.page-street {
     gap: 0.45rem;
 }
 
+.card--center {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
 .card--featured {
     outline: 3px solid var(--spray-cyan);
     outline-offset: 2px;
@@ -1549,6 +1554,36 @@ qty-display {
     border: none;
     border-top: 2px dotted var(--spray-cyan);
     margin: 2rem 0;
+}
+
+.margin-top-0-5 {
+    margin-top: 0.5rem;
+}
+
+.margin-top-1 {
+    margin-top: 1rem;
+}
+
+.margin-top-2 {
+    margin-top: 2rem;
+}
+
+.display-inline {
+    display: inline;
+}
+
+.display-inline-block {
+    display: inline-block;
+}
+
+.spray-magenta {
+    background: var(--spray-magenta);
+    color: var(--paper);
+}
+
+.delete-profile {
+    background: #b00020;
+    color: var(--paper);
 }
 
 .form__note {
