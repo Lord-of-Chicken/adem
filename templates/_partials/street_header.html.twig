@@ -1,5 +1,5 @@
 {% set brand = brand|default(site_brand) %}
-{% set nav_links = nav_links|default([{ label: 'Médias', href: path('app_home') ~ '#medias' }]) %}
+{% set nav_links = nav_links|default([{ label: 'Offres', href: path('app_home') ~ '#offres' }, { label: 'Médias', href: path('app_home') ~ '#medias' }]) %}
 {% set cta_newsletter = cta_newsletter|default({ href: path('app_home') ~ '#newsletter', label: '> Recevoir des notifications et invitations (mailing list)' }) %}
 
 <header class="site-header">
@@ -33,8 +33,8 @@
                 {% if is_granted('ROLE_USER') %}
                     <a href="{{ path('app_profile') }}" class="site-nav__link">Profil</a>
                 {% else %}
-                    <a href="{{ path('app_login') }}" class="site-nav__link site-nav__link--red">Connexion</a>
-                    <a href="{{ path('app_register') }}" class="site-nav__link site-nav__link--red">Inscription</a>
+                    <a href="{{ path('app_login') }}" class="site-nav__link">Connexion</a>
+                    <a href="{{ path('app_register') }}" class="site-nav__link">Inscription</a>
                 {% endif %}
             </div>
         </nav>
@@ -49,10 +49,10 @@
             </a>
 
             {% if is_granted('ROLE_USER') %}
-                <a href="{{ path('app_profile') }}" class="site-nav__link site-nav__link--compact">Profil</a>
+                <a href="{{ path('app_profile') }}" class="site-nav__link">Profil</a>
             {% else %}
-                <a href="{{ path('app_login') }}" class="site-nav__link site-nav__link--compact site-nav__link--red">Connexion</a>
-                <a href="{{ path('app_register') }}" class="site-nav__link site-nav__link--compact site-nav__link--red">Inscription</a>
+                <a href="{{ path('app_login') }}" class="site-nav__link">Connexion</a>
+                <a href="{{ path('app_register') }}" class="site-nav__link">Inscription</a>
             {% endif %}
         </div> {# Fermeture de site-header__account #}
     </div> {# Fermeture de site-header__inner #}

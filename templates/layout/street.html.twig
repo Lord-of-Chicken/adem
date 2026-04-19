@@ -4,47 +4,6 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <style>
-        /* Force le texte des sections en blanc - override compilation */
-        .page-street .section__title,
-        .page-street .section__intro,
-        .page-street .section__subtitle,
-        .page-street .section__hint {
-            color: #fff !important;
-        }
-        
-        /* Ne pas affecter la section authentification (inscription/connexion) */
-        .page-street .section--auth .section__title,
-        .page-street .section--auth .section__intro,
-        .page-street .section--auth .section__subtitle,
-        .page-street .section--auth .section__hint {
-            color: var(--ink) !important;
-        }
-
-        /* Ne pas affecter la section contact */
-        .page-street .section--contact .section__title,
-        .page-street .section--contact .section__intro,
-        .page-street .section--contact .section__subtitle,
-        .page-street .section--contact .section__hint {
-            color: var(--ink) !important;
-        }
-        
-        /* Ne pas affecter les prix, totaux et textes spécifiques */
-        .page-street .card__price,
-        .page-street .card__total,
-        .page-street .cart-total,
-        .page-street .form__hint,
-        .page-street .form__note {
-            color: inherit !important;
-        }
-        
-        /* Exceptions générales */
-        .page-street .site-footer__inner p,
-        .page-street .site-footer__text,
-        .page-street .btn {
-            color: inherit !important;
-        }
-    </style>
 {% endblock %}
 
 {% block body %}
@@ -60,65 +19,5 @@
         </div>
     </footer>
 
-    <script>
-        // Profile dropdown toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            const profileToggle = document.getElementById('profileToggle');
-            const profileDropdown = document.getElementById('profileDropdown');
-
-            if (profileToggle && profileDropdown) {
-                profileToggle.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const isExpanded = profileToggle.getAttribute('aria-expanded') === 'true';
-                    profileToggle.setAttribute('aria-expanded', !isExpanded);
-                    profileDropdown.hidden = isExpanded;
-                });
-
-                // Close dropdown when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (!profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) {
-                        profileToggle.setAttribute('aria-expanded', 'false');
-                        profileDropdown.hidden = true;
-                    }
-                });
-
-                // Close dropdown on escape key
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape') {
-                        profileToggle.setAttribute('aria-expanded', 'false');
-                        profileDropdown.hidden = true;
-                    }
-                });
-            }
-
-            // Mobile menu toggle
-            const menuToggle = document.getElementById('menuToggle');
-            const siteNav = document.querySelector('.site-nav');
-
-            if (menuToggle && siteNav) {
-                menuToggle.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-                    menuToggle.setAttribute('aria-expanded', !isExpanded);
-                    siteNav.classList.toggle('site-nav--open', !isExpanded);
-                });
-
-                // Close menu when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (!menuToggle.contains(e.target) && !siteNav.contains(e.target)) {
-                        menuToggle.setAttribute('aria-expanded', 'false');
-                        siteNav.classList.remove('site-nav--open');
-                    }
-                });
-
-                // Close menu on escape key
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape') {
-                        menuToggle.setAttribute('aria-expanded', 'false');
-                        siteNav.classList.remove('site-nav--open');
-                    }
-                });
-            }
-        });
-    </script>
+    <script type="module" src="{{ asset('js/layout.js') }}"></script>
 {% endblock %}

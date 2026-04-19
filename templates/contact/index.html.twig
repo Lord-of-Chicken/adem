@@ -37,26 +37,3 @@
     </section>
 </main>
 {% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        textarea.form__input {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .form-error-icon,
-        .form-error-message {
-            color: #b00020;
-            font-size: 0.85rem;
-            margin-top: 0.25rem;
-        }
-
-        /* Ajustement pour les messages flash dans cette section */
-        .section--auth .flash {
-            margin: 0 0 1.5rem 0;
-            border-radius: 4px;
-        }
-    </style>
-{% endblock %}
