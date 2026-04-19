@@ -13,30 +13,36 @@
                 <div class="flash flash--danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}
 
-            <form class="form form--stack" method="post" action="{{ path('app_login') }}">
-                <label class="form__label" for="inputEmail">E-mail</label>
-                <input
-                    type="email"
-                    value="{{ last_username }}"
-                    name="_username"
-                    id="inputEmail"
-                    class="form__input"
-                    autocomplete="email"
-                    required
-                    autofocus
-                >
-                <label class="form__label" for="inputPassword">Mot de passe</label>
-                <input
-                    type="password"
-                    name="_password"
-                    id="inputPassword"
-                    class="form__input"
-                    autocomplete="current-password"
-                    required
-                >
+            <div class="card">
+                <form class="form" method="post" action="{{ path('app_login') }}">
+                <div class="form-group">
+                    <label class="form__label" for="inputEmail">E-mail</label>
+                    <input
+                        type="email"
+                        value="{{ last_username }}"
+                        name="_username"
+                        id="inputEmail"
+                        class="form__input"
+                        autocomplete="email"
+                        required
+                        autofocus
+                    >
+                </div>
+                <div class="form-group">
+                    <label class="form__label" for="inputPassword">Mot de passe</label>
+                    <input
+                        type="password"
+                        name="_password"
+                        id="inputPassword"
+                        class="form__input"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                <button class="btn btn--red" type="submit">Se connecter</button>
+                <button class="btn btn--primary" type="submit">Se connecter</button>
             </form>
+            </div>
             <p class="section__hint" style="margin-top: 1rem;"><a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a></p>
             <p class="section__hint">Pas encore de compte ? <a href="{{ path('app_register') }}">Inscription</a></p>
         </div>

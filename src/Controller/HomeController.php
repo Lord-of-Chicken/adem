@@ -49,7 +49,11 @@ final class HomeController extends AbstractController
                     'title' => 'Don libre',
                     'intro' => 'Envie de contribuer différemment ? Fixez vous-même votre montant.',
                 ],
-                // ... reste des sections
+                'medias' => [
+                    'id' => 'medias',
+                    'title' => 'Galerie',
+                    'intro' => $mediasIntro,
+                ],
             ],
             'tiers_standard' => $catalog->standardForHome(),
             'tiers_vip' => $catalog->vipForHome(),

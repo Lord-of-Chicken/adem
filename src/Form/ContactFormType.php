@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
@@ -33,7 +32,7 @@ final class ContactFormType extends AbstractType
             ])
             ->add('message', TextareaType::class, [
                 'label' => 'Message',
-                'attr' => ['rows' => 5],
+                'attr' => ['rows' => 6],
                 'constraints' => [
                     new NotBlank(message: 'Veuillez entrer votre message.'),
                     new Length(min: 10, max: 1000),
@@ -44,7 +43,8 @@ final class ContactFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'csrf_protection' => false,
+            // SÉCURITÉ : Protection CSRF activée
+            'csrf_protection' => true,
         ]);
     }
 }

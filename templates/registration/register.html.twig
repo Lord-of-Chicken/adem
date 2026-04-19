@@ -9,16 +9,21 @@
             <h1 class="section__title section__title--tag">Créer un compte</h1>
             <p class="section__intro">Inscris-toi pour ajouter des formules au panier.</p>
 
-            {{ form_start(registrationForm, { attr: { class: 'form form--stack' } }) }}
+            <div class="card">
+                {{ form_start(registrationForm, { attr: { class: 'form' } }) }}
                 {{ form_row(registrationForm.firstName, { row_attr: { class: 'form__field' }, attr: { class: 'form__input' } }) }}
                 {{ form_row(registrationForm.lastName, { row_attr: { class: 'form__field' }, attr: { class: 'form__input' } }) }}
                 {{ form_row(registrationForm.address, { row_attr: { class: 'form__field' }, attr: { class: 'form__input' } }) }}
                 {{ form_row(registrationForm.email, { row_attr: { class: 'form__field' }, attr: { class: 'form__input' } }) }}
                 {{ form_row(registrationForm.plainPassword.first, { row_attr: { class: 'form__field' }, attr: { class: 'form__input' } }) }}
                 {{ form_row(registrationForm.plainPassword.second, { row_attr: { class: 'form__field' }, attr: { class: 'form__input' } }) }}
-                {{ form_row(registrationForm.newsletter, { row_attr: { class: 'form__field' } }) }}
-                <button type="submit" class="btn btn--red">S'inscrire</button>
+                <div class="form__field">
+                    {{ form_widget(registrationForm.newsletter) }}
+                    {{ form_label(registrationForm.newsletter) }}
+                </div>
+                <button type="submit" class="btn btn--primary">S'inscrire</button>
             {{ form_end(registrationForm) }}
+            </div>
 
             <p class="section__hint" style="margin-top: 2rem;">Déjà inscrit ? <a href="{{ path('app_login') }}">Connexion</a></p>
         </div>
@@ -32,6 +37,10 @@
         .btn--large {
             font-size: 300%;
             padding: 1rem 2rem;
+        }
+
+        .form__label {
+            margin-top: 0.5rem;
         }
     </style>
 {% endblock %}

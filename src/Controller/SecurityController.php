@@ -69,9 +69,24 @@ final class SecurityController extends AbstractController
                 $user->setResetTokenExpiresAt($resetTokenExpiresAt);
                 $entityManager->flush();
 
-                // TODO: Envoyer l'email de réinitialisation
-                // Le serveur mail sera configuré plus tard
-                // Pour l'instant, on affiche un message de succès
+                // Envoyer l'email de réinitialisation
+                try {
+                    $resetUrl = $this->generateUrl('app_reset_password', ['token' => $resetToken], 0);
+
+                    $email = (new Email())
+                        ->from('info@ruelledadem.com')
+                        ->to($user->getEmail())
+                        ->subject('Réinitialisation de votre mot de passe - La Ruelle d\'Adem')
+                        ->text('Pour réinitialiser votre mot de passe, cliquez sur ce lien : ' . $resetUrl)
+                        ->html('<p>Pour réinitialiser votre mot de passe, cliquez sur ce lien :</p>' .
+                               '<p><a href="' . $resetUrl . '">Réinitialiser mon mot de passe</a></p>' .
+                               '<p>Ce lien expire dans 1 heure.</p>');
+
+                    $mailer->send($email);
+                } catch (\Exception $e) {
+                    error_log('Password reset email error: ' . $e->getMessage());
+                }
+
                 $this->addFlash('success', 'Si cet email existe, un lien de réinitialisation a été envoyé.');
             } else {
                 // Pour des raisons de sécurité, on affiche quand même le message
