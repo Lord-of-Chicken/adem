@@ -136,13 +136,6 @@ class PaymentController extends AbstractController
 
             $checkoutSession = Session::create($sessionData);
 
-            // Debug : Log la session Stripe
-            error_log('Stripe session created: ' . json_encode([
-                'id' => $checkoutSession->id,
-                'url' => $checkoutSession->url,
-                'status' => $checkoutSession->status
-            ]));
-
             // Création de la commande en base de données (statut non payé par défaut)
             $order = new Order();
             $order->setTotalCents($this->cartService->totalCents($this->catalog));
@@ -153,11 +146,9 @@ class PaymentController extends AbstractController
             $this->entityManager->persist($order);
             $this->entityManager->flush();
 
-            error_log('Redirecting to Stripe: ' . $checkoutSession->url);
             return $this->redirect($checkoutSession->url, 303);
 
         } catch (\Exception $e) {
-            error_log('Stripe error: ' . $e->getMessage());
             $this->addFlash('error', 'Erreur Stripe : ' . $e->getMessage());
             return $this->redirectToRoute('app_cart_index');
         }

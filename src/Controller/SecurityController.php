@@ -85,7 +85,7 @@ final class SecurityController extends AbstractController
 
                     $mailer->send($email);
                 } catch (\Exception $e) {
-                    error_log('Password reset email error: ' . $e->getMessage());
+                    // Email sending failed silently
                 }
 
                 $this->addFlash('success', 'Si cet email existe, un lien de réinitialisation a été envoyé.');

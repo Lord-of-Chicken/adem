@@ -107,13 +107,13 @@
         <div class="section__inner">
             <h2 class="section__title section__title--tag">{{ sections.don_libre.title }}</h2>
             <p class="section__intro">{{ sections.don_libre.intro }}</p>
-            <article class="card card--tier card--sticker" style="max-width: 500px; margin: 0 auto;">
+            <article class="card card--tier card--featured card--sticker" style="max-width: 500px; margin: 0 auto;">
                 <div class="form">
                     <label class="form__label">Montant (€) :</label>
-                    <input type="number" id="free-amount" class="form__input" placeholder="Ex: 15" min="1" style="border: 2px solid var(--ink); background: #fff;">
+                    <input type="number" id="free-amount" class="form__input form__input--don-libre" placeholder="Ex: 15" min="1">
 
                     <label class="form__label" style="margin-top: 1rem; display: block;">Nom affiché :</label>
-                    <input type="text" id="donor-free_donation" class="form__input" placeholder="Anonyme" style="border: 2px solid var(--ink); background: #fff;">
+                    <input type="text" id="donor-free_donation" class="form__input form__input--don-libre" placeholder="Anonyme">
 
                     <button type="button" class="btn btn--primary btn--small" onclick="addToCart('free_donation')" style="margin-top: 1rem;">
                         Ajouter au panier
@@ -132,7 +132,7 @@
                 {% if is_granted('ROLE_USER') %}
                     <a href="{{ path('app_profile') }}" class="btn btn--primary">Voir mon profil</a>
                 {% else %}
-                    <a href="/inscription" class="btn btn--primary">Créer un compte pour recevoir les infos</a>
+                    <a href="/inscription" class="btn btn--primary" style="color: #000 !important;">Créer un compte pour recevoir les infos</a>
                 {% endif %}
             </div>
         </div>

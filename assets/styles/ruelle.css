@@ -778,6 +778,15 @@ body.page-street {
     border-bottom: 2px dashed var(--spray-cyan);
 }
 
+#don-libre {
+    border-top: 2px dashed var(--spray-cyan);
+    border-bottom: 2px dashed var(--spray-cyan);
+}
+
+.section--newsletter {
+    border-top: 2px dashed var(--spray-cyan);
+}
+
 .section--contact {
     background: var(--paper);
     color: var(--ink);
@@ -968,6 +977,10 @@ body.page-street {
     padding-left: 1.1rem;
     color: #b00020;
     font-size: 0.85rem;
+}
+
+.form__field {
+    margin-bottom: 1rem;
 }
 
 .form__field--error .form__input {
@@ -1483,6 +1496,7 @@ qty-display {
     text-transform: uppercase;
     letter-spacing: 0.04em;
     margin-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .form__hint {
@@ -1522,6 +1536,19 @@ qty-display {
 
 .form__input--amount {
     max-width: 12rem;
+}
+
+.form__input--don-libre {
+    background: #fff;
+    color: var(--ink);
+    border: 2px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--spray-cyan);
+}
+
+.section-divider {
+    border: none;
+    border-top: 2px dotted var(--spray-cyan);
+    margin: 2rem 0;
 }
 
 .form__note {
