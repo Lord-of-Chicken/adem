@@ -203,6 +203,9 @@ body.page-street {
     box-shadow: none;
     transform: rotate(-0.25deg);
     margin: 0;
+    background-image: url('../img/Pattern/wall-surface-texture.jpg');
+    background-size: cover;
+    background-repeat: repeat;
 }
 
 
@@ -219,12 +222,14 @@ body.page-street {
 .site-brand {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 1.5rem;
     text-decoration: none;
     color: inherit;
     transition: transform 0.2s ease;
     width: 100%;
+    margin-top: 2.3rem;
+    margin-bottom: 1.5rem;
 }
 
 .site-brand__logo {
@@ -276,6 +281,8 @@ body.page-street {
     flex-wrap: nowrap;
     align-items: center;
     gap: 0.65rem 1rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
 }
 
 .site-nav__link {

@@ -8,9 +8,6 @@
             {% if brand.logo_asset is defined and brand.logo_asset %}
                 <img class="site-brand__logo" src="{{ asset(brand.logo_asset) }}" alt="" width="128" height="128" loading="lazy" decoding="async">
             {% endif %}
-            <span class="site-brand__text">
-                <span class="site-brand__tagline">{{ brand.tagline }}</span>
-            </span>
         </a>
 
         <nav class="site-nav" aria-label="Navigation principale">
