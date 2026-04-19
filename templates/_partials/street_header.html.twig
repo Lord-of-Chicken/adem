@@ -10,14 +10,36 @@
             {% endif %}
         </a>
 
+        <button class="site-header__menu-toggle" id="menuToggle" aria-expanded="false" aria-label="Menu">
+            <span class="site-header__menu-toggle__line"></span>
+            <span class="site-header__menu-toggle__line"></span>
+            <span class="site-header__menu-toggle__line"></span>
+        </button>
+
         <nav class="site-nav" aria-label="Navigation principale">
             {% for link in nav_links %}
                 <a href="{{ link.href }}" class="site-nav__link">{{ link.label }}</a>
             {% endfor %}
             <a href="{{ path('app_contact') }}" class="site-nav__link">Contact</a>
+
+            <div class="site-header__account site-header__account--mobile">
+                <a href="{{ path('app_cart_index') }}" class="site-nav__link">
+                    Panier
+                    {% if cart_line_count is defined and cart_line_count > 0 %}
+                        <span class="site-header__cart-badge">{{ cart_line_count }}</span>
+                    {% endif %}
+                </a>
+
+                {% if is_granted('ROLE_USER') %}
+                    <a href="{{ path('app_profile') }}" class="site-nav__link">Profil</a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="site-nav__link site-nav__link--red">Connexion</a>
+                    <a href="{{ path('app_register') }}" class="site-nav__link site-nav__link--red">Inscription</a>
+                {% endif %}
+            </div>
         </nav>
 
-        <div class="site-header__account">
+        <div class="site-header__account site-header__account--desktop">
             <a href="{{ path('app_cart_index') }}" class="site-header__cart">
                 Panier
                 {# On affiche le badge seulement s'il y a des articles #}
