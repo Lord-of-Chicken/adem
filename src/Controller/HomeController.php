@@ -54,6 +54,11 @@ final class HomeController extends AbstractController
                     'title' => 'Galerie',
                     'intro' => $mediasIntro,
                 ],
+                'newsletter' => [
+                    'id' => 'newsletter',
+                    'title' => 'Restez informé',
+                    'intro' => 'Recevez des notifications et des invitations pour les événements à venir.',
+                ],
             ],
             'tiers_standard' => $catalog->standardForHome(),
             'tiers_vip' => $catalog->vipForHome(),

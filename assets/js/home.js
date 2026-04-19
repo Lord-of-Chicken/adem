@@ -1,4 +1,4 @@
-function updateQty(id, delta, min, max) {
+window.updateQty = function(id, delta, min, max) {
     const input = document.getElementById('qty-' + id);
     const display = document.getElementById('num-' + id);
     const label = document.getElementById('label-' + id);
@@ -25,7 +25,7 @@ function updateQty(id, delta, min, max) {
     }
 }
 
-function addToCart(tierId) {
+window.addToCart = function(tierId) {
     const csrfToken = document.getElementById('global-csrf-token').value;
     const formData = new FormData();
     formData.append('_token', csrfToken);

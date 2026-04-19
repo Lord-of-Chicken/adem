@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Controller;
+
+use App\Cart\CartService;
+use App\Repository\MediaItemRepository;
+use App\Repository\SiteSettingRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+final class GalleryController extends AbstractController
+{
+    #[Route('/galerie', name: 'app_gallery')]
+    public function index(
+        CartService $cart,
+        MediaItemRepository $mediaItemRepository,
+        SiteSettingRepository $siteSettingRepository,
+    ): Response {
+        $mediasIntro = $siteSettingRepository->get('section.medias.intro')
+            ?: 'Quelques images de la ruelle — le lieu du projet, tel qu\'on le vit au quotidien.';
+
+        return $this->render('gallery/index.html.twig', [
+            'nav_links' => [
+                ['label' => 'Offres', 'href' => '#offres'],
+                ['label' => 'Médias', 'href' => path('app_gallery')],
+            ],
+            'sections' => [
+                'medias' => [
+                    'id' => 'medias',
+                    'title' => 'Galerie',
+                    'intro' => $mediasIntro,
+                ],
+            ],
+            'media_items' => $mediaItemRepository->findPublishedOrdered(),
+            'cart_line_count' => $cart->countLines(),
+            'footer_line' => $siteSettingRepository->get('brand.title') ?: 'La Ruelle d\'Adem',
+        ]);
+    }
+}

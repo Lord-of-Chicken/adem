@@ -22,14 +22,17 @@
             <h2 class="section__title section__title--tag">{{ sections.medias.title }}</h2>
             <p class="section__intro">{{ sections.medias.intro }}</p>
             {% if media_items is not empty %}
-                <div class="media-slider">
-                    <div class="media-slider__track">
+                <div class="swiper media-swiper">
+                    <div class="swiper-wrapper">
                         {% for media in media_items %}
-                            <div class="media-slider__slide">
+                            <div class="swiper-slide">
                                 <img src="{{ asset(media.assetPath) }}" alt="{{ media.alt|default('La Ruelle dAdem') }}" loading="lazy">
                             </div>
                         {% endfor %}
                     </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
                 </div>
             {% endif %}
         </div>
@@ -70,7 +73,7 @@
     <section class="section section--vip" id="vip">
         <div class="section__inner">
             <h2 class="section__title section__title--tag section__title--vip">{{ sections.vip.title }}</h2>
-            <p class="section__subtitle">{{ sections.vip.subtitle }}</p>
+            <p class="section__intro">{{ sections.vip.subtitle }}</p>
             <div class="grid grid--tiers">
                 {% for tier in tiers_vip %}
                     <article class="card card--tier card--featured card--sticker">
@@ -90,7 +93,7 @@
 
                             <div class="form-group margin-top-1">
                                 <label class="form__label">Nom affiché :</label>
-                                <input type="text" id="donor-{{ tier.id }}" class="form__input" placeholder="Ton nom ou Anonyme">
+                                <input type="text" id="donor-{{ tier.id }}" class="form__input form__input--don-libre" placeholder="Ton nom ou Anonyme">
                             </div>
                             <button type="button" class="btn btn--primary btn--small margin-top-0-5" onclick="addToCart('{{ tier.id }}')">
                                 Ajouter au panier
@@ -126,8 +129,8 @@
     {# SECTION NEWSLETTER #}
     <section class="section section--newsletter" id="newsletter">
         <div class="section__inner">
-            <h2 class="section__title section__title--tag">Restez informé</h2>
-            <p class="section__intro">Recevez des notifications et des invitations pour les événements à venir.</p>
+            <h2 class="section__title section__title--tag">{{ sections.newsletter.title }}</h2>
+            <p class="section__intro">{{ sections.newsletter.intro }}</p>
             <div class="section__actions">
                 {% if is_granted('ROLE_USER') %}
                     <a href="{{ path('app_profile') }}" class="btn btn--primary">Voir mon profil</a>
@@ -142,5 +145,86 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="module" src="{{ asset('js/home.js') }}"></script>
+    <script>
+    function updateQty(id, delta, min, max) {
+        const input = document.getElementById('qty-' + id);
+        const display = document.getElementById('num-' + id);
+        const label = document.getElementById('label-' + id);
+        const btnMinus = document.getElementById('minus-' + id);
+        const btnPlus = document.getElementById('plus-' + id);
+
+        if (!input || !display) return;
+
+        let val = parseInt(input.value) + delta;
+
+        if (val >= min && val <= max) {
+            input.value = val;
+            display.textContent = val;
+            
+            if (label) {
+                label.textContent = val > 1 ? 'pièces' : 'pièce';
+            }
+
+            if (btnMinus) btnMinus.disabled = (val <= min);
+            if (btnPlus) btnPlus.disabled = (val >= max);
+        }
+    }
+
+    function addToCart(tierId) {
+        const csrfToken = document.getElementById('global-csrf-token').value;
+        const formData = new FormData();
+        formData.append('_token', csrfToken);
+        formData.append('tier_id', tierId);
+
+        if (tierId === 'free_donation') {
+            const amount = document.getElementById('free-amount').value;
+            if (!amount || parseFloat(amount) <= 0) {
+                alert('Veuillez entrer un montant valide.');
+                return;
+            }
+            formData.append('amount', amount);
+            formData.append('quantity', 1);
+        } else {
+            const qty = document.getElementById('qty-' + tierId).value;
+            formData.append('quantity', qty);
+        }
+
+        const donor = document.getElementById('donor-' + tierId);
+        if (donor) formData.append('donor_name', donor.value);
+
+        fetch('/panier/ajouter', {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const cartLinks = document.querySelectorAll('.site-nav__link[href*="panier"], .site-header__cart');
+                cartLinks.forEach(link => {
+                    let badge = link.querySelector('.site-header__cart-badge');
+                    if (!badge) {
+                        badge = document.createElement('span');
+                        badge.className = 'site-header__cart-badge';
+                        link.appendChild(badge);
+                    }
+                    badge.textContent = data.cartCount;
+                    badge.style.display = 'inline-block';
+                });
+                alert('Ajouté au panier ! 🌸');
+                if (tierId === 'free_donation') document.getElementById('free-amount').value = '';
+            } else {
+                alert(data.message || 'Erreur lors de l\'ajout');
+            }
+        })
+        .catch(err => alert('Erreur technique.'));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.qty-number').forEach(el => {
+            const id = el.id.replace('num-', '');
+            const val = parseInt(el.textContent);
+        });
+    });
+    </script>
 {% endblock %}

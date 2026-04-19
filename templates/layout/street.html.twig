@@ -7,8 +7,6 @@
 {% endblock %}
 
 {% block body %}
-    <div class="street-bg"></div>
-    
     {% include '_partials/street_header.html.twig' %}
 
     {% block street_main %}{% endblock %}
@@ -19,5 +17,45 @@
         </div>
     </footer>
 
-    <script type="module" src="{{ asset('js/layout.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const siteNav = document.querySelector('.site-nav');
+
+            if (menuToggle && siteNav) {
+                menuToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+                    menuToggle.setAttribute('aria-expanded', !isExpanded);
+                    siteNav.classList.toggle('site-nav--open', !isExpanded);
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!menuToggle.contains(e.target) && !siteNav.contains(e.target)) {
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                        siteNav.classList.remove('site-nav--open');
+                    }
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                        siteNav.classList.remove('site-nav--open');
+                    }
+                });
+            }
+
+            // Force header to stay fixed
+            const siteHeader = document.querySelector('.site-header');
+            const constructionBanner = document.querySelector('.construction-banner');
+            if (siteHeader && constructionBanner) {
+                window.addEventListener('scroll', function() {
+                    const bannerHeight = constructionBanner.offsetHeight;
+                    siteHeader.style.top = bannerHeight + 'px';
+                });
+                // Initial set
+                siteHeader.style.top = constructionBanner.offsetHeight + 'px';
+            }
+        });
+    </script>
 {% endblock %}

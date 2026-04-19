@@ -1,7 +1,7 @@
 /**
  * Met à jour la quantité d'une ligne du panier via AJAX
  */
-function updateCartQty(lineId, delta, min, max) {
+window.updateCartQty = function(lineId, delta, min, max) {
     const numberSpan = document.getElementById(`number-${lineId}`);
     const displaySpan = document.getElementById(`display-qty-${lineId}`);
     const labelSpan = document.getElementById(`label-${lineId}`);
