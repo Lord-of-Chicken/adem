@@ -22,18 +22,13 @@ final class CartService
         return $this->session()?->get(self::SESSION_KEY) ?? [];
     }
 
-    /**
-     * Calcule le total en tenant compte des prix personnalisés (Don Libre)
-     */
     public function totalCents(ParticipationCatalog $catalog): int
     {
         $total = 0;
         foreach ($this->getLines() as $line) {
-            // PRIORITÉ : Si un prix personnalisé (Don Libre) est stocké dans la ligne
             if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
                 $priceCents = (int) $line['custom_price_cents'];
             } else {
-                // SINON : On prend le prix du catalogue
                 $tier = $catalog->require($line['tier_id']);
                 $priceCents = (int) (round((float)$tier['unit_price_eur'] * 100));
             }
@@ -42,9 +37,6 @@ final class CartService
         return $total;
     }
 
-    /**
-     * Ajoute une ligne au panier
-     */
     public function addLine(
         string $tierId, 
         int $quantity, 
@@ -59,8 +51,6 @@ final class CartService
         $lines = $this->getLines();
         $normalizedDonor = $this->normalizeDonor($donorName, $tier['donor_field'] ?? false);
 
-        // --- OPTIMISATION : Fusion des lignes identiques ---
-        // Si on ajoute le même produit (même tier, même prix custom, même nom), on incrémente la quantité
         foreach ($lines as $i => $line) {
             if ($line['tier_id'] === $tierId && 
                 $line['donor_name'] === $normalizedDonor && 
@@ -74,7 +64,6 @@ final class CartService
             }
         }
 
-        // --- SINON : Création d'une nouvelle ligne ---
         $lines[] = [
             'line_id'    => bin2hex(random_bytes(8)),
             'tier_id'    => $tierId,
@@ -95,7 +84,6 @@ final class CartService
         foreach ($lines as $i => $line) {
             if ($line['line_id'] === $lineId) {
                 $tier = $catalog->require($line['tier_id']);
-                // Pour un don libre, min et max qty sont souvent 1 (défini dans le Seeder)
                 $lines[$i]['quantity'] = max($tier['min_qty'], min($tier['max_qty'], $quantity));
                 $session->set(self::SESSION_KEY, $lines);
                 return;

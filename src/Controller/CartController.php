@@ -101,9 +101,6 @@ final class CartController extends AbstractController
         return $this->redirectToRoute('app_cart_index');
     }
 
-    /**
-     * ✅ CORRIGÉ : Renvoie newLineTotal et newTotalHtml pour Stimulus
-     */
     #[Route('/panier/ligne/{lineId}/quantite', name: 'app_cart_quantity', methods: ['POST'])]
     public function setQuantity(string $lineId, Request $request, CartService $cart, ParticipationCatalog $catalog): Response
     {

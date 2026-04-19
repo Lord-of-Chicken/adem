@@ -38,7 +38,6 @@ class PaymentController extends AbstractController
             return $this->redirectToRoute('app_cart_index');
         }
 
-        // Utiliser la clé secrète Stripe depuis les variables d'environnement
         $stripeKey = $_ENV['STRIPE_SECRET_KEY'] ?? null;
         
         if (!$stripeKey) {
@@ -46,7 +45,6 @@ class PaymentController extends AbstractController
         }
         Stripe::setApiKey($stripeKey);
 
-        // ✅ Gestion des commandes orphelines (nettoyage avant nouvelle tentative)
         if ($user) {
             $existingOrder = $this->orderRepository->findUnpaidOrderByUser($user);
             if ($existingOrder) {
@@ -56,41 +54,34 @@ class PaymentController extends AbstractController
                         $oldSession->expire();
                     }
                 } catch (\Exception) {
-                    // Session déjà expirée ou inexistante chez Stripe
                 }
                 $this->entityManager->remove($existingOrder);
                 $this->entityManager->flush();
             }
         }
 
-        // Préparation des articles pour Stripe
         $lineItems = [];
         foreach ($lines as $line) {
             $tier = $this->catalog->require($line['tier_id']);
-            
-            // Gestion des dons libres avec prix personnalisé
+
             if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
-                $unitAmount = $line['custom_price_cents']; // Prix personnalisé en cents
+                $unitAmount = $line['custom_price_cents'];
                 $description = 'Don libre de ' . ($line['custom_price_cents'] / 100) . '€';
             } else {
-                // Conversion unit_price_eur (ex: "20.00") -> cents (2000)
                 $unitAmount = (int) ((float)$tier['unit_price_eur'] * 100);
                 $description = $tier['detail'] ?? null;
             }
 
-            // Préparer les métadonnées personnalisées
             $metadata = [
                 'tier_id' => $line['tier_id'],
                 'tier_title' => $tier['title'],
             ];
-            
-            // Ajouter le nom du donateur si présent
+
             if (!empty($line['donor_name'])) {
                 $metadata['donor_name'] = $line['donor_name'];
                 $description .= ' - Don de: ' . $line['donor_name'];
             }
-            
-            // Ajouter le prix personnalisé si c'est un don libre
+
             if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
                 $metadata['custom_price_eur'] = number_format($line['custom_price_cents'] / 100, 2, '.', '');
             }
@@ -126,7 +117,6 @@ class PaymentController extends AbstractController
                 ),
             ];
 
-            // Ajouter l'email et les métadonnées utilisateur seulement si connecté
             if ($user) {
                 $sessionData['customer_email'] = $user->getEmail();
                 $sessionData['metadata'] = [
@@ -136,7 +126,6 @@ class PaymentController extends AbstractController
 
             $checkoutSession = Session::create($sessionData);
 
-            // Création de la commande en base de données (statut non payé par défaut)
             $order = new Order();
             $order->setTotalCents($this->cartService->totalCents($this->catalog));
             $order->setCartData($lines);
@@ -178,10 +167,9 @@ class PaymentController extends AbstractController
             $session = Session::retrieve($sessionId);
 
             if ($session->payment_status === 'paid') {
-                $order->markAsPaid(); // Assurez-vous que cette méthode existe dans l'entité Order
+                $order->markAsPaid();
                 $this->entityManager->flush();
-                
-                // On vide le panier en session
+
                 $this->cartService->clear();
 
                 $this->addFlash('success', 'Merci ! Votre participation a bien été enregistrée.');
@@ -193,9 +181,6 @@ class PaymentController extends AbstractController
         return $this->redirectToRoute('app_home');
     }
 
-    /**
-     * ✅ ROUTE AJOUTÉE : Gestion de l'annulation par l'utilisateur
-     */
     #[Route('/payment/cancel', name: 'app_payment_cancel')]
     public function cancel(): Response
     {

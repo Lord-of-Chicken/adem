@@ -31,7 +31,7 @@ final class HomeController extends AbstractController
             ],
             'nav_links' => [
                 ['label' => 'Offres', 'href' => '#offres'],
-                ['label' => 'Médias', 'href' => '#medias'], // Ajout du lien vers la galerie
+                ['label' => 'Médias', 'href' => '#medias'],
             ],
             'sections' => [
                 'offres' => [
@@ -60,8 +60,6 @@ final class HomeController extends AbstractController
             'media_items' => $mediaItemRepository->findPublishedOrdered(),
             'cart_line_count' => $cart->countLines(),
             'footer_line' => $siteSettingRepository->get('brand.title') ?: 'La Ruelle d\'Adem',
-            
-            // ✅ AJOUT INDISPENSABLE POUR ÉVITER L'ERREUR JS
             'stripe_publishable_key' => $_ENV['STRIPE_PUBLISHABLE_KEY'] ?? null,
         ]);
     }
