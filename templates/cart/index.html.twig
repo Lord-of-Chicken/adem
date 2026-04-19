@@ -92,19 +92,8 @@
 
 {% block javascripts %}
     {{ parent() }}
-    
-    {# 1. Chargement du SDK Stripe #}
-    <script src="https://js.stripe.com/v3/"></script>
-    
-    <script>
-        {# 2. Initialisation pour éviter l'erreur "apiKey is not set" #}
-        const stripeKey = "{{ stripe_publishable_key }}";
-        if (stripeKey) {
-            const stripe = Stripe(stripeKey);
-        } else {
-            console.error("Stripe : La clé publique est manquante dans les variables d'environnement.");
-        }
 
+    <script>
         /**
          * Met à jour la quantité d'une ligne du panier via AJAX
          */

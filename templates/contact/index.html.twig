@@ -10,7 +10,7 @@
             <p class="section__intro">Une question ? Une suggestion ? N'hésitez pas à nous envoyer un message.</p>
             
             <div class="card">
-                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                {{ form_start(form, {'attr': {'class': 'form', 'action': path('app_contact'), 'data-turbo': 'false'}}) }}
                     
                     <div class="form-group">
                         {{ form_label(form.name) }}
