@@ -1482,6 +1482,7 @@ qty-display {
     font-size: 0.88rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
 }
 
 .form__hint {
@@ -1554,6 +1555,10 @@ qty-display {
 .btn--primary:hover {
     transform: translate(-2px, -2px);
     box-shadow: 8px 8px 0 var(--ink);
+}
+
+.btn--submit-spacing {
+    margin-bottom: 1rem;
 }
 
 .btn--secondary {

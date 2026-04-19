@@ -14,6 +14,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Uid\Uuid;
 
@@ -71,7 +72,7 @@ final class SecurityController extends AbstractController
 
                 // Envoyer l'email de réinitialisation
                 try {
-                    $resetUrl = $this->generateUrl('app_reset_password', ['token' => $resetToken], 0);
+                    $resetUrl = $this->generateUrl('app_reset_password', ['token' => $resetToken], UrlGeneratorInterface::ABSOLUTE_URL);
 
                     $email = (new Email())
                         ->from('info@ruelledadem.com')

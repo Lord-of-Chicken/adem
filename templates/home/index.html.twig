@@ -87,7 +87,7 @@
                                 <button type="button" class="qty-btn" id="plus-{{ tier.id }}" onclick="updateQty('{{ tier.id }}', 1, {{ tier.min_qty }}, {{ tier.max_qty }})">+</button>
                             </div>
                             <input type="hidden" id="qty-{{ tier.id }}" value="{{ tier.min_qty }}">
-                            
+
                             <div class="form-group" style="margin-top: 1rem;">
                                 <label class="form__label">Nom affiché :</label>
                                 <input type="text" id="donor-{{ tier.id }}" class="form__input" placeholder="Ton nom ou Anonyme">
@@ -110,12 +110,12 @@
             <article class="card card--tier card--sticker" style="max-width: 500px; margin: 0 auto;">
                 <div class="form">
                     <label class="form__label">Montant (€) :</label>
-                    <input type="number" id="free-amount" class="form__input" placeholder="Ex: 15" min="1">
-                    
+                    <input type="number" id="free-amount" class="form__input" placeholder="Ex: 15" min="1" style="border: 2px solid var(--ink); background: #fff;">
+
                     <label class="form__label" style="margin-top: 1rem; display: block;">Nom affiché :</label>
-                    <input type="text" id="donor-free_donation" class="form__input" placeholder="Anonyme">
-                    
-                    <button type="button" class="btn btn--primary btn--small" onclick="addToCart('free_donation')" style="margin-top: 1rem; width: 100%;">
+                    <input type="text" id="donor-free_donation" class="form__input" placeholder="Anonyme" style="border: 2px solid var(--ink); background: #fff;">
+
+                    <button type="button" class="btn btn--primary btn--small" onclick="addToCart('free_donation')" style="margin-top: 1rem;">
                         Ajouter au panier
                     </button>
                 </div>
