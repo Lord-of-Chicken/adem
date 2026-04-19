@@ -49,12 +49,13 @@
             const siteHeader = document.querySelector('.site-header');
             const constructionBanner = document.querySelector('.construction-banner');
             if (siteHeader && constructionBanner) {
-                window.addEventListener('scroll', function() {
+                function updatePositions() {
                     const bannerHeight = constructionBanner.offsetHeight;
                     siteHeader.style.top = bannerHeight + 'px';
-                });
+                }
+                window.addEventListener('resize', updatePositions);
                 // Initial set
-                siteHeader.style.top = constructionBanner.offsetHeight + 'px';
+                updatePositions();
             }
         });
     </script>
