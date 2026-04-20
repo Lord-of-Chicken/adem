@@ -58,6 +58,10 @@
                 {% endif %}
             </a>
 
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('admin') }}" class="site-nav__link">Admin</a>
+            {% endif %}
+
             {% if is_granted('ROLE_USER') %}
                 <a href="{{ path('app_profile') }}" class="site-nav__link">Profil</a>
             {% else %}
