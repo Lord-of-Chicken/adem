@@ -26,5 +26,6 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToRoute('Médias (Carousel)', 'fa fa-image', 'admin_media_item_index');
+        yield MenuItem::linkToRoute('Utilisateurs', 'fa fa-user', 'admin_user_index');
     }
 }
