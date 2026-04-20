@@ -444,7 +444,6 @@ body {
     z-index: 1;
     padding-bottom: 3rem;
     perspective: 1400px;
-    margin-top: 150px;
 }
 
 .main--narrow {
@@ -465,6 +464,7 @@ body {
     margin: 0 auto;
     padding: 2.75rem 1.25rem 1.5rem;
     position: relative;
+    scroll-margin-top: 170px;
 }
 
 .hero--spray::before {
