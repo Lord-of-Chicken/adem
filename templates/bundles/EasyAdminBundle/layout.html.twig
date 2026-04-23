@@ -6,38 +6,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Permanent+Marker&family=Rubik:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     {% block importmap %}{{ importmap('app') }}{% endblock %}
+    <style>
+        .ea-wrapper { padding-top: calc(var(--banner-h, 80px) + var(--header-h, 70px)); }
+    </style>
 {% endblock %}
 
 {% block body %}
+    <div class="construction-banner">
+        <div class="construction-banner__text">🚧 SITE EN CHANTIER - TRAVAUX EN COURS 🚧</div>
+    </div>
+    {% include '_partials/street_header.html.twig' %}
     {{ parent() }}
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const menuToggle = document.getElementById('menuToggle');
-            const siteNav = document.querySelector('.site-nav');
-
-            if (menuToggle && siteNav) {
-                menuToggle.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-                    menuToggle.setAttribute('aria-expanded', !isExpanded);
-                    siteNav.classList.toggle('site-nav--open', !isExpanded);
-                });
-
-                document.addEventListener('click', function(e) {
-                    if (!menuToggle.contains(e.target) && !siteNav.contains(e.target)) {
-                        menuToggle.setAttribute('aria-expanded', 'false');
-                        siteNav.classList.remove('site-nav--open');
-                    }
-                });
-
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape') {
-                        menuToggle.setAttribute('aria-expanded', 'false');
-                        siteNav.classList.remove('site-nav--open');
-                    }
-                });
+        (function(){
+            function u(){
+                var b=document.querySelector('.construction-banner'),h=document.querySelector('.site-header'),r=document.documentElement.style;
+                if(b)r.setProperty('--banner-h',b.offsetHeight+'px');
+                if(h)r.setProperty('--header-h',h.offsetHeight+'px');
             }
-        });
+            document.addEventListener('DOMContentLoaded',u);
+            window.addEventListener('load',u);
+            window.addEventListener('resize',u);
+            if(document.fonts&&document.fonts.ready)document.fonts.ready.then(u);
+        })();
     </script>
 {% endblock %}

@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Cart\CartService;
 use App\Participation\ParticipationCatalog;
 use App\Repository\MediaItemRepository;
 use App\Repository\SiteSettingRepository;
@@ -14,7 +13,6 @@ final class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
     public function index(
-        CartService $cart,
         ParticipationCatalog $catalog,
         MediaItemRepository $mediaItemRepository,
         SiteSettingRepository $siteSettingRepository,
@@ -63,9 +61,6 @@ final class HomeController extends AbstractController
             'tiers_standard' => $catalog->standardForHome(),
             'tiers_vip' => $catalog->vipForHome(),
             'media_items' => $mediaItemRepository->findPublishedOrdered(),
-            'cart_line_count' => $cart->countLines(),
-            'footer_line' => $siteSettingRepository->get('brand.title') ?: 'La Ruelle d\'Adem',
-            'stripe_publishable_key' => $this->getParameter('stripe.publishable_key'),
         ]);
     }
 }

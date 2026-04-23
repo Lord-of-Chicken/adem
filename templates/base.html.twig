@@ -44,31 +44,56 @@
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
     <script>
-        window.addEventListener('load', function(){
-            const mediaSwiper = new Swiper('.media-swiper', {
+        /* ── Layout: measure banner + header, set CSS vars ── */
+        (function(){
+            function updateLayout(){
+                var b = document.querySelector('.construction-banner');
+                var h = document.querySelector('.site-header');
+                var r = document.documentElement.style;
+                if(b) r.setProperty('--banner-h', b.offsetHeight+'px');
+                if(h) r.setProperty('--header-h', h.offsetHeight+'px');
+            }
+            document.addEventListener('DOMContentLoaded', updateLayout);
+            window.addEventListener('load', updateLayout);
+            window.addEventListener('resize', updateLayout);
+            if(document.fonts && document.fonts.ready) document.fonts.ready.then(updateLayout);
+        })();
+
+        /* ── Menu toggle (shared across all layouts) ── */
+        document.addEventListener('DOMContentLoaded', function(){
+            var menuToggle = document.getElementById('menuToggle');
+            var siteNav = document.querySelector('.site-nav');
+            if(menuToggle && siteNav){
+                menuToggle.addEventListener('click', function(e){
+                    e.stopPropagation();
+                    var isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+                    menuToggle.setAttribute('aria-expanded', !isExpanded);
+                    siteNav.classList.toggle('site-nav--open', !isExpanded);
+                });
+                document.addEventListener('click', function(e){
+                    if(!menuToggle.contains(e.target) && !siteNav.contains(e.target)){
+                        menuToggle.setAttribute('aria-expanded','false');
+                        siteNav.classList.remove('site-nav--open');
+                    }
+                });
+                document.addEventListener('keydown', function(e){
+                    if(e.key==='Escape'){
+                        menuToggle.setAttribute('aria-expanded','false');
+                        siteNav.classList.remove('site-nav--open');
+                    }
+                });
+            }
+
+            /* ── Swiper init ── */
+            var mediaSwiper = new Swiper('.media-swiper', {
                 effect: 'coverflow',
                 grabCursor: true,
                 centeredSlides: true,
                 slidesPerView: 'auto',
-                coverflowEffect: {
-                    rotate: 50,
-                    stretch: 0,
-                    depth: 100,
-                    modifier: 1,
-                    slideShadows: true,
-                },
-                autoplay: {
-                    delay: 3000,
-                    disableOnInteraction: false,
-                },
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
+                coverflowEffect: { rotate:50, stretch:0, depth:100, modifier:1, slideShadows:true },
+                autoplay: { delay:3000, disableOnInteraction:false },
+                pagination: { el:'.swiper-pagination', clickable:true },
+                navigation: { nextEl:'.swiper-button-next', prevEl:'.swiper-button-prev' },
             });
         });
     </script>

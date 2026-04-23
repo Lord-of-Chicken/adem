@@ -29,38 +29,7 @@
 
     <footer class="site-footer">
         <div class="site-footer__inner">
-            <p>{{ footer_line|default('La Ruelle d\'Adem') }}</p>
+            <p>{{ footer_line|default(site_brand.title) }}</p>
         </div>
     </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const menuToggle = document.getElementById('menuToggle');
-            const siteNav = document.querySelector('.site-nav');
-
-            if (menuToggle && siteNav) {
-                menuToggle.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-                    menuToggle.setAttribute('aria-expanded', !isExpanded);
-                    siteNav.classList.toggle('site-nav--open', !isExpanded);
-                });
-
-                document.addEventListener('click', function(e) {
-                    if (!menuToggle.contains(e.target) && !siteNav.contains(e.target)) {
-                        menuToggle.setAttribute('aria-expanded', 'false');
-                        siteNav.classList.remove('site-nav--open');
-                    }
-                });
-
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape') {
-                        menuToggle.setAttribute('aria-expanded', 'false');
-                        siteNav.classList.remove('site-nav--open');
-                    }
-                });
-            }
-
-        });
-    </script>
 {% endblock %}

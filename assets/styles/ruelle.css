@@ -17,6 +17,8 @@
     --max-width: 1100px;
     --narrow: 640px;
     --outline: 3px solid var(--ink);
+    --banner-h: 80px;
+    --header-h: 70px;
 }
 
 *,
@@ -138,8 +140,10 @@ body.page-street {
 
 /* Header — wheatpaste bar */
 .site-header {
-    position: sticky;
-    top: 0;
+    position: fixed;
+    top: var(--banner-h);
+    left: 0;
+    right: 0;
     z-index: 999;
     background: var(--paper);
     color: var(--ink);
@@ -447,7 +451,7 @@ body.page-street {
 }
 
 .street-main-content {
-    padding-top: 0;
+    padding-top: calc(var(--banner-h) + var(--header-h));
 }
 
 .main--narrow {
@@ -1563,7 +1567,10 @@ body.page-street {
     background: #ffd700;
     padding: 1.5rem 1rem 1.75rem;
     text-align: center;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     z-index: 1001;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }

@@ -37,8 +37,6 @@ final class CartController extends AbstractController
             'lines'       => $lines,
             'total_cents' => $cart->totalCents($catalog),
             'catalog'     => $catalog,
-            'cart_line_count' => $cart->countLines(),
-            'stripe_publishable_key' => $this->getParameter('stripe.publishable_key'),
             'page' => [
                 'title' => 'Panier',
                 'empty_hint' => 'Ton panier est vide.',

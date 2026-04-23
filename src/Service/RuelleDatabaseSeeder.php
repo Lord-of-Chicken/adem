@@ -137,7 +137,7 @@ final class RuelleDatabaseSeeder
     {
      $defaults = [
         'brand.title' => 'La Ruelle d\'Adem',
-        'brand.tagline' => 'Fait une fleur\nà La Ruelle d\'Adem',
+        'brand.tagline' => 'Fais une fleur\nà La Ruelle d\'Adem',
         'brand.logo_asset' => 'img/Panneau/IMG_0197.png',
         'section.medias.intro' => 'Quelques images de la ruelle — le lieu du projet, tel qu\'on le vit au quotidien.',
     ];

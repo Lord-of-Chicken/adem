@@ -2,19 +2,16 @@
 
 namespace App\Controller;
 
-use App\Cart\CartService;
 use App\Repository\MediaItemRepository;
 use App\Repository\SiteSettingRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class GalleryController extends AbstractController
 {
     #[Route('/galerie', name: 'app_gallery')]
     public function index(
-        CartService $cart,
         MediaItemRepository $mediaItemRepository,
         SiteSettingRepository $siteSettingRepository,
     ): Response {
@@ -32,8 +29,6 @@ final class GalleryController extends AbstractController
                 'empty' => 'Aucun média disponible pour le moment.',
             ],
             'media_items' => $mediaItemRepository->findPublishedOrdered(),
-            'cart_line_count' => $cart->countLines(),
-            'footer_line' => $siteSettingRepository->get('brand.title') ?: 'La Ruelle d\'Adem',
         ]);
     }
 }
