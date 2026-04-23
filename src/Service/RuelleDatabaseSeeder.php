@@ -4,7 +4,6 @@ namespace App\Service;
 
 use App\Entity\MediaItem;
 use App\Entity\ParticipationTier;
-use App\Entity\SiteSetting;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -19,7 +18,6 @@ final class RuelleDatabaseSeeder
     public function seed(EntityManagerInterface $em): void
     {
         $this->seedParticipationTiers($em);
-        $this->seedSiteSettings($em);
         $this->seedMediaFromRuelleFolder($em);
         $em->flush();
     }
@@ -133,25 +131,6 @@ final class RuelleDatabaseSeeder
         ];
     }
 
-    private function seedSiteSettings(EntityManagerInterface $em): void
-    {
-     $defaults = [
-        'brand.title' => 'La Ruelle d\'Adem',
-        'brand.tagline' => 'Fais une fleur à La Ruelle d\'Adem',
-        'brand.logo_asset' => 'img/Panneau/IMG_0197.png',
-        'section.medias.intro' => 'Quelques images de la ruelle — le lieu du projet, tel qu\'on le vit au quotidien.',
-    ];
-
-        foreach ($defaults as $key => $value) {
-            $row = $em->find(SiteSetting::class, $key);
-            if (!$row instanceof SiteSetting) {
-                $row = new SiteSetting();
-                $row->setSettingKey($key);
-                $em->persist($row);
-            }
-            $row->setValue($value);
-        }
-    }
 
     private function seedMediaFromRuelleFolder(EntityManagerInterface $em): void
     {

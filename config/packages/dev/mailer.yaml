@@ -1,0 +1,7 @@
+framework:
+    mailer:
+        enabled: true
+        dsn: '%env(MAILER_DSN)%'
+        # En dev, on peut utiliser le transport de test pour voir les emails dans le profiler
+        # ou désactiver pour envoyer vraiment les emails
+        # dsn: 'smtp://info@ruelledadem.com:Zukvus-sefxuz-hahtu0@ssl0.ovh.net:465'

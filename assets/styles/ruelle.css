@@ -467,7 +467,7 @@ body.page-street {
 .hero {
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: 2.75rem 1.25rem 1.5rem;
+    padding: 2.75rem 1.25rem 0;
     position: relative;
     scroll-margin-top: 170px;
 }
@@ -640,18 +640,32 @@ body.page-street {
     border-color: var(--ink);
 }
 
+.flash-container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+}
+
 .flash {
     position: relative;
     z-index: 2;
-    max-width: var(--max-width);
-    margin: 0.75rem auto 0;
+    margin: 0.75rem 0 0;
     padding: 0.75rem 1rem;
-    border: 3px solid var(--ink);
-    font-weight: 600;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border: var(--outline);
+    border-radius: 0;
+    box-shadow: 6px 6px 0 var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.flash:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 var(--ink);
 }
 
 .flash--success {
-    background: var(--spray-lime);
+    background: var(--spray-cyan);
     color: var(--ink);
 }
 
@@ -720,7 +734,12 @@ body.page-street {
 }
 
 .section--newsletter {
+    max-width: var(--max-width);
     padding-top: 2.25rem;
+}
+
+.section--newsletter .section__intro {
+    max-width: 100% !important;
 }
 
 /* Cards — stickers */
@@ -1611,7 +1630,6 @@ textarea.form__input {
 
 .section--auth .flash {
     margin: 0 0 1.5rem 0;
-    border-radius: 4px;
 }
 
 /* Registration page styles */

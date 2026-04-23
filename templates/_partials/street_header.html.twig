@@ -20,6 +20,7 @@
             {% for link in nav_links %}
                 <a href="{{ link.href }}" class="site-nav__link">{{ link.label }}</a>
             {% endfor %}
+            <a href="{{ path('app_about') }}" class="site-nav__link">Qui est Adem?</a>
             <a href="{{ path('app_contact') }}" class="site-nav__link">Contact</a>
 
             <div class="site-header__account site-header__account--mobile">

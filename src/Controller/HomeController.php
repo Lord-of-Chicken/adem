@@ -17,13 +17,14 @@ final class HomeController extends AbstractController
     ): Response {
         return $this->render('home/index.html.twig', [
             'hero' => [
-                'title' => ' Crowdfunding',
-                'lead' => 'Le crowdfunding est un mécanisme qui permet de lever des fonds auprès du grand public — c\'est-à-dire auprès de toi.',
+                'title' => '',
+                'lead' => '',
             ],
             'nav_links' => [
                 ['label' => 'Offres', 'href' => '#offres'],
                 ['label' => 'Médias', 'href' => '#medias'],
             ],
+            'medias_intro' => 'Quelques images de la ruelle — le lieu du projet, tel qu\'on le vit au quotidien.',
             'sections' => [
                 'offres' => [
                     'id' => 'offres',
@@ -47,7 +48,7 @@ final class HomeController extends AbstractController
                 'newsletter' => [
                     'id' => 'newsletter',
                     'title' => 'Restez informé',
-                    'intro' => 'Recevez des notifications et des invitations pour les événements à venir.',
+                    'intro' => 'TU VEUX CONNAITRE LE NOMBRE DE FLEURS, DE JARDINIERES ET DE PALETTES OFFERTES?<br>Savoir si un événement festif, récréatif ou éducatif se déroule dans la ruelle.',
                 ],
             ],
             'tiers_standard' => $catalog->standardForHome(),

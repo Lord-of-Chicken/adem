@@ -17,12 +17,18 @@ final class ContactController extends AbstractController
         $form = $this->createForm(ContactFormType::class);
         $form->handleRequest($request);
 
+        error_log('Contact form submitted: ' . ($form->isSubmitted() ? 'yes' : 'no'));
+
         if ($form->isSubmitted()) {
+            error_log('Contact form valid: ' . ($form->isValid() ? 'yes' : 'no'));
             if ($form->isValid()) {
                 $data = $form->getData();
+                error_log('Form data: ' . json_encode($data));
 
                 try {
                     $contactEmail = $this->getParameter('app.contact_email');
+                    error_log('Contact email: ' . $contactEmail);
+
                     $email = (new Email())
                         ->from($contactEmail)
                         ->to($contactEmail)
@@ -33,6 +39,7 @@ final class ContactController extends AbstractController
                                '<p>' . nl2br(htmlspecialchars($data['message'])) . '</p>');
 
                     $mailer->send($email);
+                    error_log('Email sent successfully');
 
                     $this->addFlash('success', 'Votre message a été envoyé avec succès. Nous vous répondrons bientôt.');
 
@@ -40,9 +47,15 @@ final class ContactController extends AbstractController
 
                 } catch (\Exception $e) {
                     $this->addFlash('error', 'Erreur lors de l\'envoi du message : ' . $e->getMessage());
+                    error_log('Mailer error: ' . $e->getMessage());
                 }
             } else {
                 $this->addFlash('error', 'Erreur lors de la validation du formulaire.');
+                $errors = [];
+                foreach ($form->getErrors(true) as $error) {
+                    $errors[] = $error->getMessage();
+                }
+                error_log('Form validation errors: ' . implode(', ', $errors));
             }
         }
 

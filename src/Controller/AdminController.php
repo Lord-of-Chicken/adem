@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Repository\MediaItemRepository;
 use App\Repository\UserRepository;
-use App\Repository\SiteSettingRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

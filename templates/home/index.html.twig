@@ -6,14 +6,16 @@
     {# Jeton de sécurité global pour les appels AJAX #}
     <input type="hidden" id="global-csrf-token" value="{{ csrf_token('cart_add') }}">
 
+
     {# SECTION HERO #}
     <section class="hero hero--spray">
-        <div class="hero__content hero__content--pop">
+        <div class="">
             <p class="hero__eyebrow">{{ site_brand.tagline }}</p>
-            <h1 class="hero__title"><span class="hero__title-line">{{ hero.title }}</span></h1>
-            <p class="hero__lead">{{ hero.lead }}</p>
+
         </div>
     </section>
+
+
 
     {# SECTION MÉDIAS (GALERIE) #}
     <section class="section" id="medias">
@@ -34,6 +36,14 @@
                     <div class="swiper-button-prev"></div>
                 </div>
             {% endif %}
+        </div>
+    </section>
+
+    {# SECTION CROWDFUNDING #}
+    <section class="hero hero--spray" id="crowdfunding">
+        <div class="hero__content hero__content--pop">
+            <h1 class="hero__title"><span class="hero__title-line">CROWDFUNDING</span></h1>
+            <p class="hero__lead">Le crowdfunding est un mécanisme qui permet de lever des fonds auprès du grand public — c'est-à-dire auprès de toi.</p>
         </div>
     </section>
 
