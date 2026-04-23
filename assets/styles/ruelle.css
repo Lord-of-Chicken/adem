@@ -25,6 +25,10 @@
     box-sizing: border-box;
 }
 
+body {
+    margin: 0;
+}
+
 body.page-street {
     margin: 0;
     font-family: var(--font-body);
@@ -1477,6 +1481,24 @@ body {
 
 .delete-profile {
     background: #b00020;
+    color: var(--paper);
+}
+
+.btn--remove {
+    background: transparent;
+    border: 2px solid var(--spray-magenta);
+    color: var(--spray-magenta);
+    padding: 0.4rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.btn--remove:hover {
+    background: var(--spray-magenta);
     color: var(--paper);
 }
 

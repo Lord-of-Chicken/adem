@@ -60,7 +60,7 @@
 
                                 <form method="post" action="{{ path('app_cart_remove', { lineId: line.line_id }) }}" onsubmit="return confirm('Retirer cette ligne ?');">
                                     <input type="hidden" name="_token" value="{{ csrf_token('cart_remove') }}">
-                                    <button type="submit" class="site-header__link-btn">{{ page.remove_btn }}</button>
+                                    <button type="submit" class="btn--remove">{{ page.remove_btn }}</button>
                                 </form>
                             </div>
                         </li>
