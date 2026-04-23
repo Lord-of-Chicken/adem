@@ -9,13 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Permanent+Marker&family=Rubik:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
-    <style>
-        :root{--banner-h:80px;--header-h:70px}
-        body{margin:0}
-        .construction-banner{position:fixed;top:0;left:0;right:0;z-index:1001;background:#ffd700;padding:1.5rem 1rem 1.75rem;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.3)}
-        .site-header{position:fixed;top:var(--banner-h);left:0;right:0;z-index:999}
-        .street-main-content{padding-top:calc(var(--banner-h) + var(--header-h))}
-    </style>
+    {% include '_partials/critical_css.html.twig' %}
     {% block stylesheets %}
     {% endblock %}
     {% block javascripts %}
@@ -42,31 +36,15 @@
     {% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
-    {# Bandeau chantier #}
-    <div class="construction-banner">
-        <div class="construction-banner__text">🚧 SITE EN CHANTIER - TRAVAUX EN COURS 🚧</div>
-    </div>
+    {# Bandeau chantier + header de navigation #}
+    {% include '_partials/top_bars.html.twig' %}
 
     {% block body %}{% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
+    {% include '_partials/layout_js.html.twig' %}
     <script>
-        /* ── Layout: measure banner + header, set CSS vars ── */
-        (function(){
-            function updateLayout(){
-                var b = document.querySelector('.construction-banner');
-                var h = document.querySelector('.site-header');
-                var r = document.documentElement.style;
-                if(b) r.setProperty('--banner-h', b.offsetHeight+'px');
-                if(h) r.setProperty('--header-h', h.offsetHeight+'px');
-            }
-            document.addEventListener('DOMContentLoaded', updateLayout);
-            window.addEventListener('load', updateLayout);
-            window.addEventListener('resize', updateLayout);
-            if(document.fonts && document.fonts.ready) document.fonts.ready.then(updateLayout);
-        })();
-
-        /* ── Menu toggle (shared across all layouts) ── */
+        /* ── Menu toggle ── */
         document.addEventListener('DOMContentLoaded', function(){
             var menuToggle = document.getElementById('menuToggle');
             var siteNav = document.querySelector('.site-nav');
@@ -92,16 +70,18 @@
             }
 
             /* ── Swiper init ── */
-            var mediaSwiper = new Swiper('.media-swiper', {
-                effect: 'coverflow',
-                grabCursor: true,
-                centeredSlides: true,
-                slidesPerView: 'auto',
-                coverflowEffect: { rotate:50, stretch:0, depth:100, modifier:1, slideShadows:true },
-                autoplay: { delay:3000, disableOnInteraction:false },
-                pagination: { el:'.swiper-pagination', clickable:true },
-                navigation: { nextEl:'.swiper-button-next', prevEl:'.swiper-button-prev' },
-            });
+            if(typeof Swiper !== 'undefined'){
+                new Swiper('.media-swiper', {
+                    effect: 'coverflow',
+                    grabCursor: true,
+                    centeredSlides: true,
+                    slidesPerView: 'auto',
+                    coverflowEffect: { rotate:50, stretch:0, depth:100, modifier:1, slideShadows:true },
+                    autoplay: { delay:3000, disableOnInteraction:false },
+                    pagination: { el:'.swiper-pagination', clickable:true },
+                    navigation: { nextEl:'.swiper-button-next', prevEl:'.swiper-button-prev' },
+                });
+            }
         });
     </script>
 </body>
