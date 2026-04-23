@@ -16,6 +16,8 @@
 # Fichiers de configuration sensibles
 .env.local
 .env.*.local
+.env.production
+.env.local.php
 
 # Fichiers temporaires
 /tmp/
