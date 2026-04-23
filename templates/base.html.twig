@@ -10,10 +10,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
     {% include '_partials/critical_css.html.twig' %}
+    {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% block stylesheets %}
     {% endblock %}
     {% block javascripts %}
-        {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% if app.current_route starts with 'app_checkout' or app.current_route starts with 'app_payment' or app.current_route starts with 'app_cart' %}
             <script src="https://js.stripe.com/v3/"></script>
             <script>
