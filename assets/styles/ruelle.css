@@ -450,9 +450,6 @@ body.page-street {
     perspective: 1400px;
 }
 
-.street-main-content {
-    padding-top: calc(var(--banner-h) + var(--header-h));
-}
 
 .main--narrow {
     max-width: 720px;
