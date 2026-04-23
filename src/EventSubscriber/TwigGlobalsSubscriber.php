@@ -35,15 +35,29 @@ final class TwigGlobalsSubscriber implements EventSubscriberInterface
             return;
         }
 
+        try {
+            $title = $this->siteSettings->get('brand.title') ?: 'La Ruelle d\'Adem';
+            $tagline = $this->siteSettings->get('brand.tagline') ?: 'Fais une fleur à La Ruelle d\'Adem';
+            $logoAsset = $this->siteSettings->get('brand.logo_asset');
+            $mediasIntro = $this->siteSettings->get('section.medias.intro')
+                ?: 'Quelques images de la ruelle — le lieu du projet, tel qu\'on le vit au quotidien.';
+            $cartCount = $this->cartService->countLines();
+        } catch (\Throwable) {
+            $title = 'La Ruelle d\'Adem';
+            $tagline = 'Fais une fleur à La Ruelle d\'Adem';
+            $logoAsset = null;
+            $mediasIntro = 'Quelques images de la ruelle — le lieu du projet, tel qu\'on le vit au quotidien.';
+            $cartCount = 0;
+        }
+
         $this->twig->addGlobal('site_brand', [
-            'title' => $this->siteSettings->get('brand.title') ?: 'La Ruelle d\'Adem',
-            'tagline' => $this->siteSettings->get('brand.tagline') ?: 'Fais une fleur\nà La Ruelle d\'Adem',
-            'logo_asset' => $this->siteSettings->get('brand.logo_asset'),
+            'title' => $title,
+            'tagline' => $tagline,
+            'logo_asset' => $logoAsset,
         ]);
-        $this->twig->addGlobal('cart_line_count', $this->cartService->countLines());
-        $this->twig->addGlobal('footer_line', $this->siteSettings->get('brand.title') ?: 'La Ruelle d\'Adem');
-        $this->twig->addGlobal('medias_intro', $this->siteSettings->get('section.medias.intro')
-            ?: 'Quelques images de la ruelle — le lieu du projet, tel qu\'on le vit au quotidien.');
+        $this->twig->addGlobal('cart_line_count', $cartCount);
+        $this->twig->addGlobal('footer_line', $title);
+        $this->twig->addGlobal('medias_intro', $mediasIntro);
         $this->twig->addGlobal('stripe_publishable_key', $this->params->get('stripe.publishable_key'));
     }
 }
