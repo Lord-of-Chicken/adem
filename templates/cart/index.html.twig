@@ -3,7 +3,7 @@
 {% block title %}Panier participations | La Ruelle d’Adem{% endblock %}
 
 {% block street_main %}
-<main class="main main--narrow">
+<div class="main main--narrow">
     {# Jeton CSRF pour les mises à jour de quantité en AJAX #}
     <input type="hidden" id="cart-csrf-token" value="{{ csrf_token('cart_quantity') }}">
 
@@ -87,7 +87,7 @@
             {% endif %}
         </div>
     </section>
-</main>
+</div>
 {% endblock %}
 
 {% block javascripts %}

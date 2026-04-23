@@ -3,24 +3,11 @@
 {% block title %}Contact | La Ruelle d'Adem{% endblock %}
 
 {% block street_main %}
-<main class="main main--narrow">
+<div class="main main--narrow">
     <section class="section section--auth">
         <div class="section__inner section__inner--narrow">
             <h1 class="section__title section__title--tag">Contactez-nous</h1>
             <p class="section__intro">Une question ? Une suggestion ? N'hésitez pas à nous envoyer un message.</p>
-
-            {# Affichage des messages flash avec VOS classes CSS existantes #}
-            {% for message in app.flashes('success') %}
-                <div class="flash flash--success">
-                    {{ message }}
-                </div>
-            {% endfor %}
-
-            {% for message in app.flashes('error') %}
-                <div class="flash flash--danger">
-                    {{ message }}
-                </div>
-            {% endfor %}
 
             <div class="card">
                 {{ form_start(form, {'attr': {'class': 'form'}}) }}
@@ -35,5 +22,5 @@
             </div>
         </div>
     </section>
-</main>
+</div>
 {% endblock %}

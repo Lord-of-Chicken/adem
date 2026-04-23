@@ -1,0 +1,25 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block admin_content %}
+    <h1 class="admin-title">Achats Finalisés</h1>
+    
+    <div class="admin-table-container">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Utilisateur</th>
+                    <th>Montant</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="6" class="admin-empty">Aucun achat finalisé pour le moment.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

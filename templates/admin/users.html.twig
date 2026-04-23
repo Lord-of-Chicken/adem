@@ -1,0 +1,53 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block admin_content %}
+    <h1 class="admin-title">Gestion des Utilisateurs</h1>
+    
+    <div class="admin-toolbar">
+        <div class="admin-filter">
+            <label for="newsletter-filter" class="admin-filter__label">Filtre Newsletter:</label>
+            <select id="newsletter-filter" class="admin-filter__select" onchange="window.location.href='?newsletter=' + this.value">
+                <option value="">Tous</option>
+                <option value="subscribed" {{ newsletter_filter == 'subscribed' ? 'selected' : '' }}>Inscrits</option>
+                <option value="not_subscribed" {{ newsletter_filter == 'not_subscribed' ? 'selected' : '' }}>Non inscrits</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="admin-table-container">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Nom</th>
+                    <th>Newsletter</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.firstName ?? '' }} {{ user.lastName ?? '' }}</td>
+                        <td>
+                            {% if user.newsletter %}
+                                <span class="admin-badge admin-badge--success">Oui</span>
+                            {% else %}
+                                <span class="admin-badge admin-badge--danger">Non</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="admin-badge admin-badge--info">-</span>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="admin-empty">Aucun utilisateur trouvé.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

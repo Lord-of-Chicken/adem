@@ -173,6 +173,8 @@ class PaymentController extends AbstractController
                 $this->cartService->clear();
 
                 $this->addFlash('success', 'Merci ! Votre participation a bien été enregistrée.');
+            } else {
+                $this->addFlash('warning', 'Le paiement est en cours de traitement ou a échoué.');
             }
         } catch (\Exception $e) {
             $this->addFlash('error', 'Impossible de vérifier le paiement.');
@@ -188,29 +190,4 @@ class PaymentController extends AbstractController
         return $this->redirectToRoute('app_cart_index');
     }
 
-    #[Route('/stripe/webhook', name: 'app_stripe_webhook', methods: ['POST'])]
-    public function webhook(Request $request): Response
-    {
-        $payload   = $request->getContent();
-        $sigHeader = $request->headers->get('stripe-signature');
-        $webhookSecret = $_ENV['STRIPE_WEBHOOK_SECRET'] ?? null;
-
-        try {
-            $event = \Stripe\Webhook::constructEvent($payload, $sigHeader, $webhookSecret);
-        } catch (\Exception $e) {
-            return new Response('Invalid webhook', 400);
-        }
-
-        if ($event->type === 'checkout.session.completed') {
-            $session = $event->data->object;
-            $order = $this->orderRepository->findOneBy(['stripeCheckoutSessionId' => $session->id]);
-
-            if ($order && !$order->isPaid()) {
-                $order->markAsPaid();
-                $this->entityManager->flush();
-            }
-        }
-
-        return new Response('Event handled', 200);
-    }
 }

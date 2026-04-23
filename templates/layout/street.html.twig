@@ -9,7 +9,23 @@
 {% block body %}
     {% include '_partials/street_header.html.twig' %}
 
-    {% block street_main %}{% endblock %}
+    <main class="street-main-content">
+        {# Flash messages displayed once for all pages #}
+        {% for message in app.flashes('success') %}
+            <div class="flash flash--success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="flash flash--danger">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('warning') %}
+            <div class="flash flash--warning">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('info') %}
+            <div class="flash flash--info">{{ message }}</div>
+        {% endfor %}
+
+        {% block street_main %}{% endblock %}
+    </main>
 
     <footer class="site-footer">
         <div class="site-footer__inner">

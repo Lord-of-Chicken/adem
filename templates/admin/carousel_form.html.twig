@@ -1,0 +1,29 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block admin_content %}
+    <h1 class="admin-title">{{ title }}</h1>
+    
+    <div class="admin-card">
+        <form method="post" class="admin-form">
+            <div class="admin-form__field">
+                <label for="title" class="admin-form__label">Titre</label>
+                <input type="text" id="title" name="title" class="admin-form__input" value="{{ media_item.title ?? '' }}" required>
+            </div>
+            
+            <div class="admin-form__field">
+                <label for="asset_path" class="admin-form__label">Chemin de l'image (ex: img/ruelle/IMG_0189.jpeg)</label>
+                <input type="text" id="asset_path" name="asset_path" class="admin-form__input" value="{{ media_item.assetPath ?? '' }}" required>
+            </div>
+            
+            <div class="admin-form__field">
+                <label for="alt" class="admin-form__label">Texte alternatif</label>
+                <input type="text" id="alt" name="alt" class="admin-form__input" value="{{ media_item.alt ?? '' }}">
+            </div>
+            
+            <div class="admin-form__actions">
+                <a href="{{ path('app_admin_carousel') }}" class="btn btn--secondary">Annuler</a>
+                <button type="submit" class="btn btn--primary">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

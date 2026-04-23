@@ -4,6 +4,9 @@ namespace App\Controller\Admin;
 
 use App\Entity\MediaItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -34,5 +37,21 @@ class MediaItemCrudController extends AbstractCrudController
             IntegerField::new('sortOrder', 'Ordre')->hideOnIndex(),
             BooleanField::new('published', 'Publié'),
         ];
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $editImageAction = Action::new('editImage', 'Éditer image', 'fa fa-edit')
+            ->linkToUrl(function(MediaItem $entity) {
+                return '/assets/' . $entity->getAssetPath();
+            })
+            ->setHtmlAttributes(['target' => '_blank'])
+            ->addCssClass('btn btn-info')
+            ->displayIf(function (MediaItem $entity) {
+                return $entity->getAssetPath() !== null;
+            });
+
+        return parent::configureActions($actions)
+            ->add(Crud::PAGE_INDEX, $editImageAction);
     }
 }

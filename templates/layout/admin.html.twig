@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin | La Ruelle d'Adem{% endblock %}
+
+{% block body_class %}page-street{% endblock %}
+
+{% block body %}
+    {% include '_partials/street_header.html.twig' %}
+    
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar__header">
+                <h2 class="admin-sidebar__title">Admin</h2>
+            </div>
+            <nav class="admin-nav">
+                <a href="{{ path('app_admin') }}" class="admin-nav__link {{ app.request.attributes.get('_route') == 'app_admin' ? 'admin-nav__link--active' : '' }}">
+                    Dashboard
+                </a>
+                <a href="{{ path('app_admin_carousel') }}" class="admin-nav__link {{ app.request.attributes.get('_route') == 'app_admin_carousel' ? 'admin-nav__link--active' : '' }}">
+                    Carousel
+                </a>
+                <a href="{{ path('app_admin_purchases') }}" class="admin-nav__link {{ app.request.attributes.get('_route') == 'app_admin_purchases' ? 'admin-nav__link--active' : '' }}">
+                    Achats
+                </a>
+                <a href="{{ path('app_admin_users') }}" class="admin-nav__link {{ app.request.attributes.get('_route') == 'app_admin_users' ? 'admin-nav__link--active' : '' }}">
+                    Utilisateurs
+                </a>
+            </nav>
+        </aside>
+        <main class="admin-main">
+            {% block admin_content %}{% endblock %}
+        </main>
+    </div>
+{% endblock %}

@@ -3,7 +3,6 @@
 {% block title %}Flower Power  Crowdfunding | {{ site_brand.title }}{% endblock %}
 
 {% block street_main %}
-<main class="main">
     {# Jeton de sécurité global pour les appels AJAX #}
     <input type="hidden" id="global-csrf-token" value="{{ csrf_token('cart_add') }}">
 

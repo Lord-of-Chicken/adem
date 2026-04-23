@@ -446,6 +446,10 @@ body {
     perspective: 1400px;
 }
 
+.street-main-content {
+    padding-top: 160px !important;
+}
+
 .main--narrow {
     max-width: 720px;
     margin: 0 auto;
@@ -1631,10 +1635,6 @@ qty-display {
     padding: 0.5rem 2rem;
     border: 3px solid #000;
     box-shadow: 4px 4px 0 #000;
-}
-
-body {
-    padding-top: 60px;
 }
 
 .btn--red {

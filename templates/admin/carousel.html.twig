@@ -1,0 +1,59 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block admin_content %}
+    <h1 class="admin-title">Gestion du Carousel</h1>
+    
+    <div class="admin-toolbar">
+        <a href="{{ path('app_admin_carousel_add') }}" class="btn btn--primary">Ajouter une image</a>
+    </div>
+    
+    <div class="admin-table-container">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Titre</th>
+                    <th>Chemin</th>
+                    <th>Publié</th>
+                    <th>Ordre</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for media_item in media_items %}
+                    <tr>
+                        <td>
+                            {% if media_item.assetPath %}
+                                <img src="{{ asset(media_item.assetPath) }}" alt="{{ media_item.alt }}" class="admin-table__thumbnail">
+                            {% else %}
+                                <span class="admin-table__placeholder">-</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ media_item.title }}</td>
+                        <td><code>{{ media_item.assetPath }}</code></td>
+                        <td>
+                            {% if media_item.published %}
+                                <span class="admin-badge admin-badge--success">Oui</span>
+                            {% else %}
+                                <span class="admin-badge admin-badge--danger">Non</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ media_item.sortOrder }}</td>
+                        <td>
+                            <div class="admin-table__actions">
+                                <a href="{{ path('app_admin_carousel_edit', { id: media_item.id }) }}" class="btn btn--secondary">Modifier</a>
+                                <form method="post" action="{{ path('app_admin_carousel_delete', { id: media_item.id }) }}" onsubmit="return confirm('Supprimer cette image ?');">
+                                    <button type="submit" class="btn btn--danger">Supprimer</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="admin-empty">Aucune image dans le carousel.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
