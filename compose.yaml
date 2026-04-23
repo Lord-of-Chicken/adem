@@ -5,7 +5,7 @@ services:
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE:-ruellenadem}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-!ChangeMe!}
-      MYSQL_USER: ${MYSQL_USER:-app}
+      MYSQL_USER: ${MYSQL_USER:-user}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-!ChangeMe!}
     ports:
       - "3306:3306"
