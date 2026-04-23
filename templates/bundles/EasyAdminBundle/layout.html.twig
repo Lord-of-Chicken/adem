@@ -9,6 +9,8 @@
     {% include '_partials/critical_css.html.twig' %}
 {% endblock %}
 
+{% block body_attr %}data-turbo="false"{% endblock %}
+
 {% block body %}
     {% include '_partials/top_bars.html.twig' %}
     {{ parent() }}

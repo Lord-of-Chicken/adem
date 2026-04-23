@@ -59,7 +59,7 @@
             </a>
 
             {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('admin') }}" class="site-nav__link">Admin</a>
+                <a href="{{ path('admin') }}" class="site-nav__link" data-turbo="false">Admin</a>
             {% endif %}
 
             {% if is_granted('ROLE_USER') %}
