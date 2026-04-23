@@ -9,7 +9,7 @@
 {% block body %}
     {% include '_partials/street_header.html.twig' %}
 
-    <main class="street-main-content">
+    <main class="street-main-content" style="padding-top: calc(var(--banner-h, 80px) + var(--header-h, 70px))">
         {# Flash messages displayed once for all pages #}
         {% for message in app.flashes('success') %}
             <div class="flash flash--success">{{ message }}</div>
