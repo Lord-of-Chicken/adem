@@ -13,7 +13,7 @@
                 <div class="gallery-grid">
                     {% for media in media_items %}
                         <figure class="gallery-item">
-                            <img src="{{ asset(media.assetPath) }}" alt="{{ media.alt|default(site_brand.title) }}" loading="lazy">
+                            <img src="/assets/{{ media.assetPath }}" alt="{{ media.alt|default(site_brand.title) }}" loading="lazy">
                         </figure>
                     {% endfor %}
                 </div>

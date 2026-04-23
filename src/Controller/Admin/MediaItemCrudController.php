@@ -30,7 +30,7 @@ class MediaItemCrudController extends AbstractCrudController
             TextField::new('title', 'Titre'),
             ImageField::new('assetPath', 'Image')
                 ->setBasePath('/assets')
-                ->setUploadDir('public/assets')
+                ->setUploadDir('assets/img/ruelle')
                 ->setUploadedFileNamePattern('[name]-[uuid].[extension]')
                 ->setRequired(false),
             TextField::new('alt', 'Texte alternatif'),
