@@ -136,11 +136,11 @@ body.page-street {
 
 /* Header — wheatpaste bar */
 .site-header {
-    position: fixed !important;
-    top: 70px;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
     background: var(--paper);
     color: var(--ink);
     border-bottom: none;
@@ -1565,7 +1565,7 @@ body {
 /* Base template styles */
 .construction-banner {
     background: #ffd700;
-    padding: 1rem;
+    padding: 1rem 1rem 1.25rem;
     text-align: center;
     position: fixed;
     top: 0;

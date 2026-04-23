@@ -61,7 +61,7 @@
                 });
             }
 
-            // Force header to stay fixed
+            // Position header below construction banner
             const siteHeader = document.querySelector('.site-header');
             const constructionBanner = document.querySelector('.construction-banner');
             if (siteHeader && constructionBanner) {
@@ -70,8 +70,11 @@
                     siteHeader.style.top = bannerHeight + 'px';
                 }
                 window.addEventListener('resize', updatePositions);
-                // Initial set
                 updatePositions();
+                // Re-measure after fonts are loaded (banner height may change)
+                if (document.fonts && document.fonts.ready) {
+                    document.fonts.ready.then(updatePositions);
+                }
             }
         });
     </script>
