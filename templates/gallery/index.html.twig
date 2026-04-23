@@ -1,30 +1,26 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout/street.html.twig' %}
 
-{% block title %}Galerie - La Ruelle d'Adem{% endblock %}
+{% block title %}{{ page.title }} | La Ruelle d'Adem{% endblock %}
 
-{% block body_class %}page-gallery{% endblock %}
-
-{% block body %}
-    <header class="page-header">
-        <div class="page-header__inner">
-            <h1 class="page-header__title">{{ sections.medias.title }}</h1>
-            <p class="page-header__intro">{{ sections.medias.intro }}</p>
-        </div>
-    </header>
-
+{% block street_main %}
+<div class="main">
     <section class="section section--gallery">
         <div class="section__inner">
+            <h1 class="section__title section__title--tag">{{ page.title }}</h1>
+            <p class="section__intro">{{ page.intro }}</p>
+
             {% if media_items is not empty %}
                 <div class="gallery-grid">
                     {% for media in media_items %}
-                        <div class="gallery-item">
-                            <img src="{{ asset(media.assetPath) }}" alt="{{ media.alt|default('La Ruelle dAdem') }}" loading="lazy">
-                        </div>
+                        <figure class="gallery-item">
+                            <img src="{{ asset(media.assetPath) }}" alt="{{ media.alt|default('La Ruelle d\'Adem') }}" loading="lazy">
+                        </figure>
                     {% endfor %}
                 </div>
             {% else %}
-                <p class="section__empty">Aucun média disponible pour le moment.</p>
+                <p class="section__hint">{{ page.empty }}</p>
             {% endif %}
         </div>
     </section>
+</div>
 {% endblock %}

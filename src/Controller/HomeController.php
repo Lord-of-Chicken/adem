@@ -65,7 +65,7 @@ final class HomeController extends AbstractController
             'media_items' => $mediaItemRepository->findPublishedOrdered(),
             'cart_line_count' => $cart->countLines(),
             'footer_line' => $siteSettingRepository->get('brand.title') ?: 'La Ruelle d\'Adem',
-            'stripe_publishable_key' => $_ENV['STRIPE_PUBLISHABLE_KEY'] ?? null,
+            'stripe_publishable_key' => $this->getParameter('stripe.publishable_key'),
         ]);
     }
 }

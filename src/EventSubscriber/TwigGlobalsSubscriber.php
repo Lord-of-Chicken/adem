@@ -4,6 +4,7 @@ namespace App\EventSubscriber;
 
 use App\Cart\CartService;
 use App\Repository\SiteSettingRepository;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -18,6 +19,7 @@ final class TwigGlobalsSubscriber implements EventSubscriberInterface
         private readonly Environment $twig,
         private readonly SiteSettingRepository $siteSettings,
         private readonly CartService $cartService,
+        private readonly ParameterBagInterface $params,
     ) {
     }
 
@@ -39,6 +41,6 @@ final class TwigGlobalsSubscriber implements EventSubscriberInterface
             'logo_asset' => $this->siteSettings->get('brand.logo_asset'),
         ]);
         $this->twig->addGlobal('cart_line_count', $this->cartService->countLines());
-        $this->twig->addGlobal('stripe_publishable_key', $_ENV['STRIPE_PUBLISHABLE_KEY']);
+        $this->twig->addGlobal('stripe_publishable_key', $this->params->get('stripe.publishable_key'));
     }
 }

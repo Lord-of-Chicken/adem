@@ -37,6 +37,14 @@ final class SecurityController extends AbstractController
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
+            'page' => [
+                'title' => 'Connexion',
+                'intro' => 'Connecte-toi pour gérer ton panier de participations.',
+                'submit' => 'Se connecter',
+                'forgot_link' => 'Mot de passe oublié ?',
+                'register_hint' => 'Pas encore de compte ?',
+                'register_link' => 'Inscription',
+            ],
         ]);
     }
 
@@ -64,13 +72,11 @@ final class SecurityController extends AbstractController
 
             $user = $userRepository->findOneByEmail($form->get('email')->getData());
 
-            // Si l'utilisateur existe, mettre à jour le token
             if ($user) {
                 $user->setResetToken($resetToken);
                 $user->setResetTokenExpiresAt($resetTokenExpiresAt);
                 $entityManager->flush();
 
-                // Envoyer l'email de réinitialisation
                 try {
                     $resetUrl = $this->generateUrl('app_reset_password', ['token' => $resetToken], UrlGeneratorInterface::ABSOLUTE_URL);
 
@@ -87,18 +93,22 @@ final class SecurityController extends AbstractController
                 } catch (\Exception $e) {
                     // Email sending failed silently
                 }
-
-                $this->addFlash('success', 'Si cet email existe, un lien de réinitialisation a été envoyé.');
-            } else {
-                // Pour des raisons de sécurité, on affiche quand même le message
-                $this->addFlash('success', 'Si cet email existe, un lien de réinitialisation a été envoyé.');
             }
+
+            // Message identique que l'utilisateur existe ou non (sécurité)
+            $this->addFlash('success', 'Si cet email existe, un lien de réinitialisation a été envoyé.');
 
             return $this->redirectToRoute('app_login');
         }
 
         return $this->render('security/reset_password_request.html.twig', [
             'requestForm' => $form->createView(),
+            'page' => [
+                'title' => 'Réinitialiser le mot de passe',
+                'intro' => 'Entrez votre adresse e-mail pour recevoir un lien de réinitialisation.',
+                'submit' => 'Envoyer le lien',
+                'back_link' => 'Retour à la connexion',
+            ],
         ]);
     }
 
@@ -135,6 +145,12 @@ final class SecurityController extends AbstractController
 
         return $this->render('security/reset_password.html.twig', [
             'resetForm' => $form->createView(),
+            'page' => [
+                'title' => 'Nouveau mot de passe',
+                'intro' => 'Choisis ton nouveau mot de passe.',
+                'submit' => 'Réinitialiser',
+                'back_link' => 'Retour à la connexion',
+            ],
         ]);
     }
 }

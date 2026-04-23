@@ -19,7 +19,19 @@ final class ProfileController extends AbstractController
     #[Route('/profil', name: 'app_profile')]
     public function index(): Response
     {
-        return $this->render('profile/index.html.twig');
+        return $this->render('profile/index.html.twig', [
+            'page' => [
+                'title' => 'Mon Profil',
+                'info_title' => 'Informations personnelles',
+                'notifications_title' => 'Notifications',
+                'actions_title' => 'Actions',
+                'edit_btn' => 'Modifier mon profil',
+                'password_btn' => 'Changer mon mot de passe',
+                'logout_btn' => 'Déconnexion',
+                'delete_btn' => 'Supprimer mon compte',
+                'delete_confirm' => 'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible et toutes vos données seront supprimées.',
+            ],
+        ]);
     }
 
     #[Route('/profil/newsletter', name: 'app_profile_toggle_newsletter', methods: ['POST'])]
@@ -61,6 +73,11 @@ final class ProfileController extends AbstractController
 
         return $this->render('profile/edit.html.twig', [
             'form' => $form->createView(),
+            'page' => [
+                'title' => 'Modifier mon profil',
+                'submit' => 'Enregistrer',
+                'cancel' => 'Annuler',
+            ],
         ]);
     }
 
@@ -94,6 +111,11 @@ final class ProfileController extends AbstractController
 
         return $this->render('profile/change_password.html.twig', [
             'form' => $form->createView(),
+            'page' => [
+                'title' => 'Changer mon mot de passe',
+                'submit' => 'Changer le mot de passe',
+                'cancel' => 'Annuler',
+            ],
         ]);
     }
 

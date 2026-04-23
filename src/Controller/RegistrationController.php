@@ -48,6 +48,13 @@ final class RegistrationController extends AbstractController
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
+            'page' => [
+                'title' => 'Créer un compte',
+                'intro' => 'Inscris-toi pour ajouter des formules au panier.',
+                'submit' => 'S\'inscrire',
+                'hint_prefix' => 'Déjà inscrit ?',
+                'hint_link' => 'Connexion',
+            ],
         ]);
     }
 }

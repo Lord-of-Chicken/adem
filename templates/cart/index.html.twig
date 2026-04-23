@@ -9,10 +9,10 @@
 
     <section class="section">
         <div class="section__inner">
-            <h1 class="section__title section__title--tag">Panier</h1>
+            <h1 class="section__title section__title--tag">{{ page.title }}</h1>
 
             {% if lines is empty %}
-                <p class="section__hint">Ton panier est vide. <a href="{{ path('app_home') }}#offres">Voir les offres</a></p>
+                <p class="section__hint">{{ page.empty_hint }} <a href="{{ path('app_home') }}#offres">{{ page.empty_link }}</a></p>
             {% else %}
                 <ul class="cart-list">
                     {% for row in lines %}
@@ -60,7 +60,7 @@
 
                                 <form method="post" action="{{ path('app_cart_remove', { lineId: line.line_id }) }}" onsubmit="return confirm('Retirer cette ligne ?');">
                                     <input type="hidden" name="_token" value="{{ csrf_token('cart_remove') }}">
-                                    <button type="submit" class="site-header__link-btn">Retirer</button>
+                                    <button type="submit" class="site-header__link-btn">{{ page.remove_btn }}</button>
                                 </form>
                             </div>
                         </li>
@@ -69,18 +69,18 @@
 
                 <div class="cart-summary card">
                     <p class="cart-total">
-                        <strong>Total estimé : <span id="cart-total-display">{{ catalog.formatEurosFromCents(total_cents) }}</span>&nbsp;€</strong>
+                        <strong>{{ page.total_label }} : <span id="cart-total-display">{{ catalog.formatEurosFromCents(total_cents) }}</span>&nbsp;€</strong>
                     </p>
                     
                     <div class="cart-actions">
                         <form method="post" action="{{ path('app_cart_clear') }}" onsubmit="return confirm('Voulez-vous vider tout le panier ?');" class="display-inline-block">
                             <input type="hidden" name="_token" value="{{ csrf_token('cart_clear') }}">
-                            <button type="submit" class="btn btn--secondary">Vider le panier</button>
+                            <button type="submit" class="btn btn--secondary">{{ page.clear_btn }}</button>
                         </form>
                         
                         {# Lien direct vers le checkout PHP #}
                         <a href="{{ path('app_checkout') }}" class="btn btn--primary">
-                            Procéder au paiement
+                            {{ page.checkout_btn }}
                         </a>
                     </div>
                 </div>

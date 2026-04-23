@@ -731,28 +731,28 @@ body {
 .grid--tiers {
     grid-template-columns: 1fr;
 }
-/* --- CORRECTION VISIBILITÉ --- */
+/* --- QUANTITÉS --- */
 .qty-display {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    min-width: 60px !important;
-    text-align: center !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 65px;
+    text-align: center;
 }
 
 .qty-number {
-    font-size: 1.15rem !important;
-    font-weight: 900 !important;
-    color: #000000 !important; /* NOIR FORCE */
-    line-height: 1 !important;
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: var(--ink);
+    line-height: 1;
 }
 
 .qty-label {
-    font-size: 0.7rem !important;
-    color: #000000 !important; /* NOIR FORCE */
-    text-transform: uppercase !important;
-    letter-spacing: 0.04em !important;
-    margin-top: 0.1rem !important;
+    font-size: 0.75rem;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
 }
 
 @media (min-width: 560px) {
@@ -811,11 +811,6 @@ body {
 
 .card--center {
     max-width: 500px;
-    margin: 0 auto;
-}
-
-.card--center-small {
-    max-width: 501px;
     margin: 0 auto;
 }
 
@@ -984,52 +979,7 @@ body {
     border-color: var(--muted);
 }
 
-qty-display {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 60px;
-    text-align: center;
-    background: transparent; /* Assure que le fond n'est pas bizarre */
-}
-
-/* On cible très précisément pour forcer le noir */
-.qty-controls .qty-number,
-.qty-display .qty-number,
-.qty-display--compact .qty-number {
-    font-size: 1.1rem;
-    font-weight: 800 !important;
-    color: #000000 !important; /* NOIR PUR */
-    line-height: 1;
-    opacity: 1 !important;
-    display: inline-block !important;
-}
-
-.qty-controls .qty-label,
-.qty-display .qty-label,
-.qty-display--compact .qty-label {
-    font-size: 0.7rem;
-    color: #333333 !important; /* GRIS TRÈS FONCÉ */
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-top: 0.1rem;
-    opacity: 1 !important;
-}
-
-.qty-number {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: var(--ink); /* Changé : de var(--paper) à var(--ink) (noir) */
-    line-height: 1;
-}
-
-.qty-label {
-    font-size: 0.7rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-top: 0.1rem;
-}
+/* (qty-display, qty-number, qty-label consolidated above) */
 
 /* Styles des boutons + et - supprimés pour réparer l'interface */
 
@@ -1051,14 +1001,6 @@ qty-display {
     .qty-number {
         font-size: 1rem;
     }
-    
-  .qty-label {
-    font-size: 0.7rem;
-    color: var(--ink); /* Changé : de var(--muted) à var(--ink) (noir) */
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-top: 0.1rem;
-}
     
     .qty-controls--card .qty-btn {
         width: 24px;
@@ -1454,7 +1396,6 @@ qty-display {
     text-transform: uppercase;
     letter-spacing: 0.04em;
     margin-bottom: 0.5rem;
-    margin-bottom: 0.5rem;
 }
 
 .form__hint {
@@ -1570,45 +1511,33 @@ qty-display {
 
 /* Street layout page styles */
 .page-street .section__title,
-.page-street .section__intro,
 .page-street .section__subtitle,
 .page-street .section__hint {
-    color: #fff !important;
+    color: var(--paper);
 }
 
-/* Override: gray color for specific section intros */
+.page-street .section__intro {
+    color: var(--spray-cyan);
+}
+
 .page-street #vip .section__intro,
 .page-street #newsletter .section__intro,
 .page-street #don-libre .section__intro {
-    color: rgba(244, 241, 234, 0.5) !important;
+    color: rgba(244, 241, 234, 0.5);
 }
 
 .page-street .section--auth .section__title,
 .page-street .section--auth .section__intro,
 .page-street .section--auth .section__subtitle,
 .page-street .section--auth .section__hint {
-    color: var(--ink) !important;
+    color: var(--ink);
 }
 
 .page-street .section--contact .section__title,
 .page-street .section--contact .section__intro,
 .page-street .section--contact .section__subtitle,
 .page-street .section--contact .section__hint {
-    color: var(--ink) !important;
-}
-
-.page-street .card__price,
-.page-street .card__total,
-.page-street .cart-total,
-.page-street .form__hint,
-.page-street .form__note {
-    color: inherit !important;
-}
-
-.page-street .site-footer__inner p,
-.page-street .site-footer__text,
-.page-street .btn {
-    color: inherit !important;
+    color: var(--ink);
 }
 
 /* Base template styles */
@@ -1720,6 +1649,45 @@ textarea.form__input {
     box-shadow: 8px 8px 0 var(--ink);
 }
 
+/* Gallery grid */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+}
+
+.gallery-item {
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius-tape);
+    border: var(--outline);
+    box-shadow: 6px 6px 0 var(--ink);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gallery-item:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 var(--ink);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    display: block;
+}
+
+@media (max-width: 480px) {
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gallery-item img {
+        height: 200px;
+    }
+}
+
 /* Footer */
 .site-footer {
     position: relative;
@@ -1741,75 +1709,4 @@ textarea.form__input {
     font-family: var(--font-marker);
     font-size: 1rem;
     color: var(--spray-lime);
-}
-/* ============================================================
-   CORRECTION FINALE : QUANTITÉS ET INTROS EN NOIR
-   ============================================================ */
-
-/* Force le texte des sections en blanc */
-.page-street .section__title,
-.page-street .section__subtitle,
-.page-street .section__hint,
-#medias .section__title,
-#medias .section__subtitle,
-#medias .section__hint,
-#offres .section__title,
-#offres .section__subtitle,
-#offres .section__hint,
-#vip .section__title,
-#vip .section__hint,
-#newsletter .section__title,
-#newsletter .section__subtitle,
-#newsletter .section__hint,
-#don-libre .section__title,
-#don-libre .section__subtitle,
-#don-libre .section__hint {
-    color: var(--paper) !important;
-}
-
-/* Textes intro en gris 50% au lieu de blanc */
-#medias .section__intro,
-#offres .section__intro,
-#don-libre .section__intro {
-    color: rgba(244, 241, 234, 0.5) !important;
-}
-
-/* Exceptions - garder certaines couleurs */
-.page-street .site-footer__inner p,
-.page-street .site-footer__text,
-.page-street .btn:not(.btn--primary):not(.btn--secondary),
-.page-street .spray-lime,
-.page-street [style*="color: var(--spray-lime)"],
-.page-street [style*="color:var(--spray-lime)"] {
-    color: inherit !important;
-}
-
-/* Force l'affichage du bloc quantité */
-.qty-display, .qty-display--compact {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-width: 65px !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-/* Force le chiffre en NOIR sur les cartes blanches */
-.qty-number {
-    color: #000000 !important; 
-    font-size: 1.2rem !important;
-    font-weight: 900 !important;
-    line-height: 1 !important;
-    display: inline-block !important;
-}
-
-/* Force le mot "pièce" en NOIR */
-.qty-label {
-    color: #000000 !important;
-    font-size: 0.75rem !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
-    margin-top: 2px !important;
-    display: inline-block !important;
 }

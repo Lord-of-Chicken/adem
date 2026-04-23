@@ -109,7 +109,7 @@
         <div class="section__inner">
             <h2 class="section__title section__title--tag">{{ sections.don_libre.title }}</h2>
             <p class="section__intro">{{ sections.don_libre.intro }}</p>
-            <article class="card card--tier card--featured card--sticker card--center-small">
+            <article class="card card--tier card--featured card--sticker card--center">
                 <div class="form">
                     <label class="form__label">Montant (€) :</label>
                     <input type="number" id="free-amount" class="form__input form__input--don-libre" placeholder="Ex: 15" min="1">
@@ -134,12 +134,11 @@
                 {% if is_granted('ROLE_USER') %}
                     <a href="{{ path('app_profile') }}" class="btn btn--primary">Voir mon profil</a>
                 {% else %}
-                    <a href="/inscription" class="btn btn--primary" style="color: #000 !important;">Créer un compte pour recevoir les infos</a>
+                    <a href="{{ path('app_register') }}" class="btn btn--primary">Créer un compte pour recevoir les infos</a>
                 {% endif %}
             </div>
         </div>
     </section>
-</main>
 {% endblock %}
 
 {% block javascripts %}
@@ -219,11 +218,5 @@
         .catch(err => alert('Erreur technique.'));
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.qty-number').forEach(el => {
-            const id = el.id.replace('num-', '');
-            const val = parseInt(el.textContent);
-        });
-    });
     </script>
 {% endblock %}

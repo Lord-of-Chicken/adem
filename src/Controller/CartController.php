@@ -38,7 +38,16 @@ final class CartController extends AbstractController
             'total_cents' => $cart->totalCents($catalog),
             'catalog'     => $catalog,
             'cart_line_count' => $cart->countLines(),
-            'stripe_publishable_key' => $_ENV['STRIPE_PUBLISHABLE_KEY'] ?? null,
+            'stripe_publishable_key' => $this->getParameter('stripe.publishable_key'),
+            'page' => [
+                'title' => 'Panier',
+                'empty_hint' => 'Ton panier est vide.',
+                'empty_link' => 'Voir les offres',
+                'total_label' => 'Total estimé',
+                'clear_btn' => 'Vider le panier',
+                'checkout_btn' => 'Procéder au paiement',
+                'remove_btn' => 'Retirer',
+            ],
         ]);
     }
 

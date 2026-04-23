@@ -6,7 +6,7 @@
 <div class="main main--narrow">
     <section class="section">
         <div class="section__inner">
-            <h1 class="section__title">Modifier mon profil</h1>
+            <h1 class="section__title">{{ page.title }}</h1>
             
             <div class="card">
                 {{ form_start(form) }}
@@ -18,8 +18,8 @@
                         {{ form_row(form.newsletter) }}
                         
                         <div class="form-actions">
-                            <button type="submit" class="btn btn--primary">Enregistrer</button>
-                            <a href="{{ path('app_profile') }}" class="btn btn--secondary">Annuler</a>
+                            <button type="submit" class="btn btn--primary">{{ page.submit }}</button>
+                            <a href="{{ path('app_profile') }}" class="btn btn--secondary">{{ page.cancel }}</a>
                         </div>
                     </div>
                 {{ form_end(form) }}

@@ -8,6 +8,7 @@ use App\Repository\SiteSettingRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class GalleryController extends AbstractController
 {
@@ -22,15 +23,13 @@ final class GalleryController extends AbstractController
 
         return $this->render('gallery/index.html.twig', [
             'nav_links' => [
-                ['label' => 'Offres', 'href' => '#offres'],
-                ['label' => 'Médias', 'href' => path('app_gallery')],
+                ['label' => 'Offres', 'href' => $this->generateUrl('app_home') . '#offres'],
+                ['label' => 'Médias', 'href' => $this->generateUrl('app_gallery')],
             ],
-            'sections' => [
-                'medias' => [
-                    'id' => 'medias',
-                    'title' => 'Galerie',
-                    'intro' => $mediasIntro,
-                ],
+            'page' => [
+                'title' => 'Galerie',
+                'intro' => $mediasIntro,
+                'empty' => 'Aucun média disponible pour le moment.',
             ],
             'media_items' => $mediaItemRepository->findPublishedOrdered(),
             'cart_line_count' => $cart->countLines(),

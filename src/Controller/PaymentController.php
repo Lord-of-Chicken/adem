@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class PaymentController extends AbstractController
+final class PaymentController extends AbstractController
 {
     public function __construct(
         private readonly CartService $cartService,
@@ -38,11 +38,7 @@ class PaymentController extends AbstractController
             return $this->redirectToRoute('app_cart_index');
         }
 
-        $stripeKey = $_ENV['STRIPE_SECRET_KEY'] ?? null;
-        
-        if (!$stripeKey) {
-            throw new \RuntimeException('La clé secrète Stripe n\'est pas configurée.');
-        }
+        $stripeKey = $this->getParameter('stripe_secret_key');
         Stripe::setApiKey($stripeKey);
 
         if ($user) {
@@ -157,10 +153,7 @@ class PaymentController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
-        $stripeKey = $_ENV['STRIPE_SECRET_KEY'] ?? null;
-        if (!$stripeKey) {
-            throw new \RuntimeException('La clé secrète Stripe n\'est pas configurée.');
-        }
+        $stripeKey = $this->getParameter('stripe_secret_key');
         Stripe::setApiKey($stripeKey);
 
         try {

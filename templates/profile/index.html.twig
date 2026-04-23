@@ -6,10 +6,10 @@
 <div class="main main--narrow">
     <section class="section">
         <div class="section__inner">
-            <h1 class="section__title">Mon Profil</h1>
+            <h1 class="section__title">{{ page.title }}</h1>
             
             <div class="card">
-                <h2 class="card__title">Informations personnelles</h2>
+                <h2 class="card__title">{{ page.info_title }}</h2>
                 <dl class="profile-info">
                     <dt>Prénom :</dt>
                     <dd>{{ app.user.firstName ?? '-' }}</dd>
@@ -24,7 +24,7 @@
                     <dd>{{ app.user.email }}</dd>
                 </dl>
                 
-                <h3 class="card__title margin-top-2">Notifications</h3>
+                <h3 class="card__title margin-top-2">{{ page.notifications_title }}</h3>
                 <div class="profile-info">
                     <p>Statut newsletter : <strong>{{ app.user.newsletter ? 'Inscrit' : 'Non inscrit' }}</strong></p>
                     <form method="post" action="{{ path('app_profile_toggle_newsletter') }}" class="display-inline">
@@ -35,23 +35,23 @@
                     </form>
                 </div>
 
-                <h3 class="card__title margin-top-2">Actions</h3>
+                <h3 class="card__title margin-top-2">{{ page.actions_title }}</h3>
                 <div class="profile-actions">
-                    <a href="{{ path('app_profile_edit') }}" class="btn btn--primary">Modifier mon profil</a>
-                    <a href="{{ path('app_profile_change_password') }}" class="btn btn--secondary">Changer mon mot de passe</a>
+                    <a href="{{ path('app_profile_edit') }}" class="btn btn--primary">{{ page.edit_btn }}</a>
+                    <a href="{{ path('app_profile_change_password') }}" class="btn btn--secondary">{{ page.password_btn }}</a>
                 </div>
                 
                 <div class="profile-actions">
                     <form method="post" action="{{ path('_logout_main') }}" class="display-inline">
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
-                        <button type="submit" class="btn btn--secondary spray-magenta">Déconnexion</button>
+                        <button type="submit" class="btn btn--secondary spray-magenta">{{ page.logout_btn }}</button>
                     </form>
                 </div>
                 
                 <div class="profile-actions">
-                    <form method="post" action="{{ path('app_profile_delete') }}" class="display-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible et toutes vos données seront supprimées.');">
+                    <form method="post" action="{{ path('app_profile_delete') }}" class="display-inline" onsubmit="return confirm('{{ page.delete_confirm }}');">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete_profile') }}">
-                        <button type="submit" class="btn btn--secondary delete-profile">Supprimer mon compte</button>
+                        <button type="submit" class="btn btn--secondary delete-profile">{{ page.delete_btn }}</button>
                     </form>
                 </div>
             </div>

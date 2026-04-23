@@ -6,8 +6,8 @@
 <div class="main main--narrow">
     <section class="section section--auth">
         <div class="section__inner section__inner--narrow">
-            <h1 class="section__title section__title--tag">Contactez-nous</h1>
-            <p class="section__intro">Une question ? Une suggestion ? N'hésitez pas à nous envoyer un message.</p>
+            <h1 class="section__title section__title--tag">{{ page.title }}</h1>
+            <p class="section__intro">{{ page.intro }}</p>
 
             <div class="card">
                 {{ form_start(form, {'attr': {'class': 'form'}}) }}
@@ -16,7 +16,7 @@
                 {{ form_row(form.email, { row_attr: { class: 'form__field' }, attr: { class: 'form__input' } }) }}
                 {{ form_row(form.message, { row_attr: { class: 'form__field' }, attr: { class: 'form__input', 'rows': '6' } }) }}
 
-                <button type="submit" class="btn btn--primary">Envoyer le message</button>
+                <button type="submit" class="btn btn--primary">{{ page.submit }}</button>
 
                 {{ form_end(form) }}
             </div>
