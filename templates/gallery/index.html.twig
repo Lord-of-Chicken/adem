@@ -1,19 +1,19 @@
 {% extends 'layout/street.html.twig' %}
 
-{% block title %}{{ page.title }} | La Ruelle d'Adem{% endblock %}
+{% block title %}{{ page.title }} | {{ site_brand.title }}{% endblock %}
 
 {% block street_main %}
 <div class="main">
     <section class="section section--gallery">
         <div class="section__inner">
             <h1 class="section__title section__title--tag">{{ page.title }}</h1>
-            <p class="section__intro">{{ page.intro }}</p>
+            <p class="section__intro">{{ medias_intro }}</p>
 
             {% if media_items is not empty %}
                 <div class="gallery-grid">
                     {% for media in media_items %}
                         <figure class="gallery-item">
-                            <img src="{{ asset(media.assetPath) }}" alt="{{ media.alt|default('La Ruelle d\'Adem') }}" loading="lazy">
+                            <img src="{{ asset(media.assetPath) }}" alt="{{ media.alt|default(site_brand.title) }}" loading="lazy">
                         </figure>
                     {% endfor %}
                 </div>

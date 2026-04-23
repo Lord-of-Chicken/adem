@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Participation\ParticipationCatalog;
 use App\Repository\MediaItemRepository;
-use App\Repository\SiteSettingRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,15 +14,9 @@ final class HomeController extends AbstractController
     public function index(
         ParticipationCatalog $catalog,
         MediaItemRepository $mediaItemRepository,
-        SiteSettingRepository $siteSettingRepository,
     ): Response {
-        $brandTagline = $siteSettingRepository->get('brand.tagline') ?: 'Fais une fleur à la Ruelle d\'Adem';
-        $mediasIntro = $siteSettingRepository->get('section.medias.intro')
-            ?: 'Quelques images de la ruelle — le lieu du projet, tel qu’on le vit au quotidien.';
-
         return $this->render('home/index.html.twig', [
             'hero' => [
-                'eyebrow' => str_replace('\n', ' ', $brandTagline), 
                 'title' => ' Crowdfunding',
                 'lead' => 'Le crowdfunding est un mécanisme qui permet de lever des fonds auprès du grand public — c\'est-à-dire auprès de toi.',
             ],
@@ -50,7 +43,6 @@ final class HomeController extends AbstractController
                 'medias' => [
                     'id' => 'medias',
                     'title' => 'Galerie',
-                    'intro' => $mediasIntro,
                 ],
                 'newsletter' => [
                     'id' => 'newsletter',

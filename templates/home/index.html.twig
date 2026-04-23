@@ -9,7 +9,7 @@
     {# SECTION HERO #}
     <section class="hero hero--spray">
         <div class="hero__content hero__content--pop">
-            <p class="hero__eyebrow">{{ hero.eyebrow|raw }}</p>
+            <p class="hero__eyebrow">{{ site_brand.tagline|replace({'\n': ' '})|raw }}</p>
             <h1 class="hero__title"><span class="hero__title-line">{{ hero.title }}</span></h1>
             <p class="hero__lead">{{ hero.lead }}</p>
         </div>
@@ -19,13 +19,13 @@
     <section class="section" id="medias">
         <div class="section__inner">
             <h2 class="section__title section__title--tag">{{ sections.medias.title }}</h2>
-            <p class="section__intro">{{ sections.medias.intro }}</p>
+            <p class="section__intro">{{ medias_intro }}</p>
             {% if media_items is not empty %}
                 <div class="swiper media-swiper">
                     <div class="swiper-wrapper">
                         {% for media in media_items %}
                             <div class="swiper-slide">
-                                <img src="{{ asset(media.assetPath) }}" alt="{{ media.alt|default('La Ruelle dAdem') }}" loading="lazy">
+                                <img src="{{ asset(media.assetPath) }}" alt="{{ media.alt|default(site_brand.title) }}" loading="lazy">
                             </div>
                         {% endfor %}
                     </div>

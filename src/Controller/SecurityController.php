@@ -81,9 +81,9 @@ final class SecurityController extends AbstractController
                     $resetUrl = $this->generateUrl('app_reset_password', ['token' => $resetToken], UrlGeneratorInterface::ABSOLUTE_URL);
 
                     $email = (new Email())
-                        ->from('info@ruelledadem.com')
+                        ->from($this->getParameter('app.contact_email'))
                         ->to($user->getEmail())
-                        ->subject('Réinitialisation de votre mot de passe - La Ruelle d\'Adem')
+                        ->subject('Réinitialisation de votre mot de passe')
                         ->text('Pour réinitialiser votre mot de passe, cliquez sur ce lien : ' . $resetUrl)
                         ->html('<p>Pour réinitialiser votre mot de passe, cliquez sur ce lien :</p>' .
                                '<p><a href="' . $resetUrl . '">Réinitialiser mon mot de passe</a></p>' .

@@ -42,6 +42,8 @@ final class TwigGlobalsSubscriber implements EventSubscriberInterface
         ]);
         $this->twig->addGlobal('cart_line_count', $this->cartService->countLines());
         $this->twig->addGlobal('footer_line', $this->siteSettings->get('brand.title') ?: 'La Ruelle d\'Adem');
+        $this->twig->addGlobal('medias_intro', $this->siteSettings->get('section.medias.intro')
+            ?: 'Quelques images de la ruelle — le lieu du projet, tel qu\'on le vit au quotidien.');
         $this->twig->addGlobal('stripe_publishable_key', $this->params->get('stripe.publishable_key'));
     }
 }

@@ -22,11 +22,12 @@ final class ContactController extends AbstractController
                 $data = $form->getData();
 
                 try {
+                    $contactEmail = $this->getParameter('app.contact_email');
                     $email = (new Email())
-                        ->from('info@ruelledadem.com')
-                        ->to('info@ruelledadem.com')
+                        ->from($contactEmail)
+                        ->to($contactEmail)
                         ->replyTo($data['email'])
-                        ->subject('Contact depuis La Ruelle d\'Adem - ' . $data['name'])
+                        ->subject('Contact - ' . $data['name'])
                         ->text($data['name'] . ' (' . $data['email'] . '):' . "\n\n" . $data['message'])
                         ->html('<h3>' . htmlspecialchars($data['name']) . ' (' . htmlspecialchars($data['email']) . ')</h3>' .
                                '<p>' . nl2br(htmlspecialchars($data['message'])) . '</p>');
