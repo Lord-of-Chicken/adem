@@ -29,17 +29,17 @@ final class HomeController extends AbstractController
                 'offres' => [
                     'id' => 'offres',
                     'title' => 'Offres de soutien',
-                    'intro' => 'Choisis une formule simple ou une formule V.I.P. avec mention de ton nom.',
+                    'intro' => '',
                 ],
                 'vip' => [
                     'id' => 'vip',
                     'title' => 'Formules V.I.P.',
-                    'subtitle' => 'Avec indication du nom du donateur',
+                    'subtitle' => 'Grâce à cette formule, tu peux personnaliser ta jardinière ou ta palette. De quoi épater tes amis lorsque tu leur fera visiter la ruelle d\'Adem, ou lorsqu\'il y découvriront ton nom.',
                 ],
                 'don_libre' => [
                     'id' => 'don-libre',
                     'title' => 'Don libre',
-                    'intro' => 'Envie de contribuer différemment ? Fixez vous-même votre montant.',
+                    'intro' => 'Tu peux aussi contribuer en offrant le montant de ton choix. Et, si telle est ton envie, nous pouvons afficher ton nom sur ce site.',
                 ],
                 'medias' => [
                     'id' => 'medias',

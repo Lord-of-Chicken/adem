@@ -42,8 +42,11 @@
     {# SECTION CROWDFUNDING #}
     <section class="hero hero--spray" id="crowdfunding">
         <div class="hero__content hero__content--pop">
-            <h1 class="hero__title"><span class="hero__title-line">CROWDFUNDING</span></h1>
-            <p class="hero__lead">Le crowdfunding est un mécanisme qui permet de lever des fonds auprès du grand public — c'est-à-dire auprès de toi.</p>
+            <h1 class="hero__title"><span class="hero__title-line">ADEM DEMANDE TON AIDE</span></h1>
+            <p class="hero__lead">Cent mètres de ruelle à décorer, fleurir et entretenir, cela coûte. L’aide de ses parents, amis et le subside communal ne suffisent pas. Voilà pourquoi Adem te propose d’offrir des bégonias, des jardinières ou des palettes à sa ruelle*. En formule V.I.P, tu peux même les personnaliser
+Les indications Bégonias, jardinières et palettes (non VIP) sont donnés à titre indicatifs. Les fonds récolté pouvant être utilisés pour l’achat d’autres fleurs et plante ou pour la décoration et l’entretien de La Ruelle d’Adem.  
+COMBIEN DE FLEURS A 1€ DE JARDINIERES OU DE PALETTES COMPTES TU OFFRIR?
+</p>
         </div>
     </section>
 
@@ -132,6 +135,19 @@
                     </button>
                 </div>
             </article>
+            <div class="section__actions margin-top-1">
+                <a href="{{ path('app_cart_index') }}" class="btn btn--primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    Panier
+                    {% if cart_line_count is defined and cart_line_count > 0 %}
+                        <span class="site-header__cart-badge">{{ cart_line_count }}</span>
+                    {% endif %}
+                </a>
+            </div>
         </div>
     </section>
 
