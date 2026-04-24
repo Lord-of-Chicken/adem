@@ -2,11 +2,10 @@
 
 namespace App\Participation;
 
-use App\Entity\ParticipationTier;
-use App\Repository\ParticipationTierRepository;
+use App\Controller\HomeController;
 
 /**
- * Catalogue des formules (données Doctrine / PostgreSQL).
+ * Catalogue des formules (définitions dans HomeController::TIERS).
  *
  * @phpstan-type Tier array{
  *     id: string,
@@ -25,20 +24,27 @@ use App\Repository\ParticipationTierRepository;
  */
 final class ParticipationCatalog
 {
-    public function __construct(
-        private readonly ParticipationTierRepository $tierRepository,
-    ) {
+    /** @var array<string, Tier> */
+    private array $tiers;
+
+    public function __construct()
+    {
+        $this->tiers = [];
+        foreach (HomeController::TIERS as $def) {
+            $this->tiers[$def['id']] = $def;
+        }
+    }
+
+    /** @return array<string, Tier> */
+    public function all(): array
+    {
+        return $this->tiers;
     }
 
     /** @return Tier|null */
     public function get(string $id): ?array
     {
-        $entity = $this->tierRepository->find($id);
-        if (!$entity instanceof ParticipationTier || !$entity->isActive()) {
-            return null;
-        }
-
-        return $entity->toCatalogArray();
+        return $this->tiers[$id] ?? null;
     }
 
     /**
@@ -52,24 +58,6 @@ final class ParticipationCatalog
         }
 
         return $tier;
-    }
-
-    /** @return list<Tier> */
-    public function standardForHome(): array
-    {
-        return array_map(
-            static fn (ParticipationTier $t) => $t->toCatalogArray(),
-            $this->tierRepository->findActiveByGroupOrdered('standard'),
-        );
-    }
-
-    /** @return list<Tier> */
-    public function vipForHome(): array
-    {
-        return array_map(
-            static fn (ParticipationTier $t) => $t->toCatalogArray(),
-            $this->tierRepository->findActiveByGroupOrdered('vip'),
-        );
     }
 
     /**
