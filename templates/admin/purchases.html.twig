@@ -2,7 +2,9 @@
 
 {% block admin_content %}
     <h1 class="admin-title">Achats Finalisés</h1>
-    
+    <div class="admin-toolbar">
+        <a href="/admin/order" class="admin-btn admin-btn--primary">Gérer dans EasyAdmin</a>
+    </div>
     <div class="admin-table-container">
         <table class="admin-table">
             <thead>
@@ -16,9 +18,26 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td colspan="6" class="admin-empty">Aucun achat finalisé pour le moment.</td>
-                </tr>
+                {% for purchase in purchases %}
+                    <tr>
+                        <td>{{ purchase.id }}</td>
+                        <td>{{ purchase.user ? purchase.user.email : 'Anonyme' }}</td>
+                        <td>{{ (purchase.totalCents / 100)|number_format(2, ',', ' ') }} €</td>
+                        <td>{{ purchase.paidAt ? purchase.paidAt|date('d/m/Y H:i') : '-' }}</td>
+                        <td>
+                            <span class="admin-badge admin-badge--{{ purchase.status }}">
+                                {{ purchase.status == 'paid' ? 'Payé' : purchase.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ path('app_admin_purchase_detail', {id: purchase.id}) }}" class="admin-btn admin-btn--small">Détails</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="admin-empty">Aucun achat finalisé pour le moment.</td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

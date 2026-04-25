@@ -1,0 +1,103 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block admin_content %}
+    <h1 class="admin-title">Détail de l'Achat #{{ purchase.id }}</h1>
+    
+    <div class="admin-card">
+        <div class="admin-card__header">
+            <h2 class="admin-card__title">Informations Générales</h2>
+        </div>
+        <div class="admin-card__body">
+            <div class="admin-info-grid">
+                <div class="admin-info-item">
+                    <span class="admin-info-label">ID:</span>
+                    <span class="admin-info-value">{{ purchase.id }}</span>
+                </div>
+                <div class="admin-info-item">
+                    <span class="admin-info-label">Statut:</span>
+                    <span class="admin-badge admin-badge--{{ purchase.status }}">
+                        {{ purchase.status == 'paid' ? 'Payé' : purchase.status }}
+                    </span>
+                </div>
+                <div class="admin-info-item">
+                    <span class="admin-info-label">Montant:</span>
+                    <span class="admin-info-value">{{ (purchase.totalCents / 100)|number_format(2, ',', ' ') }} €</span>
+                </div>
+                <div class="admin-info-item">
+                    <span class="admin-info-label">Date de création:</span>
+                    <span class="admin-info-value">{{ purchase.createdAt|date('d/m/Y H:i') }}</span>
+                </div>
+                <div class="admin-info-item">
+                    <span class="admin-info-label">Date de paiement:</span>
+                    <span class="admin-info-value">{{ purchase.paidAt ? purchase.paidAt|date('d/m/Y H:i') : '-' }}</span>
+                </div>
+                <div class="admin-info-item">
+                    <span class="admin-info-label">Stripe Session ID:</span>
+                    <span class="admin-info-value">{{ purchase.stripeCheckoutSessionId }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-card">
+        <div class="admin-card__header">
+            <h2 class="admin-card__title">Client</h2>
+        </div>
+        <div class="admin-card__body">
+            {% if purchase.user %}
+                <div class="admin-info-grid">
+                    <div class="admin-info-item">
+                        <span class="admin-info-label">Email:</span>
+                        <span class="admin-info-value">{{ purchase.user.email }}</span>
+                    </div>
+                    <div class="admin-info-item">
+                        <span class="admin-info-label">Nom:</span>
+                        <span class="admin-info-value">{{ purchase.user.lastName ?? '-' }}</span>
+                    </div>
+                    <div class="admin-info-item">
+                        <span class="admin-info-label">Prénom:</span>
+                        <span class="admin-info-value">{{ purchase.user.firstName ?? '-' }}</span>
+                    </div>
+                </div>
+            {% else %}
+                <p class="admin-empty">Client anonyme</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="admin-card">
+        <div class="admin-card__header">
+            <h2 class="admin-card__title">Contenu du Panier</h2>
+        </div>
+        <div class="admin-card__body">
+            {% if purchase.cartData is not empty %}
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th>Quantité</th>
+                            <th>Prix unitaire</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in purchase.cartData %}
+                            <tr>
+                                <td>{{ item.title ?? item.id ?? 'Produit' }}</td>
+                                <td>{{ item.quantity ?? 1 }}</td>
+                                <td>{{ ((item.price ?? 0) / 100)|number_format(2, ',', ' ') }} €</td>
+                                <td>{{ ((item.price ?? 0) * (item.quantity ?? 1) / 100)|number_format(2, ',', ' ') }} €</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="admin-empty">Aucun détail du panier disponible</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="admin-actions">
+        <a href="{{ path('app_admin_purchases') }}" class="admin-btn admin-btn--secondary">Retour à la liste</a>
+    </div>
+{% endblock %}

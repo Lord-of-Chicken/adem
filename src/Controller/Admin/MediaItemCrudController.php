@@ -29,7 +29,7 @@ class MediaItemCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             TextField::new('title', 'Titre'),
             ImageField::new('assetPath', 'Image')
-                ->setBasePath('/assets')
+                ->setBasePath('/')
                 ->setUploadDir('assets/img/ruelle')
                 ->setUploadedFileNamePattern('[name]-[uuid].[extension]')
                 ->setRequired(false),
