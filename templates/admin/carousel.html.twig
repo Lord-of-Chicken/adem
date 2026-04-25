@@ -24,7 +24,7 @@
                     <tr>
                         <td>
                             {% if media_item.assetPath %}
-                                <img src="/assets/{{ media_item.assetPath }}" alt="{{ media_item.alt }}" class="admin-table__thumbnail">
+                                <img src="/{{ media_item.assetPath }}" alt="{{ media_item.alt }}" class="admin-table__thumbnail">
                             {% else %}
                                 <span class="admin-table__placeholder">-</span>
                             {% endif %}

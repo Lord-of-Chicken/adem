@@ -27,7 +27,7 @@
                     <div class="swiper-wrapper">
                         {% for media in media_items %}
                             <div class="swiper-slide">
-                                <img src="/assets/{{ media.assetPath }}" alt="{{ media.alt|default(site_brand.title) }}" loading="lazy">
+                                <img src="/{{ media.assetPath }}" alt="{{ media.alt|default(site_brand.title) }}" loading="lazy">
                             </div>
                         {% endfor %}
                     </div>
