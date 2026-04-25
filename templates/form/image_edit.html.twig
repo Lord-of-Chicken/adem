@@ -1,0 +1,293 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Éditer image{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Éditer image</h1>
+        
+        <div class="row">
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                        <div class="image-editor-canvas">
+                            {{ form_widget(form.image) }}
+                        </div>
+                    {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Contrôles</h5>
+                        
+                        <div class="mb-3">
+                            <h6>Rotation</h6>
+                            <button type="button" class="btn btn-secondary btn-sm w-100 mb-2" id="rotateLeftBtn">
+                                Rotation gauche
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm w-100" id="rotateRightBtn">
+                                Rotation droite
+                            </button>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h6>Flip</h6>
+                            <button type="button" class="btn btn-secondary btn-sm w-100 mb-2" id="flipHorizontalBtn">
+                                Flip horizontal
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm w-100" id="flipVerticalBtn">
+                                Flip vertical
+                            </button>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h6>Filtres</h6>
+                            <div class="mb-2">
+                                <label class="form-label">Contraste: <span id="contrast-value">100%</span></label>
+                                <input type="range" class="form-range" id="contrast-slider" min="0" max="200" value="100">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Luminosité: <span id="brightness-value">100%</span></label>
+                                <input type="range" class="form-range" id="brightness-slider" min="0" max="200" value="100">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-primary w-100" id="cropAndSaveBtn">
+                                Cropper et sauvegarder
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1400px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .image-editor-canvas {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-editor-canvas img,
+        .image-editor-canvas .cropperjs-image {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+        }
+        
+        /* Hide the default file input styling */
+        .image-editor-canvas input[type="file"] {
+            display: none;
+        }
+        
+        /* Style for the cropper container created by Symfony UX Cropperjs */
+        .image-editor-canvas .cropperjs-cropper {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .image-editor-canvas .cropperjs-cropper img {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+        }
+        
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        h6 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 0.75rem;
+        }
+        
+        .form-range {
+            height: 6px;
+        }
+        
+        .form-range::-webkit-slider-thumb {
+            background: #0d6efd;
+        }
+    </style>
+
+    <script type="module">
+        let contrast = 100;
+        let brightness = 100;
+        let cropper = null;
+        const entityId = {{ mediaItem.id }};
+
+        // Log pour déboguer
+        console.log('Début du script de débogage');
+        console.log('Entity ID:', entityId);
+
+        // Log pour vérifier si le contrôleur est chargé
+        setTimeout(() => {
+            const cropperInput = document.querySelector('[data-controller="symfony--ux-cropperjs--cropper"]');
+            console.log('Cropper input found:', cropperInput);
+            console.log('Cropper input attributes:', cropperInput ? cropperInput.dataset : null);
+            
+            // Log pour vérifier si l'image est créée
+            const cropperImage = document.querySelector('.cropperjs-image');
+            console.log('Cropper image found:', cropperImage);
+            console.log('Cropper image src:', cropperImage ? cropperImage.src : null);
+            
+            // Log pour vérifier si le contrôleur est initialisé
+            const cropperContainer = document.querySelector('.cropperjs-cropper');
+            console.log('Cropper container found:', cropperContainer);
+        }, 1000);
+
+        // Listen for the cropperjs:connect event
+        const cropperInput = document.querySelector('[data-controller="symfony--ux-cropperjs--cropper"]');
+        console.log('Cropper input found (initial):', cropperInput);
+        
+        if (cropperInput) {
+            cropperInput.addEventListener('cropperjs:connect', (event) => {
+                cropper = event.detail.cropper;
+                console.log('Cropper instance:', cropper);
+                
+                // Log the image element created by the controller
+                const cropperContainer = document.querySelector('.cropperjs-cropper');
+                console.log('Cropper container:', cropperContainer);
+                
+                const cropperImage = document.querySelector('.cropperjs-cropper img');
+                console.log('Cropper image:', cropperImage);
+            });
+        } else {
+            console.error('Cropper input not found');
+        }
+
+        // Add event listeners
+        document.getElementById('rotateLeftBtn').addEventListener('click', function() {
+            if (cropper) {
+                cropper.rotate(-90);
+            }
+        });
+
+        document.getElementById('rotateRightBtn').addEventListener('click', function() {
+            if (cropper) {
+                cropper.rotate(90);
+            }
+        });
+
+        document.getElementById('flipHorizontalBtn').addEventListener('click', function() {
+            if (cropper) {
+                const data = cropper.getData();
+                const scaleX = data.scaleX || 1;
+                cropper.scaleX(scaleX === 1 ? -1 : 1);
+            }
+        });
+
+        document.getElementById('flipVerticalBtn').addEventListener('click', function() {
+            if (cropper) {
+                const data = cropper.getData();
+                const scaleY = data.scaleY || 1;
+                cropper.scaleY(scaleY === 1 ? -1 : 1);
+            }
+        });
+
+        document.getElementById('contrast-slider').addEventListener('input', function() {
+            contrast = parseInt(this.value);
+            document.getElementById('contrast-value').textContent = contrast + '%';
+        });
+
+        document.getElementById('brightness-slider').addEventListener('input', function() {
+            brightness = parseInt(this.value);
+            document.getElementById('brightness-value').textContent = brightness + '%';
+        });
+
+        document.getElementById('cropAndSaveBtn').addEventListener('click', function() {
+            if (!cropper) {
+                alert('Cropper instance not available');
+                return;
+            }
+
+            const canvas = cropper.getCroppedCanvas();
+            applyFilters(canvas);
+            
+            canvas.toBlob((blob) => {
+                uploadImage(blob);
+            }, 'image/jpeg', 0.9);
+        });
+
+        function applyFilters(canvas) {
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+
+            for (let i = 0; i < data.length; i += 4) {
+                const brightnessFactor = (brightness - 100) / 100;
+                data[i] = data[i] * (1 + brightnessFactor);
+                data[i + 1] = data[i + 1] * (1 + brightnessFactor);
+                data[i + 2] = data[i + 2] * (1 + brightnessFactor);
+
+                const contrastFactor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+                data[i] = contrastFactor * (data[i] - 128) + 128;
+                data[i + 1] = contrastFactor * (data[i + 1] - 128) + 128;
+                data[i + 2] = contrastFactor * (data[i + 2] - 128) + 128;
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        function uploadImage(blob) {
+            const uploadUrl = '/admin/media-item/' + entityId + '/upload-image';
+            
+            const formData = new FormData();
+            formData.append('file', blob, 'edited-image.jpg');
+
+            fetch(uploadUrl, {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Image sauvegardée avec succès!');
+                    window.close();
+                } else {
+                    alert('Erreur lors de l\'upload de l\'image');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Erreur lors de l\'upload de l\'image');
+            });
+        }
+    </script>
+{% endblock %}
+
