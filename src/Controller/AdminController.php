@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Repository\MediaItemRepository;
+use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[IsGranted('ROLE_ADMIN')]
 final class AdminController extends AbstractController
@@ -30,9 +33,27 @@ final class AdminController extends AbstractController
     }
 
     #[Route('/admin/purchases', name: 'app_admin_purchases')]
-    public function purchases(): Response
+    public function purchases(OrderRepository $orderRepository): Response
     {
-        return $this->render('admin/purchases.html.twig');
+        $purchases = $orderRepository->findBy(['status' => 'paid'], ['paidAt' => 'DESC']);
+
+        return $this->render('admin/purchases.html.twig', [
+            'purchases' => $purchases,
+        ]);
+    }
+
+    #[Route('/admin/purchases/{id}', name: 'app_admin_purchase_detail')]
+    public function purchaseDetail(int $id, OrderRepository $orderRepository): Response
+    {
+        $purchase = $orderRepository->find($id);
+
+        if (!$purchase) {
+            throw $this->createNotFoundException('Achat non trouvé');
+        }
+
+        return $this->render('admin/purchase_detail.html.twig', [
+            'purchase' => $purchase,
+        ]);
     }
 
     #[Route('/admin/users', name: 'app_admin_users')]
@@ -135,5 +156,39 @@ final class AdminController extends AbstractController
         $mediaItemRepository->remove($mediaItem, true);
 
         return $this->redirectToRoute('app_admin_carousel');
+    }
+
+    #[Route('/admin/media-item/{entityId}/upload-image', name: 'admin_media_item_upload_image', methods: ['POST'])]
+    public function uploadEditedImage(Request $request, EntityManagerInterface $entityManager, $entityId): JsonResponse
+    {
+        $mediaItem = $entityManager->getRepository(\App\Entity\MediaItem::class)->find($entityId);
+        
+        if (!$mediaItem) {
+            return new JsonResponse(['success' => false, 'message' => 'MediaItem not found'], 404);
+        }
+
+        $file = $request->files->get('file');
+        
+        if (!$file) {
+            return new JsonResponse(['success' => false, 'message' => 'No file uploaded'], 400);
+        }
+
+        try {
+            // Générer un nom de fichier unique
+            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $newFilename = $originalFilename . '-' . uniqid() . '.' . $file->guessExtension();
+
+            // Déplacer le fichier vers le répertoire public
+            $destination = $this->getParameter('kernel.project_dir') . '/public/img/ruelle';
+            $file->move($destination, $newFilename);
+
+            // Mettre à jour le chemin de l'asset
+            $mediaItem->setAssetPath('img/ruelle/' . $newFilename);
+            $entityManager->flush();
+
+            return new JsonResponse(['success' => true, 'message' => 'Image updated successfully']);
+        } catch (\Exception $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 }

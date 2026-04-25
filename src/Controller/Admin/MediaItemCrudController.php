@@ -13,14 +13,22 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 class MediaItemCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
         return MediaItem::class;
+    }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular('Média')
+            ->setEntityLabelInPlural('Médias')
+            ->setDefaultSort(['sortOrder' => 'ASC'])
+            ->setSearchFields(['title', 'alt'])
+            ->overrideTemplate('crud/index', 'easy_admin/media_item_index.html.twig');
     }
 
     public function configureFields(string $pageName): iterable
@@ -41,11 +49,10 @@ class MediaItemCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        $editImageAction = Action::new('editImage', 'Éditer image', 'fa fa-edit')
+        $editImageAction = Action::new('editImage', 'Éditer image', 'fa fa-image')
             ->linkToUrl(function(MediaItem $entity) {
-                return '/assets/' . $entity->getAssetPath();
+                return 'javascript:openImageEditor(' . $entity->getId() . ', \'' . $entity->getAssetPath() . '\')';
             })
-            ->setHtmlAttributes(['target' => '_blank'])
             ->addCssClass('btn btn-info')
             ->displayIf(function (MediaItem $entity) {
                 return $entity->getAssetPath() !== null;

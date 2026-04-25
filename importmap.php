@@ -25,4 +25,7 @@ return [
     '@hotwired/turbo' => [
         'version' => '7.3.0',
     ],
+    'cropperjs' => [
+        'path' => './node_modules/cropperjs/dist/cropper.min.js',
+    ],
     ];
