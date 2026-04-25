@@ -24,6 +24,7 @@
                         try {
                             window.stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY);
                         } catch (error) {
+                            setTimeout(initStripe, 100);
                         }
                     } else {
                         setTimeout(initStripe, 100);

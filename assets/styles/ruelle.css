@@ -1756,10 +1756,10 @@ body.page-street {
 
 /* Target EasyAdmin body directly - use any selector with ea class */
 body[class*="ea"] {
-    margin-top: 150px !important;
+    margin-top: 0 !important;
+    padding-top: calc(var(--banner-h) + var(--header-h)) !important;
 }
 
-/* Also target main containers */
 body[class*="ea"] .wrapper,
 body[class*="ea"] .content-wrapper,
 body[class*="ea"] .main-content {
@@ -1767,129 +1767,20 @@ body[class*="ea"] .main-content {
     padding-top: 0 !important;
 }
 
-.admin-layout {
-    display: flex;
-    min-height: 100vh;
-    padding-top: 0;
-}
-
-.admin-sidebar {
-    width: 250px;
-    background: var(--concrete-light);
-    border-right: 2px solid var(--spray-cyan);
-    padding: 1.5rem;
-    position: fixed;
-    top: 150px;
-    left: 0;
-    bottom: 0;
-    overflow-y: auto;
-}
-
-.admin-sidebar__header {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid var(--spray-magenta);
-}
-
-.admin-sidebar__title {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    color: var(--paper);
-    text-transform: uppercase;
-}
-
-.admin-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.admin-nav__link {
-    display: block;
-    padding: 0.75rem 1rem;
-    text-decoration: none;
-    color: var(--paper);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    border: 2px solid var(--ink);
-    background: var(--concrete);
-    transition: all 0.15s ease;
-    box-shadow: 3px 3px 0 var(--ink);
-}
-
-.admin-nav__link:hover {
-    background: var(--spray-cyan);
-    color: var(--ink);
-    transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 var(--ink);
-}
-
-.admin-nav__link--active {
-    background: var(--spray-magenta);
-    color: var(--paper);
-}
-
-.admin-main {
-    flex: 1;
-    margin-left: 250px;
-    padding: 2rem;
-}
-
-.admin-title {
-    margin: 0 0 1.5rem;
-    font-family: var(--font-display);
-    font-size: 2rem;
-    color: var(--paper);
-    text-transform: uppercase;
-}
-
-.admin-dashboard {
-    display: grid;
-    gap: 1.5rem;
-}
-
-.admin-card {
-    background: var(--paper);
-    color: var(--ink);
-    border: var(--outline);
-    padding: 1.5rem;
-    box-shadow: 8px 8px 0 var(--spray-cyan);
-}
-
-.admin-card__title {
-    margin: 0 0 1rem;
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    text-transform: uppercase;
-}
-
-.admin-card__text {
-    margin: 0;
-    line-height: 1.6;
-}
-
 @media (max-width: 768px) {
     body:not(.page-street) {
         padding-top: 180px;
     }
 
-    .admin-layout {
-        flex-direction: column;
-        padding-top: 0;
+    .hero {
+        padding: 2rem 1rem;
     }
 
-    .admin-sidebar {
-        position: relative;
-        top: 0;
-        left: 0;
-        width: 100%;
-        border-right: none;
-        border-bottom: 2px solid var(--spray-cyan);
+    .hero__title {
+        font-size: 2.5rem;
     }
 
-    .admin-main {
-        margin-left: 0;
+    .hero__lead {
+        font-size: 1.1rem;
     }
 }
