@@ -8,9 +8,10 @@
     </div>
     
     <div class="admin-table-container">
-        <table class="admin-table">
+        <table class="admin-table" data-controller="sortable-carousel" data-sortable-carousel-update-url-value="{{ path('app_admin_carousel_reorder') }}">
             <thead>
                 <tr>
+                    <th></th>
                     <th>Image</th>
                     <th>Titre</th>
                     <th>Chemin</th>
@@ -21,10 +22,11 @@
             </thead>
             <tbody>
                 {% for media_item in media_items %}
-                    <tr>
+                    <tr data-id="{{ media_item.id }}">
+                        <td class="drag-handle" style="cursor: move;">☰</td>
                         <td>
                             {% if media_item.assetPath %}
-                                <img src="/{{ media_item.assetPath }}" alt="{{ media_item.alt }}" class="admin-table__thumbnail">
+                                <img src="{{ asset(media_item.assetPath) }}" alt="{{ media_item.alt }}" class="admin-table__thumbnail">
                             {% else %}
                                 <span class="admin-table__placeholder">-</span>
                             {% endif %}
@@ -50,7 +52,7 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="6" class="admin-empty">Aucune image dans le carousel.</td>
+                        <td colspan="7" class="admin-empty">Aucune image dans le carousel.</td>
                     </tr>
                 {% endfor %}
             </tbody>

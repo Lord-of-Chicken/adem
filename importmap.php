@@ -26,6 +26,9 @@ return [
         'version' => '7.3.0',
     ],
     'cropperjs' => [
-        'path' => './node_modules/cropperjs/dist/cropper.min.js',
+        'path' => './node_modules/cropperjs/dist/cropper.esm.js',
+    ],
+    'sortablejs' => [
+        'path' => './node_modules/sortablejs/modular/sortable.complete.esm.js',
     ],
     ];

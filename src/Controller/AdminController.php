@@ -158,37 +158,31 @@ final class AdminController extends AbstractController
         return $this->redirectToRoute('app_admin_carousel');
     }
 
-    #[Route('/admin/media-item/{entityId}/upload-image', name: 'admin_media_item_upload_image', methods: ['POST'])]
-    public function uploadEditedImage(Request $request, EntityManagerInterface $entityManager, $entityId): JsonResponse
-    {
-        $mediaItem = $entityManager->getRepository(\App\Entity\MediaItem::class)->find($entityId);
-        
-        if (!$mediaItem) {
-            return new JsonResponse(['success' => false, 'message' => 'MediaItem not found'], 404);
+    #[Route('/admin/carousel/reorder', name: 'app_admin_carousel_reorder', methods: ['POST'])]
+    public function carouselReorder(
+        Request $request,
+        MediaItemRepository $mediaItemRepository,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['orders']) || !is_array($data['orders'])) {
+            return new JsonResponse(['success' => false, 'error' => 'Invalid data'], Response::HTTP_BAD_REQUEST);
         }
 
-        $file = $request->files->get('file');
-        
-        if (!$file) {
-            return new JsonResponse(['success' => false, 'message' => 'No file uploaded'], 400);
+        foreach ($data['orders'] as $orderData) {
+            if (!isset($orderData['id']) || !isset($orderData['sortOrder'])) {
+                continue;
+            }
+
+            $mediaItem = $mediaItemRepository->find($orderData['id']);
+            if ($mediaItem) {
+                $mediaItem->setSortOrder($orderData['sortOrder']);
+            }
         }
 
-        try {
-            // Générer un nom de fichier unique
-            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-            $newFilename = $originalFilename . '-' . uniqid() . '.' . $file->guessExtension();
+        $entityManager->flush();
 
-            // Déplacer le fichier vers le répertoire public
-            $destination = $this->getParameter('kernel.project_dir') . '/public/img/ruelle';
-            $file->move($destination, $newFilename);
-
-            // Mettre à jour le chemin de l'asset
-            $mediaItem->setAssetPath('img/ruelle/' . $newFilename);
-            $entityManager->flush();
-
-            return new JsonResponse(['success' => true, 'message' => 'Image updated successfully']);
-        } catch (\Exception $e) {
-            return new JsonResponse(['success' => false, 'message' => $e->getMessage()], 500);
-        }
+        return new JsonResponse(['success' => true]);
     }
 }
