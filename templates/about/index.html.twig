@@ -3,11 +3,11 @@
 {% block title %}Qui est Adem? | {{ site_brand.title }}{% endblock %}
 
 {% block street_main %}
-<div class="main">
-    <section class="section">
-        <div class="section__inner">
+<div class="main main--narrow">
+    <section class="section section--auth">
+        <div class="section__inner section__inner--narrow">
             <h1 class="section__title section__title--tag">{{ page.title }}</h1>
-            <p class="section__intro">Contenu à venir...</p>
+            <p class="section__intro">{{ page.empty|default('Contenu à venir...') }}</p>
         </div>
     </section>
 </div>

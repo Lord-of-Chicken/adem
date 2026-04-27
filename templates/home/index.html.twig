@@ -8,7 +8,7 @@
 
 
     {# SECTION HERO #}
-    <section class="hero hero--spray">
+    <section class="hero hero--spray hero--intro">
         <div class="">
             <p class="hero__eyebrow">{{ site_brand.tagline }}</p>
 
@@ -21,13 +21,13 @@
     <section class="section" id="medias">
         <div class="section__inner">
             <h2 class="section__title section__title--tag">{{ sections.medias.title }}</h2>
-            <p class="section__intro">{{ medias_intro }}</p>
+            <p class="section__intro section__intro--muted">{{ medias_intro }}</p>
             {% if media_items is not empty %}
                 <div class="swiper media-swiper">
                     <div class="swiper-wrapper">
                         {% for media in media_items %}
                             <div class="swiper-slide">
-                                <img src="/{{ media.assetPath }}" alt="{{ media.alt|default(site_brand.title) }}" loading="lazy">
+                                <img src="{{ asset(media.assetPath) }}" alt="{{ media.alt|default(site_brand.title) }}" loading="lazy">
                             </div>
                         {% endfor %}
                     </div>
@@ -40,13 +40,19 @@
     </section>
 
     {# SECTION CROWDFUNDING #}
-    <section class="hero hero--spray" id="crowdfunding">
-        <div class="hero__content hero__content--pop">
-            <h1 class="hero__title"><span class="hero__title-line">ADEM DEMANDE TON AIDE</span></h1>
-            <p class="hero__lead">Cent mètres de ruelle à décorer, fleurir et entretenir, cela coûte. L’aide de ses parents, amis et le subside communal ne suffisent pas. Voilà pourquoi Adem te propose d’offrir des bégonias, des jardinières ou des palettes à sa ruelle*. En formule V.I.P, tu peux même les personnaliser
-Les indications Bégonias, jardinières et palettes (non VIP) sont donnés à titre indicatifs. Les fonds récolté pouvant être utilisés pour l’achat d’autres fleurs et plante ou pour la décoration et l’entretien de La Ruelle d’Adem.  
-COMBIEN DE FLEURS A 1€ DE JARDINIERES OU DE PALETTES COMPTES TU OFFRIR?
-</p>
+    <section class="section" id="crowdfunding">
+        <div class="section__inner section__inner--narrow">
+            <div class="help-box">
+                <h2 class="help-box__title">ADEM DEMANDE TON AIDE</h2>
+                <div class="help-box__content">
+                    <p>Cent mètres de ruelle à décorer, fleurir et entretenir, cela coûte. L'aide de ses parents, amis et le subside communal ne suffisent pas.</p>
+                    <p>Voilà pourquoi Adem te propose d'offrir des bégonias, des jardinières ou des palettes à sa ruelle*. En formule V.I.P, tu peux même les personnaliser.</p>
+                    <div class="help-box__highlight">
+                        <p>Les indications Bégonias, jardinières et palettes (non VIP) sont donnés à titre indicatifs. Les fonds récoltés pouvant être utilisés pour l'achat d'autres fleurs et plantes ou pour la décoration et l'entretien de La Ruelle d'Adem.</p>
+                    </div>
+                </div>
+                <p class="help-box__cta">COMBIEN DE FLEURS À 1€, DE JARDINIÈRES OU DE PALETTES COMPTES-TU OFFRIR ?</p>
+            </div>
         </div>
     </section>
 
@@ -85,7 +91,7 @@ COMBIEN DE FLEURS A 1€ DE JARDINIERES OU DE PALETTES COMPTES TU OFFRIR?
     <section class="section section--vip" id="vip">
         <div class="section__inner">
             <h2 class="section__title section__title--tag section__title--vip">{{ sections.vip.title }}</h2>
-            <p class="section__intro">{{ sections.vip.subtitle }}</p>
+            <p class="section__intro section__intro--muted">{{ sections.vip.subtitle }}</p>
             <div class="grid grid--tiers">
                 {% for tier in tiers_vip %}
                     <article class="card card--tier card--featured card--sticker">
@@ -165,84 +171,4 @@ COMBIEN DE FLEURS A 1€ DE JARDINIERES OU DE PALETTES COMPTES TU OFFRIR?
             </div>
         </div>
     </section>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-    function updateQty(id, delta, min, max) {
-        const input = document.getElementById('qty-' + id);
-        const display = document.getElementById('num-' + id);
-        const label = document.getElementById('label-' + id);
-        const btnMinus = document.getElementById('minus-' + id);
-        const btnPlus = document.getElementById('plus-' + id);
-
-        if (!input || !display) return;
-
-        let val = parseInt(input.value) + delta;
-
-        if (val >= min && val <= max) {
-            input.value = val;
-            display.textContent = val;
-            
-            if (label) {
-                label.textContent = val > 1 ? 'pièces' : 'pièce';
-            }
-
-            if (btnMinus) btnMinus.disabled = (val <= min);
-            if (btnPlus) btnPlus.disabled = (val >= max);
-        }
-    }
-
-    function addToCart(tierId) {
-        const csrfToken = document.getElementById('global-csrf-token').value;
-        const formData = new FormData();
-        formData.append('_token', csrfToken);
-        formData.append('tier_id', tierId);
-
-        if (tierId === 'free_donation') {
-            const amount = document.getElementById('free-amount').value;
-            if (!amount || parseFloat(amount) <= 0) {
-                alert('Veuillez entrer un montant valide.');
-                return;
-            }
-            formData.append('amount', amount);
-            formData.append('quantity', 1);
-        } else {
-            const qty = document.getElementById('qty-' + tierId).value;
-            formData.append('quantity', qty);
-        }
-
-        const donor = document.getElementById('donor-' + tierId);
-        if (donor) formData.append('donor_name', donor.value);
-
-        fetch('/panier/ajouter', {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                const cartLinks = document.querySelectorAll('.site-nav__link[href*="panier"], .site-header__cart');
-                cartLinks.forEach(link => {
-                    let badge = link.querySelector('.site-header__cart-badge');
-                    if (!badge) {
-                        badge = document.createElement('span');
-                        badge.className = 'site-header__cart-badge';
-                        link.appendChild(badge);
-                    }
-                    badge.textContent = data.cartCount;
-                    badge.style.display = 'inline-block';
-                });
-                alert('Ajouté au panier ! 🌸');
-                if (tierId === 'free_donation') document.getElementById('free-amount').value = '';
-            } else {
-                alert(data.message || 'Erreur lors de l\'ajout');
-            }
-        })
-        .catch(err => alert('Erreur technique.'));
-    }
-
-    </script>
 {% endblock %}
