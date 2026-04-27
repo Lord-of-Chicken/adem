@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -35,6 +36,9 @@ class MediaItemCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
+            ImageField::new('assetPath', 'Image')
+                ->setBasePath('/')
+                ->onlyOnIndex(),
             TextField::new('title', 'Titre'),
             TextField::new('file', 'Image')
                 ->setFormType(FileType::class)
