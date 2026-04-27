@@ -8,7 +8,7 @@
     </div>
     
     <div class="admin-table-container">
-        <table class="admin-table" data-controller="sortable-carousel" data-sortable-carousel-update-url-value="{{ path('app_admin_carousel_reorder') }}">
+        <table class="admin-table" data-controller="sortable-carousel" data-sortable-carousel-update-url-value="{{ path('app_admin_carousel_reorder') }}" data-sortable-carousel-csrf-token-value="{{ csrf_token('carousel_reorder') }}">
             <thead>
                 <tr>
                     <th></th>
@@ -45,6 +45,7 @@
                             <div class="admin-table__actions">
                                 <a href="{{ path('app_admin_carousel_edit', { id: media_item.id }) }}" class="btn btn--secondary">Modifier</a>
                                 <form method="post" action="{{ path('app_admin_carousel_delete', { id: media_item.id }) }}" onsubmit="return confirm('Supprimer cette image ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('carousel_delete_' ~ media_item.id) }}">
                                     <button type="submit" class="btn btn--danger">Supprimer</button>
                                 </form>
                             </div>

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\MediaItem;
 use App\Repository\MediaItemRepository;
 use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
@@ -19,7 +20,18 @@ final class AdminController extends AbstractController
     #[Route('/admin', name: 'app_admin')]
     public function index(): Response
     {
-        return $this->render('admin/index.html.twig');
+        return $this->render('admin/index.html.twig', [
+            'page' => [
+                'sidebar_title' => 'Admin',
+                'dashboard_title' => 'Dashboard Admin',
+                'welcome_title' => 'Bienvenue',
+                'welcome_text' => 'Utilisez le menu de gauche pour naviguer dans les différentes sections d\'administration.',
+                'nav_dashboard' => 'Dashboard',
+                'nav_carousel' => 'Carousel',
+                'nav_users' => 'Utilisateurs',
+                'nav_stripe' => 'Paiements Stripe',
+            ],
+        ]);
     }
 
     #[Route('/admin/carousel', name: 'app_admin_carousel')]
@@ -82,15 +94,25 @@ final class AdminController extends AbstractController
         Request $request,
         MediaItemRepository $mediaItemRepository
     ): Response {
-        $title = $request->request->get('title');
-        $assetPath = $request->request->get('asset_path');
-        $alt = $request->request->get('alt');
+        $title = trim((string) $request->request->get('title', ''));
+        $assetPath = trim((string) $request->request->get('asset_path', ''));
+        $alt = trim((string) $request->request->get('alt', ''));
 
-        if ($request->isMethod('POST') && $title && $assetPath) {
-            $mediaItem = new \App\Entity\MediaItem();
+        if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('carousel_manage', (string) $request->request->get('_token'))) {
+                throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+            }
+
+            if ($title === '' || $assetPath === '') {
+                $this->addFlash('error', 'Le titre et le chemin de l\'image sont obligatoires.');
+
+                return $this->redirectToRoute('app_admin_carousel_add');
+            }
+
+            $mediaItem = new MediaItem();
             $mediaItem->setTitle($title);
             $mediaItem->setAssetPath($assetPath);
-            $mediaItem->setAlt($alt);
+            $mediaItem->setAlt($alt !== '' ? $alt : null);
             $mediaItem->setPublished(true);
             $mediaItem->setSortOrder(0);
 
@@ -117,19 +139,21 @@ final class AdminController extends AbstractController
         }
 
         if ($request->isMethod('POST')) {
-            $title = $request->request->get('title');
-            $assetPath = $request->request->get('asset_path');
-            $alt = $request->request->get('alt');
+            if (!$this->isCsrfTokenValid('carousel_manage', (string) $request->request->get('_token'))) {
+                throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+            }
 
-            if ($title) {
+            $title = trim((string) $request->request->get('title', ''));
+            $assetPath = trim((string) $request->request->get('asset_path', ''));
+            $alt = trim((string) $request->request->get('alt', ''));
+
+            if ($title !== '') {
                 $mediaItem->setTitle($title);
             }
-            if ($assetPath) {
+            if ($assetPath !== '') {
                 $mediaItem->setAssetPath($assetPath);
             }
-            if ($alt) {
-                $mediaItem->setAlt($alt);
-            }
+            $mediaItem->setAlt($alt !== '' ? $alt : null);
 
             $mediaItemRepository->save($mediaItem, true);
 
@@ -145,8 +169,13 @@ final class AdminController extends AbstractController
     #[Route('/admin/carousel/delete/{id}', name: 'app_admin_carousel_delete', methods: ['POST'])]
     public function carouselDelete(
         int $id,
+        Request $request,
         MediaItemRepository $mediaItemRepository
     ): Response {
+        if (!$this->isCsrfTokenValid('carousel_delete_' . $id, (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
+
         $mediaItem = $mediaItemRepository->find($id);
 
         if (!$mediaItem) {
@@ -164,6 +193,10 @@ final class AdminController extends AbstractController
         MediaItemRepository $mediaItemRepository,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        if (!$this->isCsrfTokenValid('carousel_reorder', (string) $request->headers->get('X-CSRF-TOKEN'))) {
+            return new JsonResponse(['success' => false, 'error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['orders']) || !is_array($data['orders'])) {

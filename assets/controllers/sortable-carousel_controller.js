@@ -4,6 +4,7 @@ import Sortable from 'sortablejs';
 export default class extends Controller {
     static values = {
         updateUrl: String,
+        csrfToken: String,
     };
 
     connect() {
@@ -36,6 +37,7 @@ export default class extends Controller {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': this.csrfTokenValue,
             },
             body: JSON.stringify({ orders: orders }),
         })
@@ -44,7 +46,7 @@ export default class extends Controller {
             if (data.success) {
                 // Update the displayed order numbers
                 rows.forEach((row, index) => {
-                    const orderCell = row.querySelector('td:nth-child(5)');
+                    const orderCell = row.querySelector('td:nth-child(6)');
                     if (orderCell) {
                         orderCell.textContent = index + 1;
                     }
