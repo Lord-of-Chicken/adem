@@ -1,4 +1,4 @@
-/* La Ruelle d’Adem — street art / graffiti */
+/* La Ruelle d'Adem — street art / graffiti */
 
 :root {
     --ink: #0d0d0f;
@@ -51,6 +51,41 @@ body.page-street {
     background: var(--concrete);
     min-height: 100vh;
     position: relative;
+}
+
+/* Admin filters */
+.admin-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.admin-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-filter label {
+    font-weight: 600;
+    color: var(--paper);
+}
+
+.admin-select {
+    padding: 0.5rem;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--spray-cyan);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-select:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 var(--spray-cyan);
 }
 
 .street-bg {

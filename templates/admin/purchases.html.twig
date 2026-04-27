@@ -5,13 +5,36 @@
     <div class="admin-toolbar">
         <a href="/admin/order" class="admin-btn admin-btn--primary">Gérer dans EasyAdmin</a>
     </div>
+    
+    <div class="admin-filters">
+        <div class="admin-filter">
+            <label for="status-filter">Statut :</label>
+            <select id="status-filter" class="admin-select" onchange="filterPurchases()">
+                <option value="">Tous</option>
+                <option value="paid">Payé</option>
+                <option value="pending">En attente</option>
+                <option value="cancelled">Annulé</option>
+                <option value="refunded">Remboursé</option>
+            </select>
+        </div>
+        <div class="admin-filter">
+            <label for="currency-filter">Devise :</label>
+            <select id="currency-filter" class="admin-select" onchange="updateCurrency()">
+                <option value="EUR" selected>€ (EUR)</option>
+                <option value="USD">$ (USD)</option>
+                <option value="GBP">£ (GBP)</option>
+                <option value="CHF">CHF</option>
+            </select>
+        </div>
+    </div>
+    
     <div class="admin-table-container">
         <table class="admin-table">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Utilisateur</th>
-                    <th>Montant</th>
+                    <th>Montant <span id="currency-symbol">€</span></th>
                     <th>Date</th>
                     <th>Statut</th>
                     <th>Actions</th>
@@ -19,10 +42,10 @@
             </thead>
             <tbody>
                 {% for purchase in purchases %}
-                    <tr>
+                    <tr data-status="{{ purchase.status }}">
                         <td>{{ purchase.id }}</td>
                         <td>{{ purchase.user ? purchase.user.email : 'Anonyme' }}</td>
-                        <td>{{ (purchase.totalCents / 100)|number_format(2, ',', ' ') }} €</td>
+                        <td class="amount-cell" data-cents="{{ purchase.totalCents }}">{{ (purchase.totalCents / 100)|number_format(2, ',', ' ') }} €</td>
                         <td>{{ purchase.paidAt ? purchase.paidAt|date('d/m/Y H:i') : '-' }}</td>
                         <td>
                             <span class="admin-badge admin-badge--{{ purchase.status }}">
@@ -41,4 +64,49 @@
             </tbody>
         </table>
     </div>
+
+    <script>
+        const currencyRates = {
+            'EUR': 1,
+            'USD': 1.08,
+            'GBP': 0.85,
+            'CHF': 0.95
+        };
+
+        const currencySymbols = {
+            'EUR': '€',
+            'USD': '$',
+            'GBP': '£',
+            'CHF': 'CHF'
+        };
+
+        function filterPurchases() {
+            const statusFilter = document.getElementById('status-filter').value;
+            const rows = document.querySelectorAll('tbody tr[data-status]');
+            
+            rows.forEach(row => {
+                if (statusFilter === '' || row.dataset.status === statusFilter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function updateCurrency() {
+            const currency = document.getElementById('currency-filter').value;
+            const rate = currencyRates[currency];
+            const symbol = currencySymbols[currency];
+            
+            document.getElementById('currency-symbol').textContent = symbol;
+            
+            const amountCells = document.querySelectorAll('.amount-cell');
+            amountCells.forEach(cell => {
+                const cents = parseInt(cell.dataset.cents);
+                const euros = cents / 100;
+                const converted = (euros * rate).toFixed(2);
+                cell.textContent = converted.replace('.', ',') + ' ' + symbol;
+            });
+        }
+    </script>
 {% endblock %}
