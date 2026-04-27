@@ -728,12 +728,15 @@ body.page-street {
 }
 
 #don-libre {
+    background: linear-gradient(180deg, rgba(0, 232, 255, 0.06), transparent);
     border-top: 2px dashed var(--spray-cyan);
     border-bottom: 2px dashed var(--spray-cyan);
 }
 
 .section--newsletter {
+    background: linear-gradient(180deg, rgba(0, 232, 255, 0.06), transparent);
     border-top: 2px dashed var(--spray-cyan);
+    border-bottom: 2px dashed var(--spray-cyan);
     max-width: var(--max-width);
     padding-top: 2.25rem;
 }
