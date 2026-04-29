@@ -1,0 +1,4 @@
+media_item_edit_image:
+    path: /admin/media-item/{id}/edit-image
+    controller: App\Controller\ImageEditController::editImage
+    methods: GET|POST

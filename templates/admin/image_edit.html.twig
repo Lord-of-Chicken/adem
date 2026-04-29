@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Éditer l'image : {{ mediaItem.title }}{% endblock %}
+
+{% block body_class %}page-street{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
+{% endblock %}
+
+{% block body %}
+<div class="image-editor-container" {{ stimulus_controller('cropper-editor') }}>
+    <div class="editor-header">
+        <h1>Éditer l'image</h1>
+        <p>{{ mediaItem.title }}</p>
+    </div>
+
+    <div class="editor-layout">
+        <div class="image-preview">
+            <div class="cropper-container">
+                <img
+                    src="{{ asset(mediaItem.assetPath) }}"
+                    alt="{{ mediaItem.alt|default(mediaItem.title) }}"
+                    id="cropper-image"
+                    data-cropper-editor-target="image"
+                >
+            </div>
+        </div>
+
+        <div class="controls-panel">
+            <h3>Outils d'édition</h3>
+
+            <div class="control-group">
+                <label>Rotation</label>
+                <button type="button" data-action="click->cropper-editor#rotateLeft" class="btn-control btn-primary">
+                    <i class="fa fa-rotate-left"></i> Rotation gauche
+                </button>
+                <button type="button" data-action="click->cropper-editor#rotateRight" class="btn-control btn-primary">
+                    <i class="fa fa-rotate-right"></i> Rotation droite
+                </button>
+            </div>
+
+            <div class="control-group">
+                <label>Miroir</label>
+                <button type="button" data-action="click->cropper-editor#flipHorizontal" class="btn-control btn-secondary">
+                    <i class="fa fa-arrows-h"></i> Horizontal
+                </button>
+                <button type="button" data-action="click->cropper-editor#flipVertical" class="btn-control btn-secondary">
+                    <i class="fa fa-arrows-v"></i> Vertical
+                </button>
+            </div>
+
+            <div class="control-group">
+                <label>Ratio d'aspect</label>
+                <button type="button" data-action="click->cropper-editor#setRatioFree" class="btn-control btn-primary">
+                    <i class="fa fa-expand"></i> Libre
+                </button>
+                <button type="button" data-action="click->cropper-editor#setRatioSquare" class="btn-control btn-secondary">
+                    <i class="fa fa-square"></i> Carré (1:1)
+                </button>
+                <button type="button" data-action="click->cropper-editor#setRatio4_3" class="btn-control btn-secondary">
+                    <i class="fa fa-image"></i> 4:3
+                </button>
+                <button type="button" data-action="click->cropper-editor#setRatio16_9" class="btn-control btn-secondary">
+                    <i class="fa fa-video"></i> 16:9
+                </button>
+            </div>
+
+            <div class="control-group">
+                <label>Zoom</label>
+                <button type="button" data-action="click->cropper-editor#zoomOut" class="btn-control btn-secondary">
+                    <i class="fa fa-search-minus"></i> Zoom -
+                </button>
+                <button type="button" data-action="click->cropper-editor#zoomIn" class="btn-control btn-secondary">
+                    <i class="fa fa-search-plus"></i> Zoom +
+                </button>
+            </div>
+
+            <div class="control-group">
+                <label>Qualité d'export</label>
+                <div class="zoom-control">
+                    <input type="range" id="export-quality" min="0.1" max="1" step="0.1" value="0.9" data-action="input->cropper-editor#updateQuality">
+                    <span class="zoom-value" id="quality-value">0.9</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Format d'export</label>
+                <button type="button" data-action="click->cropper-editor#setFormatJpeg" class="btn-control btn-primary">
+                    <i class="fa fa-file-image-o"></i> JPEG
+                </button>
+                <button type="button" data-action="click->cropper-editor#setFormatPng" class="btn-control btn-secondary">
+                    <i class="fa fa-file-image-o"></i> PNG
+                </button>
+            </div>
+
+            <div class="control-group">
+                <label>Échelle de sortie</label>
+                <div class="zoom-control">
+                    <input type="range" id="export-scale" min="0.5" max="2" step="0.1" value="1" data-action="input->cropper-editor#updateScale">
+                    <span class="zoom-value" id="scale-value">1.0x</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Effets</label>
+                <button type="button" data-action="click->cropper-editor#setEffectNone" class="btn-control btn-primary">
+                    <i class="fa fa-ban"></i> Aucun
+                </button>
+                <button type="button" data-action="click->cropper-editor#setEffectGrayscale" class="btn-control btn-secondary">
+                    <i class="fa fa-adjust"></i> N&B
+                </button>
+                <button type="button" data-action="click->cropper-editor#setEffectSepia" class="btn-control btn-secondary">
+                    <i class="fa fa-sun-o"></i> Sépia
+                </button>
+                <button type="button" data-action="click->cropper-editor#setEffectBlur" class="btn-control btn-secondary">
+                    <i class="fa fa-eye-slash"></i> Flou
+                </button>
+                <button type="button" data-action="click->cropper-editor#setEffectBrightness" class="btn-control btn-secondary">
+                    <i class="fa fa-sun"></i> Lumineux
+                </button>
+                <button type="button" data-action="click->cropper-editor#setEffectContrast" class="btn-control btn-secondary">
+                    <i class="fa fa-circle"></i> Contraste
+                </button>
+            </div>
+
+            <div class="control-group">
+                <label>Actions</label>
+                <button type="button" data-action="click->cropper-editor#crop" class="btn-control btn-primary">
+                    <i class="fa fa-crop"></i> Cropper
+                </button>
+                <button type="button" data-action="click->cropper-editor#reset" class="btn-control btn-accent">
+                    <i class="fa fa-undo"></i> Réinitialiser
+                </button>
+            </div>
+
+            <a href="{{ path('admin_media_item_index') }}" class="back-button">
+                <i class="fa fa-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
