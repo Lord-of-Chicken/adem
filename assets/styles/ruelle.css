@@ -279,7 +279,7 @@ body.page-street {
 
 .site-nav {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.65rem 1rem;
     margin-top: 2rem;
@@ -462,14 +462,19 @@ body.page-street {
         background: var(--paper);
         font-weight: 700;
         text-align: center;
-        box-shadow: 3px 3px 0 var(--spray-cyan);
+        box-shadow: 3px 3px 0 var(--ink);
         transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        color: var(--ink);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: 0.9rem;
     }
 
     .site-nav .site-nav__link:hover {
         transform: translate(-2px, -2px);
-        box-shadow: 5px 5px 0 var(--spray-cyan);
-        background: var(--spray-lime);
+        box-shadow: 5px 5px 0 var(--ink);
+        background: var(--spray-magenta);
+        color: var(--paper);
     }
 
     .site-header__account--desktop {

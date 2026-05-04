@@ -62,7 +62,7 @@ final class ContactController extends AbstractController
         return $this->render('contact/index.html.twig', [
             'form' => $form->createView(),
             'page' => [
-                'title' => 'Contactez-nous',
+                'title' => 'Contacte-nous',
                 'intro' => 'Une question ? Une suggestion ? N\'hésitez pas à nous envoyer un message.',
                 'submit' => 'Envoyer le message',
             ],
