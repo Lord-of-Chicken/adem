@@ -15,8 +15,8 @@ class MediaItem
     private ?int $id = null;
 
     /** Chemin logique AssetMapper, ex. img/ruelle/IMG_0189.jpeg */
-    #[ORM\Column(name: 'asset_path', length: 512)]
-    private string $assetPath;
+    #[ORM\Column(name: 'asset_path', length: 512, nullable: true)]
+    private ?string $assetPath = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $title = null;
@@ -35,12 +35,12 @@ class MediaItem
         return $this->id;
     }
 
-    public function getAssetPath(): string
+    public function getAssetPath(): ?string
     {
         return $this->assetPath;
     }
 
-    public function setAssetPath(string $assetPath): static
+    public function setAssetPath(?string $assetPath): static
     {
         $this->assetPath = $assetPath;
 

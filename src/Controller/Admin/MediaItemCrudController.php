@@ -14,6 +14,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 
 class MediaItemCrudController extends AbstractCrudController
 {
@@ -72,5 +75,25 @@ class MediaItemCrudController extends AbstractCrudController
         return $actions
             ->add(Crud::PAGE_INDEX, $editImageAction)
             ->add(Crud::PAGE_EDIT, $editImageAction);
+    }
+
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        /** @var Request $request */
+        $request = $this->getContext()->getRequest();
+        $file = $request->files->get('MediaItem')['file'] ?? null;
+
+        if ($file instanceof UploadedFile) {
+            $fileName = uniqid() . '.' . $file->guessExtension();
+            
+            // Déplacer le fichier vers le répertoire public
+            $destination = $this->getParameter('kernel.project_dir') . '/public/img/ruelle/';
+            $file->move($destination, $fileName);
+            
+            // Définir le chemin de l'asset
+            $entityInstance->setAssetPath('img/ruelle/' . $fileName);
+        }
+
+        parent::persistEntity($entityManager, $entityInstance);
     }
 }
