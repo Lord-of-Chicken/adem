@@ -44,6 +44,12 @@ final class AdminController extends AbstractController
         ]);
     }
 
+    #[Route('/admin/order', name: 'app_admin_order')]
+    public function orderRedirect(): Response
+    {
+        return $this->redirectToRoute('app_admin_purchases');
+    }
+
     #[Route('/admin/purchases', name: 'app_admin_purchases')]
     public function purchases(StripePaymentService $stripePaymentService): Response
     {
