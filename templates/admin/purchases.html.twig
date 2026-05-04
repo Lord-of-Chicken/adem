@@ -1,113 +1,63 @@
 {% extends 'layout/admin.html.twig' %}
 
-{% block admin_content %}
-    <h1 class="admin-title">Achats Finalisés</h1>
-    
-    <div class="admin-filters">
-        <div class="admin-filter">
-            <label for="status-filter">Statut :</label>
-            <select id="status-filter" class="admin-select" onchange="filterPurchases()">
-                <option value="">Tous</option>
-                <option value="paid">Payé</option>
-                <option value="pending">En attente</option>
-                <option value="cancelled">Annulé</option>
-                <option value="refunded">Remboursé</option>
+{% block admin_main %}
+    <h1 class="admin-title">{{ 'admin.purchases_title'|trans }}</h1>
+    <div class="admin-toolbar">
+        <div class="admin-filters">
+            <label for="status-filter">{{ 'admin.status'|trans }} :</label>
+            <select id="status-filter">
+                <option value="">{{ 'admin.status_all'|trans }}</option>
+                <option value="paid">{{ 'admin.status_paid'|trans }}</option>
+                <option value="pending">{{ 'admin.status_pending'|trans }}</option>
+                <option value="cancelled">{{ 'admin.status_cancelled'|trans }}</option>
+                <option value="refunded">{{ 'admin.status_refunded'|trans }}</option>
             </select>
-        </div>
-        <div class="admin-filter">
-            <label for="currency-filter">Devise :</label>
-            <select id="currency-filter" class="admin-select" onchange="updateCurrency()">
-                <option value="EUR" selected>€ (EUR)</option>
-                <option value="USD">$ (USD)</option>
-                <option value="GBP">£ (GBP)</option>
+            <label for="currency-filter">{{ 'admin.currency'|trans }} :</label>
+            <select id="currency-filter">
+                <option value="EUR">EUR</option>
                 <option value="CHF">CHF</option>
+                <option value="USD">USD</option>
             </select>
         </div>
     </div>
-    
     <div class="admin-table-container">
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Utilisateur</th>
-                    <th>Montant <span id="currency-symbol">€</span></th>
-                    <th>Date</th>
-                    <th>Statut</th>
-                    <th>Actions</th>
+                    <th>{{ 'admin.id'|trans }}</th>
+                    <th>{{ 'admin.email'|trans }}</th>
+                    <th>{{ 'admin.amount'|trans }} <span id="currency-symbol">€</span></th>
+                    <th>{{ 'admin.date'|trans }}</th>
+                    <th>{{ 'admin.status'|trans }}</th>
+                    <th>{{ 'admin.actions'|trans }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for paymentIntent in payment_intents %}
-                    <tr data-status="{{ paymentIntent.status }}">
-                        <td>{{ paymentIntent.id }}</td>
-                        <td>{{ paymentIntent.metadata.user_email is defined ? paymentIntent.metadata.user_email : (paymentIntent.receipt_email ?: 'Anonyme') }}</td>
-                        <td class="amount-cell" data-cents="{{ paymentIntent.amount }}">{{ (paymentIntent.amount / 100)|number_format(2, ',', ' ') }} {{ paymentIntent.currency|upper }}</td>
+                    <tr>
+                        <td>{{ paymentIntent.id|slice(0, 12) }}...</td>
+                        <td>{{ paymentIntent.customer_email ?? '-' }}</td>
+                        <td>{{ (paymentIntent.amount / 100)|number_format(2, ',', ' ') }}</td>
                         <td>{{ paymentIntent.created|date('d/m/Y H:i') }}</td>
                         <td>
-                            <span class="admin-badge admin-badge--{{ paymentIntent.status }}">
-                                {% if paymentIntent.status == 'succeeded' %}Payé
-                                {% elseif paymentIntent.status == 'processing' %}En cours
-                                {% elseif paymentIntent.status == 'canceled' %}Annulé
-                                {% else %}{{ paymentIntent.status|capitalize }}
-                                {% endif %}
-                            </span>
+                            <span class="admin-badge admin-badge--{{ paymentIntent.status }}">{{ paymentIntent.status }}</span>
                         </td>
                         <td>
-                            <a href="{{ path('app_admin_purchase_detail', {id: paymentIntent.id}) }}" class="admin-btn admin-btn--small">Détails</a>
+                            <a href="{{ path('app_admin_purchase_detail', {id: paymentIntent.id}) }}" class="admin-btn admin-btn--small">{{ 'admin.details'|trans }}</a>
                         </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="6" class="admin-empty">Aucun paiement pour le moment.</td>
+                        <td colspan="6" class="admin-empty">{{ 'admin.no_payment'|trans }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <script>
-        const currencyRates = {
-            'EUR': 1,
-            'USD': 1.08,
-            'GBP': 0.85,
-            'CHF': 0.95
-        };
+{% endblock %}
 
-        const currencySymbols = {
-            'EUR': '€',
-            'USD': '$',
-            'GBP': '£',
-            'CHF': 'CHF'
-        };
-
-        function filterPurchases() {
-            const statusFilter = document.getElementById('status-filter').value;
-            const rows = document.querySelectorAll('tbody tr[data-status]');
-            
-            rows.forEach(row => {
-                if (statusFilter === '' || row.dataset.status === statusFilter) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-
-        function updateCurrency() {
-            const currency = document.getElementById('currency-filter').value;
-            const rate = currencyRates[currency];
-            const symbol = currencySymbols[currency];
-            
-            document.getElementById('currency-symbol').textContent = symbol;
-            
-            const amountCells = document.querySelectorAll('.amount-cell');
-            amountCells.forEach(cell => {
-                const cents = parseInt(cell.dataset.cents);
-                const euros = cents / 100;
-                const converted = (euros * rate).toFixed(2);
-                cell.textContent = converted.replace('.', ',') + ' ' + symbol;
-            });
-        }
-    </script>
+{% block javascripts %}
+    {{ parent() }}
+    {{ importmap('admin-purchases') }}
 {% endblock %}

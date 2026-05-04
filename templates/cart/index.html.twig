@@ -1,6 +1,6 @@
 {% extends 'layout/street.html.twig' %}
 
-{% block title %}Panier participations | {{ site_brand.title }}{% endblock %}
+{% block title %}{{ 'cart.title'|trans }} | {{ site_brand.title }}{% endblock %}
 
 {% block street_main %}
 <div class="main main--narrow">
@@ -12,7 +12,7 @@
             <h1 class="section__title section__title--tag">{{ page.title }}</h1>
 
             {% if lines is empty %}
-                <p class="section__hint">{{ page.empty_hint }} <a href="{{ path('app_home') }}#offres">{{ page.empty_link }}</a></p>
+                <p class="section__hint">{{ 'cart.empty'|trans }} <a href="{{ path('app_home') }}#offres">{{ page.empty_link }}</a></p>
             {% else %}
                 <ul class="cart-list">
                     {% for row in lines %}
@@ -23,12 +23,12 @@
                             <div class="cart-line__main">
                                 <h2 class="cart-line__title">{{ tier.title }}</h2>
                                 <div class="cart-line__meta">
-                                    <p>Qté : <span id="display-qty-{{ line.line_id }}">{{ line.quantity }}</span></p>
+                                    <p>{{ 'cart.qty'|trans }} : <span id="display-qty-{{ line.line_id }}">{{ line.quantity }}</span></p>
                                     {% if line.donor_name %}
-                                        <p><strong>Donateur :</strong> {{ line.donor_name }}</p>
+                                        <p><strong>{{ 'cart.donor'|trans }} :</strong> {{ line.donor_name }}</p>
                                     {% endif %}
                                     {% if line.custom_price_cents %}
-                                        <p><strong>Montant libre :</strong> {{ (line.custom_price_cents / 100)|number_format(2, ',', ' ') }}&nbsp;€</p>
+                                        <p><strong>{{ 'cart.free_amount'|trans }} :</strong> {{ (line.custom_price_cents / 100)|number_format(2, ',', ' ') }}&nbsp;€</p>
                                     {% endif %}
                                 </div>
                                 <p class="cart-line__price">
@@ -47,7 +47,7 @@
 
                                     <div class="qty-display">
                                         <span class="qty-number" id="number-{{ line.line_id }}">{{ line.quantity }}</span>
-                                        <span class="qty-label" id="label-{{ line.line_id }}">pièce{{ line.quantity > 1 ? 's' : '' }}</span>
+                                        <span class="qty-label" id="label-{{ line.line_id }}">{{ 'cart.piece'|trans }}{{ line.quantity > 1 ? 's' : '' }}</span>
                                     </div>
 
                                     <button type="button" class="qty-btn" 
@@ -58,7 +58,7 @@
                                     </button>
                                 </div>
 
-                                <form method="post" action="{{ path('app_cart_remove', { lineId: line.line_id }) }}" data-confirm-title="Retirer cette ligne" data-confirm-message="Cette action supprimera l'article du panier." data-confirm-confirm-label="Retirer" data-confirm-cancel-label="Annuler">
+                                <form method="post" action="{{ path('app_cart_remove', { lineId: line.line_id }) }}" data-confirm-title="{{ 'cart.remove_confirm_title'|trans }}" data-confirm-message="{{ 'cart.remove_confirm_message'|trans }}" data-confirm-confirm-label="{{ 'cart.remove_confirm_btn'|trans }}" data-confirm-cancel-label="{{ 'profile.cancel'|trans }}">
                                     <input type="hidden" name="_token" value="{{ csrf_token('cart_remove') }}">
                                     <button type="submit" class="btn--remove">{{ page.remove_btn }}</button>
                                 </form>
@@ -69,18 +69,18 @@
 
                 <div class="cart-summary card">
                     <p class="cart-total">
-                        <strong>{{ page.total_label }} : <span id="cart-total-display">{{ catalog.formatEurosFromCents(total_cents) }}</span>&nbsp;€</strong>
+                        <strong>{{ 'cart.total'|trans }} : <span id="cart-total-display">{{ catalog.formatEurosFromCents(total_cents) }}</span>&nbsp;€</strong>
                     </p>
-                    
+
                     <div class="cart-actions">
-                        <form method="post" action="{{ path('app_cart_clear') }}" class="display-inline-block" data-confirm-title="Vider le panier" data-confirm-message="Voulez-vous vider tout le panier ?" data-confirm-confirm-label="Vider" data-confirm-cancel-label="Annuler">
+                        <form method="post" action="{{ path('app_cart_clear') }}" class="display-inline-block" data-confirm-title="{{ 'cart.clear_confirm_title'|trans }}" data-confirm-message="{{ 'cart.clear_confirm_message'|trans }}" data-confirm-confirm-label="{{ 'cart.clear_confirm_btn'|trans }}" data-confirm-cancel-label="{{ 'profile.cancel'|trans }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('cart_clear') }}">
                             <button type="submit" class="btn btn--secondary">{{ page.clear_btn }}</button>
                         </form>
-                        
+
                         {# Lien direct vers le checkout PHP #}
                         <a href="{{ path('app_checkout') }}" class="btn btn--primary">
-                            {{ page.checkout_btn }}
+                            {{ 'cart.checkout_btn'|trans }}
                         </a>
                     </div>
                 </div>
@@ -90,54 +90,3 @@
 </div>
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        function updateCartQty(lineId, delta, min, max) {
-            const numberSpan = document.getElementById(`number-${lineId}`);
-            const displaySpan = document.getElementById(`display-qty-${lineId}`);
-            const labelSpan = document.getElementById(`label-${lineId}`);
-            const btnMinus = document.getElementById(`btn-minus-${lineId}`);
-            const btnPlus = document.getElementById(`btn-plus-${lineId}`);
-
-            let currentQty = parseInt(numberSpan.textContent);
-            let newQty = currentQty + delta;
-
-            if (newQty < min || newQty > max) return;
-
-            numberSpan.textContent = newQty;
-            displaySpan.textContent = newQty;
-            labelSpan.textContent = newQty > 1 ? 'pièces' : 'pièce';
-            btnMinus.disabled = (newQty <= min);
-            btnPlus.disabled = (newQty >= max);
-
-            const csrfToken = document.getElementById('cart-csrf-token').value;
-            const formData = new FormData();
-            formData.append('quantity', newQty);
-            formData.append('_token', csrfToken);
-
-            fetch(`/panier/ligne/${lineId}/quantite`, {
-                method: 'POST',
-                body: formData,
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Erreur réseau');
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    document.getElementById(`line-total-${lineId}`).textContent = data.newLineTotal;
-                    document.getElementById('cart-total-display').textContent = data.newTotalHtml;
-                } else {
-                    location.reload();
-                }
-            })
-            .catch(error => {
-                console.error('Erreur AJAX:', error);
-                location.reload();
-            });
-        }
-
-    </script>
-{% endblock %}

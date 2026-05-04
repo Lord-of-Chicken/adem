@@ -1,84 +1,6 @@
 {% extends 'layout/street.html.twig' %}
 
-{% block title %}Mon Profil | {{ site_brand.title }}{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        (() => {
-            let modal = null;
-            let pendingForm = null;
-
-            function ensureModal() {
-                if (modal) {
-                    return modal;
-                }
-
-                modal = document.createElement('div');
-                modal.id = 'global-confirm-modal';
-                modal.className = 'cart-success-modal';
-                modal.innerHTML = `
-                    <div class="cart-success-modal__backdrop"></div>
-                    <div class="cart-success-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="global-confirm-title">
-                        <h3 id="global-confirm-title" class="cart-success-modal__title">Confirmation</h3>
-                        <p class="cart-success-modal__text" id="global-confirm-text"></p>
-                        <div class="cart-success-modal__actions">
-                            <button type="button" class="btn btn--secondary" data-confirm-modal-action="cancel">Annuler</button>
-                            <button type="button" class="btn btn--primary" data-confirm-modal-action="confirm">Confirmer</button>
-                        </div>
-                    </div>
-                `;
-
-                modal.addEventListener('click', (event) => {
-                    const action = event.target.getAttribute('data-confirm-modal-action');
-
-                    if (action === 'cancel' || event.target.classList.contains('cart-success-modal__backdrop')) {
-                        pendingForm = null;
-                        modal.classList.remove('cart-success-modal--open');
-                        return;
-                    }
-
-                    if (action === 'confirm' && pendingForm) {
-                        const formToSubmit = pendingForm;
-                        pendingForm = null;
-                        modal.classList.remove('cart-success-modal--open');
-                        formToSubmit.submit();
-                    }
-                });
-
-                document.body.appendChild(modal);
-                return modal;
-            }
-
-            function openConfirmModal(form) {
-                const currentModal = ensureModal();
-                const message = form.getAttribute('data-confirm-message') || 'Confirmer cette action ?';
-                const title = form.getAttribute('data-confirm-title') || 'Confirmation';
-                const confirmLabel = form.getAttribute('data-confirm-confirm-label') || 'Confirmer';
-                const cancelLabel = form.getAttribute('data-confirm-cancel-label') || 'Annuler';
-
-                currentModal.querySelector('#global-confirm-title').textContent = title;
-                currentModal.querySelector('#global-confirm-text').textContent = message;
-                currentModal.querySelector('[data-confirm-modal-action="confirm"]').textContent = confirmLabel;
-                currentModal.querySelector('[data-confirm-modal-action="cancel"]').textContent = cancelLabel;
-
-                pendingForm = form;
-                currentModal.classList.add('cart-success-modal--open');
-            }
-
-            document.addEventListener('DOMContentLoaded', () => {
-                const forms = document.querySelectorAll('form[data-confirm-message]');
-
-                forms.forEach((form) => {
-                    form.addEventListener('submit', (event) => {
-                        event.preventDefault();
-                        openConfirmModal(form);
-                    });
-                });
-            });
-        })();
-    </script>
-{% endblock %}
+{% block title %}{{ page.title }} | {{ site_brand.title }}{% endblock %}
 
 {% block street_main %}
 <div class="main main--narrow">
@@ -89,47 +11,50 @@
             <div class="card">
                 <h2 class="card__title">{{ page.info_title }}</h2>
                 <dl class="profile-info">
-                    <dt>Prénom :</dt>
-                    <dd>{{ app.user.firstName ?? '-' }}</dd>
-                    
-                    <dt>Nom :</dt>
-                    <dd>{{ app.user.lastName ?? '-' }}</dd>
-                    
-                    <dt>Adresse :</dt>
-                    <dd>{{ app.user.address ?? '-' }}</dd>
-                    
-                    <dt>E-mail :</dt>
-                    <dd>{{ app.user.email }}</dd>
+                    <dt>{{ 'profile.first_name'|trans }} :</dt>
+                    <dd>{{ app.user.firstName }}</dd>
                 </dl>
+                <div class="profile-info-row">
+                    <dt>{{ 'profile.last_name'|trans }} :</dt>
+                    <dd>{{ app.user.lastName }}</dd>
+                </div>
+                <div class="profile-info-row">
+                    <dt>{{ 'profile.address'|trans }} :</dt>
+                    <dd>{{ app.user.address }}</dd>
+                </div>
+                <div class="profile-info-row">
+                    <dt>{{ 'profile.email'|trans }} :</dt>
+                    <dd>{{ app.user.email }}</dd>
+                </div>
                 
                 <h3 class="card__title margin-top-2">{{ page.notifications_title }}</h3>
-                <div class="profile-info">
-                    <p>Statut newsletter : <strong>{{ app.user.newsletter ? 'Inscrit' : 'Non inscrit' }}</strong></p>
+                <div class="profile-info-row">
+                    <p>{{ 'profile.newsletter_status'|trans }} : <strong>{{ app.user.newsletter ? 'profile.subscribed'|trans : 'profile.not_subscribed'|trans }}</strong></p>
                     <form method="post" action="{{ path('app_profile_toggle_newsletter') }}" class="display-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('toggle_newsletter') }}">
                         <button type="submit" class="btn btn--primary margin-top-0-5">
-                            {{ app.user.newsletter ? 'Se désinscrire de la newsletter' : 'S\'inscrire à la newsletter' }}
+                            {{ app.user.newsletter ? 'profile.newsletter_unsubscribe'|trans : 'profile.newsletter_subscribe'|trans }}
                         </button>
                     </form>
                 </div>
 
                 <h3 class="card__title margin-top-2">{{ page.actions_title }}</h3>
                 <div class="profile-actions">
-                    <a href="{{ path('app_profile_edit') }}" class="btn btn--primary">{{ page.edit_btn }}</a>
-                    <a href="{{ path('app_profile_change_password') }}" class="btn btn--secondary">{{ page.password_btn }}</a>
+                    <a href="{{ path('app_profile_edit') }}" class="btn btn--primary">{{ 'profile.edit'|trans }}</a>
+                    <a href="{{ path('app_profile_change_password') }}" class="btn btn--secondary">{{ 'profile.password'|trans }}</a>
                 </div>
-                
+
                 <div class="profile-actions">
                     <form method="post" action="{{ path('_logout_main') }}" class="display-inline">
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
-                        <button type="submit" class="btn btn--secondary spray-magenta">{{ page.logout_btn }}</button>
+                        <button type="submit" class="btn btn--secondary spray-magenta">{{ 'profile.logout'|trans }}</button>
                     </form>
                 </div>
-                
+
                 <div class="profile-actions">
-                    <form method="post" action="{{ path('app_profile_delete') }}" class="display-inline" data-confirm-title="Supprimer mon compte" data-confirm-message="{{ page.delete_confirm }}" data-confirm-confirm-label="Supprimer" data-confirm-cancel-label="Annuler">
+                    <form method="post" action="{{ path('app_profile_delete') }}" class="display-inline" data-confirm-title="{{ 'profile.delete_confirm_title'|trans }}" data-confirm-message="{{ page.delete_confirm }}" data-confirm-confirm-label="{{ 'profile.delete_confirm_btn'|trans }}" data-confirm-cancel-label="{{ 'profile.cancel'|trans }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete_profile') }}">
-                        <button type="submit" class="btn btn--secondary delete-profile">{{ page.delete_btn }}</button>
+                        <button type="submit" class="btn btn--secondary delete-profile">{{ 'profile.delete'|trans }}</button>
                     </form>
                 </div>
             </div>

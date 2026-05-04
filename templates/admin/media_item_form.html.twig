@@ -1,69 +1,95 @@
 {% extends '@EasyAdmin/layout.html.twig' %}
 
 {% block main %}
-    <div id="admin-media-item-form-config" data-upload-url="{{ path('admin_media_item_upload_image') }}"></div>
-    
+    <div id="admin-media-item-form-config" data-upload-url="{{ path('admin_media_item_upload_image') }}" data-csrf-token="{{ csrf_token('media_upload') }}"></div>
+
     {{ parent() }}
-    
+
     {% if ea.crud.currentAction == 'edit' and entity.assetPath %}
-        <div class="mb-3">
-            <button type="button" class="btn btn-info" onclick="openImageEditor()">
-                <i class="fas fa-edit"></i> Éditer l'image
-            </button>
-        </div>
+        <div
+            data-controller="image-editor"
+            data-image-editor-upload-url-value="{{ path('admin_media_item_upload_image', {entityId: entity.id}) }}"
+            data-action="cropperjs:connect->image-editor#onConnect"
+        >
+            <div class="mb-3">
+                <button type="button" class="btn btn-info" data-action="click->image-editor#open">
+                    <i class="fas fa-edit"></i> Éditer l'image
+                </button>
+            </div>
 
-        <div id="imageEditorModal" class="modal image-editor-modal">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Éditeur d'image</h5>
-                        <button type="button" class="close" onclick="closeImageEditor()">&times;</button>
-                    </div>
-                    <div class="modal-body" data-controller="image-editor" data-image-editor-upload-url="{{ path('admin_media_item_upload_image', {entityId: entity.id}) }}">
-                        <div class="image-editor-container">
-                            <div class="image-editor-main">
-                                <div class="image-editor-canvas">
-                                    <img id="image-to-edit" src="{{ asset(entity.assetPath) }}" alt="{{ entity.title }}" data-image-editor-target="image" crossorigin="anonymous">
-                                </div>
+            <div class="modal image-editor-modal" data-image-editor-target="modal">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{{ 'admin.image_editor'|trans }}</h5>
+                            <button type="button" class="close" data-action="click->image-editor#close">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="image-editor-container">
+                                <div class="image-editor-main">
 
-                                <div class="image-editor-controls">
-                                    <div class="control-group">
-                                        <h3>Rotation</h3>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary" data-action="click->image-editor#rotateLeft">
-                                            Rotation gauche
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary" data-action="click->image-editor#rotateRight">
-                                            Rotation droite
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary" data-action="click->image-editor#flipHorizontal">
-                                            Miroir horizontal
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary" data-action="click->image-editor#flipVertical">
-                                            Miroir vertical
-                                        </button>
+                                    <div class="image-editor-canvas">
+                                        <input type="hidden"
+                                            data-controller="symfony--ux-cropperjs--cropper"
+                                            data-symfony--ux-cropperjs--cropper-public-url-value="{{ asset(entity.assetPath) }}"
+                                            data-symfony--ux-cropperjs--cropper-options-value="{{ {
+                                                aspectRatio: null,
+                                                viewMode: 1,
+                                                dragMode: 'move',
+                                                autoCropArea: 0.8,
+                                                restore: false,
+                                                guides: true,
+                                                center: true,
+                                                highlight: true,
+                                                cropBoxMovable: true,
+                                                cropBoxResizable: true,
+                                                toggleDragModeOnDblclick: false,
+                                                minContainerWidth: 200,
+                                                minContainerHeight: 200
+                                            }|json_encode|e('html_attr') }}"
+                                        >
                                     </div>
 
-                                    <div class="control-group">
-                                        <h3>Ajustements</h3>
-                                        <div class="control-item">
-                                            <label for="contrast-slider">Contraste: <span id="contrast-value">100%</span></label>
-                                            <input type="range" id="contrast-slider" min="0" max="200" value="100" data-action="input->image-editor#setContrast">
+                                    <div class="image-editor-controls">
+                                        <div class="control-group">
+                                            <h3>{{ 'admin.rotation'|trans }}</h3>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" data-action="click->image-editor#rotateLeft">
+                                                {{ 'admin.rotate_left'|trans }}
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" data-action="click->image-editor#rotateRight">
+                                                {{ 'admin.rotate_right'|trans }}
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" data-action="click->image-editor#flipHorizontal">
+                                                {{ 'admin.flip_horizontal'|trans }}
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" data-action="click->image-editor#flipVertical">
+                                                {{ 'admin.flip_vertical'|trans }}
+                                            </button>
                                         </div>
-                                        <div class="control-item">
-                                            <label for="brightness-slider">Luminosité: <span id="brightness-value">100%</span></label>
-                                            <input type="range" id="brightness-slider" min="0" max="200" value="100" data-action="input->image-editor#setBrightness">
+
+                                        <div class="control-group">
+                                            <h3>{{ 'admin.adjustments'|trans }}</h3>
+                                            <div class="control-item">
+                                                <label for="contrast-slider">{{ 'admin.contrast'|trans }} : <span class="slider-value">100%</span></label>
+                                                <input type="range" id="contrast-slider" class="form-control-range" min="0" max="200" value="100" data-action="input->image-editor#adjustContrast">
+                                            </div>
+                                            <div class="control-item">
+                                                <label for="brightness-slider">{{ 'admin.brightness'|trans }} : <span class="slider-value">100%</span></label>
+                                                <input type="range" id="brightness-slider" class="form-control-range" min="0" max="200" value="100" data-action="input->image-editor#adjustBrightness">
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <h3>{{ 'admin.actions_label'|trans }}</h3>
+                                            <button type="button" class="btn btn-primary" data-action="click->image-editor#crop">
+                                                Recadrer et sauvegarder
+                                            </button>
+                                            <button type="button" class="btn btn-secondary" data-action="click->image-editor#close">
+                                                Annuler
+                                            </button>
                                         </div>
                                     </div>
 
-                                    <div class="control-group">
-                                        <h3>Actions</h3>
-                                        <button type="button" class="btn btn-primary" data-action="click->image-editor#crop">
-                                            Recadrer et sauvegarder
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="closeImageEditor()">
-                                            Annuler
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                         </div>

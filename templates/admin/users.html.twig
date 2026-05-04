@@ -1,15 +1,15 @@
 {% extends 'layout/admin.html.twig' %}
 
-{% block admin_content %}
-    <h1 class="admin-title">Gestion des Utilisateurs</h1>
+{% block admin_main %}
+    <h1 class="admin-title">{{ 'admin.users_title'|trans }}</h1>
     
     <div class="admin-toolbar">
-        <div class="admin-filter">
-            <label for="newsletter-filter" class="admin-filter__label">Filtre Newsletter:</label>
+        <div class="admin-filters">
+            <label for="newsletter-filter" class="admin-filter__label">{{ 'admin.newsletter_filter'|trans }}</label>
             <select id="newsletter-filter" class="admin-filter__select" onchange="window.location.href='?newsletter=' + this.value">
-                <option value="">Tous</option>
-                <option value="subscribed" {{ newsletter_filter == 'subscribed' ? 'selected' : '' }}>Inscrits</option>
-                <option value="not_subscribed" {{ newsletter_filter == 'not_subscribed' ? 'selected' : '' }}>Non inscrits</option>
+                <option value="">{{ 'admin.filter_all'|trans }}</option>
+                <option value="subscribed" {{ newsletter_filter == 'subscribed' ? 'selected' : '' }}>{{ 'admin.filter_subscribed'|trans }}</option>
+                <option value="not_subscribed" {{ newsletter_filter == 'not_subscribed' ? 'selected' : '' }}>{{ 'admin.filter_not_subscribed'|trans }}</option>
             </select>
         </div>
     </div>
@@ -18,11 +18,11 @@
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Email</th>
-                    <th>Nom</th>
-                    <th>Newsletter</th>
-                    <th>Actions</th>
+                    <th>{{ 'admin.id'|trans }}</th>
+                    <th>{{ 'admin.email'|trans }}</th>
+                    <th>{{ 'admin.name'|trans }}</th>
+                    <th>{{ 'admin.newsletter'|trans }}</th>
+                    <th>{{ 'admin.actions'|trans }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,18 +33,18 @@
                         <td>{{ user.firstName ?? '' }} {{ user.lastName ?? '' }}</td>
                         <td>
                             {% if user.newsletter %}
-                                <span class="admin-badge admin-badge--success">Oui</span>
+                                <span class="admin-badge admin-badge--success">{{ 'admin.yes'|trans }}</span>
                             {% else %}
-                                <span class="admin-badge admin-badge--danger">Non</span>
+                                <span class="admin-badge admin-badge--danger">{{ 'admin.no'|trans }}</span>
                             {% endif %}
                         </td>
                         <td>
-                            <span class="admin-badge admin-badge--info">-</span>
+                            <a href="#" class="admin-btn admin-btn--small">{{ 'admin.view'|trans }}</a>
                         </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="5" class="admin-empty">Aucun utilisateur trouvé.</td>
+                        <td colspan="5" class="admin-empty">{{ 'admin.no_user_found'|trans }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

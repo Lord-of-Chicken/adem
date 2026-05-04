@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Admin | {{ site_brand.title }}{% endblock %}
+{% block title %}{{ 'nav.admin'|trans }} | {{ site_brand.title }}{% endblock %}
 
 {% block body_class %}page-admin{% endblock %}
 
@@ -106,30 +106,30 @@
     <div class="admin-layout">
         <aside class="admin-sidebar">
             <div class="admin-sidebar__header">
-                <h2 class="admin-sidebar__title">Admin</h2>
+                <h2 class="admin-sidebar__title">{{ page.sidebar_title }}</h2>
             </div>
             <nav class="admin-nav">
                 <a href="{{ path('app_admin') }}" class="admin-nav__link {{ app.request.attributes.get('_route') == 'app_admin' ? 'admin-nav__link--active' : '' }}">
-                    Dashboard
+                    {{ page.nav_dashboard }}
                 </a>
                 <a href="{{ path('app_admin_carousel') }}" class="admin-nav__link {{ app.request.attributes.get('_route') == 'app_admin_carousel' ? 'admin-nav__link--active' : '' }}">
-                    Carousel
+                    {{ page.nav_carousel }}
                 </a>
                 <a href="{{ path('app_admin_users') }}" class="admin-nav__link {{ app.request.attributes.get('_route') == 'app_admin_users' ? 'admin-nav__link--active' : '' }}">
-                    Utilisateurs
+                    {{ page.nav_users }}
                 </a>
-                <a href="/admin/order" class="admin-nav__link {{ app.request.attributes.get('_route') starts with 'admin_order' ? 'admin-nav__link--active' : '' }}">
-                    Paiements Stripe
+                <a href="{{ path('app_admin_purchases') }}" class="admin-nav__link {{ app.request.attributes.get('_route') == 'app_admin_purchases' ? 'admin-nav__link--active' : '' }}">
+                    {{ page.nav_stripe }}
                 </a>
             </nav>
         </aside>
         <main class="admin-main">
             {% block admin_main %}
-                <h1 class="admin-title">Dashboard Admin</h1>
+                <h1 class="admin-title">{{ page.dashboard_title }}</h1>
                 <div class="admin-dashboard">
                     <div class="admin-card">
-                        <h2 class="admin-card__title">Bienvenue</h2>
-                        <p class="admin-card__text">Utilisez le menu de gauche pour naviguer dans les différentes sections d'administration.</p>
+                        <h2 class="admin-card__title">{{ page.welcome_title }}</h2>
+                        <p class="admin-card__text">{{ page.welcome_text }}</p>
                     </div>
                 </div>
             {% endblock %}

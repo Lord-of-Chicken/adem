@@ -6,18 +6,24 @@
             {% endif %}
         </a>
 
-        <button class="site-header__menu-toggle" id="menuToggle" aria-expanded="false" aria-label="Menu">
+        <button class="site-header__menu-toggle" id="menuToggle" aria-expanded="false" aria-label="{{ 'nav.menu'|trans }}">
             <span class="site-header__menu-toggle__line"></span>
             <span class="site-header__menu-toggle__line"></span>
             <span class="site-header__menu-toggle__line"></span>
         </button>
 
-        <nav class="site-nav" aria-label="Navigation principale">
+        <nav class="site-nav" aria-label="{{ 'nav.main_navigation'|trans }}">
             {% for link in navLinks %}
                 <a href="{{ link.href }}" class="site-nav__link">{{ link.label }}</a>
             {% endfor %}
-            <a href="{{ path('app_about') }}" class="site-nav__link">Qui est Adem?</a>
-            <a href="{{ path('app_contact') }}" class="site-nav__link">Contact</a>
+            <a href="{{ path('app_about') }}" class="site-nav__link">{{ 'nav.about'|trans }}</a>
+            <a href="{{ path('app_contact') }}" class="site-nav__link">{{ 'nav.contact'|trans }}</a>
+
+            <div class="site-nav__lang-selector">
+                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'_locale': 'fr'})) }}" class="site-nav__link {% if app.request.locale == 'fr' %}site-nav__link--active{% endif %}">FR</a>
+                <span class="site-nav__lang-separator">|</span>
+                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'_locale': 'en'})) }}" class="site-nav__link {% if app.request.locale == 'en' %}site-nav__link--active{% endif %}">EN</a>
+            </div>
 
             <div class="site-header__account site-header__account--mobile">
                 <a href="{{ cartUrl }}" class="site-nav__link">
@@ -26,16 +32,16 @@
                         <circle cx="20" cy="21" r="1"></circle>
                         <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                     </svg>
-                    Panier
+                    {{ 'nav.cart'|trans }}
                     {% if cartLineCount is defined and cartLineCount > 0 %}
                         <span class="site-header__cart-badge">{{ cartLineCount }}</span>
                     {% endif %}
                 </a>
 
                 {% if isAuthenticated %}
-                    <a href="{{ profileUrl }}" class="site-nav__link">Profil</a>
+                    <a href="{{ profileUrl }}" class="site-nav__link">{{ 'profile.title'|trans }}</a>
                 {% else %}
-                    <a href="{{ loginUrl }}" class="site-nav__link" aria-label="Connexion">
+                    <a href="{{ loginUrl }}" class="site-nav__link" aria-label="{{ 'nav.login'|trans }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
@@ -52,20 +58,20 @@
                     <circle cx="20" cy="21" r="1"></circle>
                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                 </svg>
-                Panier
+                {{ 'nav.cart'|trans }}
                 {% if cartLineCount is defined and cartLineCount > 0 %}
                     <span class="site-header__cart-badge">{{ cartLineCount }}</span>
                 {% endif %}
             </a>
 
             {% if isAdmin %}
-                <a href="{{ adminUrl }}" class="site-nav__link" data-turbo="false">Admin</a>
+                <a href="{{ adminUrl }}" class="site-nav__link" data-turbo="false">{{ 'nav.admin'|trans }}</a>
             {% endif %}
 
             {% if isAuthenticated %}
-                <a href="{{ profileUrl }}" class="site-nav__link">Profil</a>
+                <a href="{{ profileUrl }}" class="site-nav__link">{{ 'profile.title'|trans }}</a>
             {% else %}
-                <a href="{{ loginUrl }}" class="site-nav__link" aria-label="Connexion">
+                <a href="{{ loginUrl }}" class="site-nav__link" aria-label="{{ 'nav.login'|trans }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>

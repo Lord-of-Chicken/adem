@@ -13,7 +13,7 @@ class StripePaymentService
     ) {
     }
 
-    public function createCheckoutSession(array $lineItems, ?string $customerEmail = null, array $metadata = []): Session
+    public function createCheckoutSession(array $lineItems, ?string $customerEmail = null, array $metadata = [], ?string $successUrl = null, ?string $cancelUrl = null): Session
     {
         Stripe::setApiKey($this->stripeSecretKey);
 
@@ -26,6 +26,14 @@ class StripePaymentService
 
         if ($customerEmail) {
             $sessionData['customer_email'] = $customerEmail;
+        }
+
+        if ($successUrl) {
+            $sessionData['success_url'] = $successUrl;
+        }
+
+        if ($cancelUrl) {
+            $sessionData['cancel_url'] = $cancelUrl;
         }
 
         return Session::create($sessionData);

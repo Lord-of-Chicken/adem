@@ -1,28 +1,25 @@
 {% extends 'layout/admin.html.twig' %}
 
-{% block admin_content %}
+{% block admin_main %}
     <h1 class="admin-title">{{ title }}</h1>
-    
-    <div class="admin-card">
-        <form method="post" class="admin-form">
-            <div class="admin-form__field">
-                <label for="title" class="admin-form__label">Titre</label>
-                <input type="text" id="title" name="title" class="admin-form__input" value="{{ media_item.title ?? '' }}" required>
+    <div class="admin-form">
+        <form method="post" enctype="multipart/form-data">
+            <input type="hidden" name="_token" value="{{ csrf_token('carousel_manage') }}">
+            <div class="admin-form__group">
+                <label for="title" class="admin-form__label">{{ 'admin.title_label'|trans }}</label>
+                <input type="text" id="title" name="title" class="admin-form__input" value="{{ media_item.title|default('') }}" required>
             </div>
-            
-            <div class="admin-form__field">
-                <label for="asset_path" class="admin-form__label">Chemin de l'image (ex: img/ruelle/IMG_0189.jpeg)</label>
-                <input type="text" id="asset_path" name="asset_path" class="admin-form__input" value="{{ media_item.assetPath ?? '' }}" required>
+            <div class="admin-form__group">
+                <label for="asset_path" class="admin-form__label">{{ 'admin.image_path'|trans }}</label>
+                <input type="text" id="asset_path" name="asset_path" class="admin-form__input" value="{{ media_item.assetPath|default('') }}" required>
             </div>
-            
-            <div class="admin-form__field">
-                <label for="alt" class="admin-form__label">Texte alternatif</label>
-                <input type="text" id="alt" name="alt" class="admin-form__input" value="{{ media_item.alt ?? '' }}">
+            <div class="admin-form__group">
+                <label for="alt" class="admin-form__label">{{ 'admin.alt_text'|trans }}</label>
+                <input type="text" id="alt" name="alt" class="admin-form__input" value="{{ media_item.alt|default('') }}">
             </div>
-            
             <div class="admin-form__actions">
-                <a href="{{ path('app_admin_carousel') }}" class="btn btn--secondary">Annuler</a>
-                <button type="submit" class="btn btn--primary">Enregistrer</button>
+                <a href="{{ path('app_admin_carousel') }}" class="btn btn--secondary">{{ 'admin.cancel'|trans }}</a>
+                <button type="submit" class="btn btn--primary">{{ 'admin.save'|trans }}</button>
             </div>
         </form>
     </div>

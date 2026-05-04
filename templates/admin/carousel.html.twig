@@ -4,7 +4,7 @@
     <h1 class="admin-title">Gestion du Carousel</h1>
     
     <div class="admin-toolbar">
-        <a href="{{ path('app_admin_carousel_add') }}" class="btn btn--primary">Ajouter une image</a>
+        <a href="{{ path('app_admin_carousel_add') }}" class="btn btn--primary">{{ 'admin.add_image'|trans }}</a>
     </div>
     
     <div class="admin-table-container">
@@ -26,7 +26,7 @@
                         <td class="drag-handle" style="cursor: move;">☰</td>
                         <td>
                             {% if media_item.assetPath %}
-                                <img src="{{ asset(media_item.assetPath) }}" alt="{{ media_item.alt }}" class="admin-table__thumbnail">
+                                <img src="{{ asset(media_item.assetPath) }}" alt="{{ media_item.alt|default('') }}" class="admin-thumbnail">
                             {% else %}
                                 <span class="admin-table__placeholder">-</span>
                             {% endif %}
@@ -43,10 +43,10 @@
                         <td>{{ media_item.sortOrder }}</td>
                         <td>
                             <div class="admin-table__actions">
-                                <a href="{{ path('app_admin_carousel_edit', { id: media_item.id }) }}" class="btn btn--secondary">Modifier</a>
+                                <a href="{{ path('app_admin_carousel_edit', { id: media_item.id }) }}" class="btn btn--secondary">{{ 'admin.edit'|trans }}</a>
                                 <form method="post" action="{{ path('app_admin_carousel_delete', { id: media_item.id }) }}" data-confirm-title="Supprimer cette image" data-confirm-message="Supprimer cette image ?" data-confirm-confirm-label="Supprimer" data-confirm-cancel-label="Annuler">
                                     <input type="hidden" name="_token" value="{{ csrf_token('carousel_delete_' ~ media_item.id) }}">
-                                    <button type="submit" class="btn btn--danger">Supprimer</button>
+                                    <button type="submit" class="btn btn--danger">{{ 'admin.delete'|trans }}</button>
                                 </form>
                             </div>
                         </td>

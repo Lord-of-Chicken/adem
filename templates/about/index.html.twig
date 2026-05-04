@@ -1,13 +1,13 @@
 {% extends 'layout/street.html.twig' %}
 
-{% block title %}Qui est Adem? | {{ site_brand.title }}{% endblock %}
+{% block title %}{{ 'nav.about'|trans }} | {{ site_brand.title }}{% endblock %}
 
 {% block street_main %}
 <div class="main main--narrow">
     <section class="section section--auth">
         <div class="section__inner section__inner--narrow">
             <h1 class="section__title section__title--tag">{{ page.title }}</h1>
-            <p class="section__intro">{{ page.empty|default('Contenu à venir...') }}</p>
+            <p class="section__intro">{{ page.empty|default('about.coming_soon'|trans) }}</p>
         </div>
     </section>
 </div>

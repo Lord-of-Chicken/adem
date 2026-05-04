@@ -49,15 +49,15 @@
     <section class="section" id="crowdfunding">
         <div class="section__inner section__inner--narrow">
             <div class="help-box">
-                <h2 class="help-box__title">ADEM DEMANDE TON AIDE</h2>
+                <h2 class="help-box__title">{{ 'home.help_title'|trans }}</h2>
                 <div class="help-box__content">
-                    <p>Cent mètres de ruelle à décorer, fleurir et entretenir, cela coûte. L'aide de ses parents, amis et le subside communal ne suffisent pas.</p>
-                    <p>Voilà pourquoi Adem te propose d'offrir des bégonias, des jardinières ou des palettes à sa ruelle*. En formule V.I.P, tu peux même les personnaliser.</p>
+                    <p>{{ 'home.help_content'|trans }}</p>
+                    <p>{{ 'home.help_vip'|trans }}</p>
                     <div class="help-box__highlight">
-                        <p>Les indications Bégonias, jardinières et palettes (non VIP) sont donnés à titre indicatifs. Les fonds récoltés pouvant être utilisés pour l'achat d'autres fleurs et plantes ou pour la décoration et l'entretien de La Ruelle d'Adem.</p>
+                        <p>{{ 'home.help_note'|trans }}</p>
                     </div>
                 </div>
-                <p class="help-box__cta">COMBIEN DE FLEURS À 1€, DE JARDINIÈRES OU DE PALETTES COMPTES-TU OFFRIR ?</p>
+                <p class="help-box__cta">{{ 'home.cta'|trans }}</p>
             </div>
         </div>
     </section>
@@ -79,12 +79,12 @@
                                 <button type="button" class="qty-btn" id="minus-{{ tier.id }}" onclick="updateQty('{{ tier.id }}', -1, {{ tier.min_qty }}, {{ tier.max_qty }})">-</button>
                                 <div class="qty-display">
                                     <span class="qty-number" id="num-{{ tier.id }}">{{ tier.min_qty }}</span>
-                                    <span class="qty-label" id="label-{{ tier.id }}">pièce{{ tier.min_qty > 1 ? 's' : '' }}</span>
+                                    <span class="qty-label" id="label-{{ tier.id }}">{{ 'home.piece'|trans }}{{ tier.min_qty > 1 ? 's' : '' }}</span>
                                 </div>
                                 <button type="button" class="qty-btn" id="plus-{{ tier.id }}" onclick="updateQty('{{ tier.id }}', 1, {{ tier.min_qty }}, {{ tier.max_qty }})">+</button>
                             </div>
                             <input type="hidden" id="qty-{{ tier.id }}" value="{{ tier.min_qty }}">
-                            <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')">Ajouter</button>
+                            <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')">{{ 'home.add'|trans }}</button>
                         </div>
                     </article>
                     {% endif %}
@@ -109,18 +109,18 @@
                                 <button type="button" class="qty-btn" id="minus-{{ tier.id }}" onclick="updateQty('{{ tier.id }}', -1, {{ tier.min_qty }}, {{ tier.max_qty }})">-</button>
                                 <div class="qty-display">
                                     <span class="qty-number" id="num-{{ tier.id }}">{{ tier.min_qty }}</span>
-                                    <span class="qty-label" id="label-{{ tier.id }}">pièce{{ tier.min_qty > 1 ? 's' : '' }}</span>
+                                    <span class="qty-label" id="label-{{ tier.id }}">{{ 'home.piece'|trans }}{{ tier.min_qty > 1 ? 's' : '' }}</span>
                                 </div>
                                 <button type="button" class="qty-btn" id="plus-{{ tier.id }}" onclick="updateQty('{{ tier.id }}', 1, {{ tier.min_qty }}, {{ tier.max_qty }})">+</button>
                             </div>
                             <input type="hidden" id="qty-{{ tier.id }}" value="{{ tier.min_qty }}">
 
                             <div class="form-group margin-top-1">
-                                <label class="form__label">Nom affiché :</label>
-                                <input type="text" id="donor-{{ tier.id }}" class="form__input form__input--don-libre" placeholder="Ton nom ou Anonyme">
+                                <label class="form__label">{{ 'home.displayed_name'|trans }} :</label>
+                                <input type="text" id="donor-{{ tier.id }}" class="form__input form__input--don-libre" placeholder="{{ 'home.name_placeholder'|trans }}">
                             </div>
                             <button type="button" class="btn btn--primary btn--small margin-top-0-5" onclick="addToCart('{{ tier.id }}')">
-                                Ajouter au panier
+                                {{ 'home.add_to_cart'|trans }}
                             </button>
                         </div>
                     </article>
@@ -136,14 +136,14 @@
             <p class="section__intro section__intro--muted">{{ sections.don_libre.intro }}</p>
             <article class="card card--tier card--featured card--sticker card--center">
                 <div class="form">
-                    <label class="form__label">Montant (€) :</label>
-                    <input type="number" id="free-amount" class="form__input form__input--don-libre" placeholder="Ex: 15" min="1">
+                    <label class="form__label">{{ 'home.amount'|trans }} ({{ 'cart.currency_symbol'|trans }}) :</label>
+                    <input type="number" id="free-amount" class="form__input form__input--don-libre" placeholder="{{ 'home.amount_example'|trans }}" min="1">
 
-                    <label class="form__label margin-top-1">Nom affiché :</label>
-                    <input type="text" id="donor-free_donation" class="form__input form__input--don-libre" placeholder="Anonyme">
+                    <label class="form__label margin-top-1">{{ 'home.displayed_name'|trans }} :</label>
+                    <input type="text" id="donor-free_donation" class="form__input form__input--don-libre" placeholder="{{ 'home.anonymous'|trans }}">
 
                     <button type="button" class="btn btn--primary btn--small margin-top-1" onclick="addToCart('free_donation')">
-                        Ajouter au panier
+                        {{ 'home.add_to_cart'|trans }}
                     </button>
                 </div>
             </article>
@@ -157,9 +157,9 @@
             <p class="section__intro section__intro--muted section__intro--multiline">{{ sections.newsletter.intro }}</p>
             <div class="section__actions">
                 {% if is_granted('ROLE_USER') %}
-                    <a href="{{ path('app_profile') }}" class="btn btn--primary">Voir mon profil</a>
+                    <a href="{{ path('app_profile') }}" class="btn btn--primary">{{ 'home.view_profile'|trans }}</a>
                 {% else %}
-                    <a href="{{ path('app_register') }}" class="btn btn--primary">Inscris-toi à la mailing list !</a>
+                    <a href="{{ path('app_register') }}" class="btn btn--primary">{{ 'home.newsletter_signup'|trans }}</a>
                 {% endif %}
             </div>
         </div>

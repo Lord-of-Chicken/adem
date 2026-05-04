@@ -16,27 +16,10 @@
     {% block javascripts %}
         {% if app.current_route starts with 'app_checkout' or app.current_route starts with 'app_payment' or app.current_route starts with 'app_cart' %}
             <script src="https://js.stripe.com/v3/"></script>
-            <script>
-                window.STRIPE_PUBLISHABLE_KEY = '{{ stripe_publishable_key }}';
-
-                function initStripe() {
-                    if (typeof Stripe !== 'undefined' && window.STRIPE_PUBLISHABLE_KEY && window.STRIPE_PUBLISHABLE_KEY !== '') {
-                        try {
-                            window.stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY);
-                        } catch (error) {
-                            setTimeout(initStripe, 100);
-                        }
-                    } else {
-                        setTimeout(initStripe, 100);
-                    }
-                }
-
-                document.addEventListener('DOMContentLoaded', initStripe);
-            </script>
         {% endif %}
     {% endblock %}
 </head>
-<body class="{% block body_class %}{% endblock %}">
+<body class="{% block body_class %}{% endblock %}"{% if app.current_route starts with 'app_checkout' or app.current_route starts with 'app_payment' or app.current_route starts with 'app_cart' %} data-stripe-enabled="1" data-stripe-publishable-key="{{ stripe_publishable_key }}"{% endif %}>
     {# Bandeau chantier + header de navigation #}
     {% block top_bars %}
         {% include '_partials/top_bars.html.twig' %}
@@ -45,47 +28,5 @@
     {% block body %}{% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
-    {% include '_partials/layout_js.html.twig' %}
-    <script>
-        /* ── Menu toggle ── */
-        document.addEventListener('DOMContentLoaded', function(){
-            var menuToggle = document.getElementById('menuToggle');
-            var siteNav = document.querySelector('.site-nav');
-            if(menuToggle && siteNav){
-                menuToggle.addEventListener('click', function(e){
-                    e.stopPropagation();
-                    var isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-                    menuToggle.setAttribute('aria-expanded', !isExpanded);
-                    siteNav.classList.toggle('site-nav--open', !isExpanded);
-                });
-                document.addEventListener('click', function(e){
-                    if(!menuToggle.contains(e.target) && !siteNav.contains(e.target)){
-                        menuToggle.setAttribute('aria-expanded','false');
-                        siteNav.classList.remove('site-nav--open');
-                    }
-                });
-                document.addEventListener('keydown', function(e){
-                    if(e.key==='Escape'){
-                        menuToggle.setAttribute('aria-expanded','false');
-                        siteNav.classList.remove('site-nav--open');
-                    }
-                });
-            }
-
-            /* ── Swiper init ── */
-            if(typeof Swiper !== 'undefined'){
-                new Swiper('.media-swiper', {
-                    effect: 'coverflow',
-                    grabCursor: true,
-                    centeredSlides: true,
-                    slidesPerView: 'auto',
-                    coverflowEffect: { rotate:50, stretch:0, depth:100, modifier:1, slideShadows:true },
-                    autoplay: { delay:3000, disableOnInteraction:false },
-                    pagination: { el:'.swiper-pagination', clickable:true },
-                    navigation: { nextEl:'.swiper-button-next', prevEl:'.swiper-button-prev' },
-                });
-            }
-        });
-    </script>
 </body>
 </html>

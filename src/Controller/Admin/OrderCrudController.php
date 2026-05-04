@@ -12,9 +12,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class OrderCrudController extends AbstractCrudController
 {
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+    ) {
+    }
+
     public static function getEntityFqcn(): string
     {
         return Order::class;
@@ -24,25 +30,25 @@ class OrderCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
-            AssociationField::new('user', 'Client')->hideOnForm(),
-            TextField::new('stripeCheckoutSessionId', 'Stripe Session ID')->hideOnIndex(),
-            ChoiceField::new('status', 'Statut')
+            AssociationField::new('user', $this->translator->trans('admin.client'))->hideOnForm(),
+            TextField::new('stripeCheckoutSessionId', $this->translator->trans('admin.order_stripe_session'))->hideOnIndex(),
+            ChoiceField::new('status', $this->translator->trans('admin.order_status'))
                 ->setChoices([
-                    'En attente' => 'pending',
-                    'Payé' => 'paid',
-                    'Annulé' => 'cancelled',
+                    $this->translator->trans('admin.order_status_pending') => 'pending',
+                    $this->translator->trans('admin.order_status_paid') => 'paid',
+                    $this->translator->trans('admin.order_status_cancelled') => 'cancelled',
                 ]),
-            IntegerField::new('totalCents', 'Montant (cents)'),
-            DateTimeField::new('createdAt', 'Date de création')->hideOnForm(),
-            DateTimeField::new('paidAt', 'Date de paiement')->hideOnForm(),
+            IntegerField::new('totalCents', $this->translator->trans('admin.order_amount_cents')),
+            DateTimeField::new('createdAt', $this->translator->trans('admin.order_created_at'))->hideOnForm(),
+            DateTimeField::new('paidAt', $this->translator->trans('admin.order_paid_at'))->hideOnForm(),
         ];
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Achat')
-            ->setEntityLabelInPlural('Achats')
+            ->setEntityLabelInSingular($this->translator->trans('admin.order_label_singular'))
+            ->setEntityLabelInPlural($this->translator->trans('admin.order_label_plural'))
             ->setDefaultSort(['paidAt' => 'DESC'])
             ->setSearchFields(['id', 'status', 'stripeCheckoutSessionId']);
     }

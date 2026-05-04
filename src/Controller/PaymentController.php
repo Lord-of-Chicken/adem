@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class PaymentController extends AbstractController
 {
@@ -24,26 +25,40 @@ final class PaymentController extends AbstractController
     }
 
     #[Route('/checkout', name: 'app_checkout')]
-    public function checkout(): Response
+    public function checkout(TranslatorInterface $translator): Response
     {
         /** @var User|null $user */
         $user = $this->getUser();
 
         $lines = $this->cartService->getLines();
         if (empty($lines)) {
-            $this->addFlash('warning', 'Votre panier est vide.');
+            $this->addFlash('warning', $translator->trans('payment.cart_empty'));
             return $this->redirectToRoute('app_cart_index');
         }
 
         $lineItems = [];
         $metadata = [];
-        
+
         foreach ($lines as $line) {
             $tier = $this->catalog->require($line['tier_id']);
 
+            // Traduire title_key et detail_key en title et detail
+            if (isset($tier['title_key'])) {
+                $tier['title'] = $translator->trans($tier['title_key']);
+            }
+            if (isset($tier['detail_key'])) {
+                $tier['detail'] = $translator->trans($tier['detail_key']);
+            }
+            if (isset($tier['price_key'])) {
+                $tier['price'] = $translator->trans($tier['price_key']);
+            }
+            if (isset($tier['price_suffix_key'])) {
+                $tier['price_suffix'] = $translator->trans($tier['price_suffix_key']);
+            }
+
             if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
                 $unitAmount = $line['custom_price_cents'];
-                $description = 'Don libre de ' . ($line['custom_price_cents'] / 100) . '€';
+                $description = $translator->trans('payment.free_donation') . ($line['custom_price_cents'] / 100) . $translator->trans('cart.currency_symbol');
             } else {
                 $unitAmount = (int) ((float)$tier['unit_price_eur'] * 100);
                 $description = $tier['detail'] ?? null;
@@ -56,7 +71,7 @@ final class PaymentController extends AbstractController
 
             if (!empty($line['donor_name'])) {
                 $itemMetadata['donor_name'] = $line['donor_name'];
-                $description .= ' - Don de: ' . $line['donor_name'];
+                $description .= $translator->trans('payment.donation_of') . $line['donor_name'];
             }
 
             if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
@@ -83,43 +98,35 @@ final class PaymentController extends AbstractController
         }
 
         try {
-            $sessionData = [
-                'payment_method_types' => ['card'],
-                'line_items' => $lineItems,
-                'mode' => 'payment',
-                'success_url' => $this->generateUrl(
-                    'app_payment_success',
-                    ['session_id' => '{CHECKOUT_SESSION_ID}'],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ),
-                'cancel_url' => $this->generateUrl(
-                    'app_payment_cancel',
-                    [],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ),
-                'metadata' => $metadata,
-            ];
-
-            if ($user) {
-                $sessionData['customer_email'] = $user->getEmail();
-            }
+            $successUrl = $this->generateUrl(
+                'app_payment_success',
+                ['session_id' => '{CHECKOUT_SESSION_ID}'],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+            $cancelUrl = $this->generateUrl(
+                'app_payment_cancel',
+                [],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
 
             $checkoutSession = $this->stripePaymentService->createCheckoutSession(
                 $lineItems,
                 $user ? $user->getEmail() : null,
-                $metadata
+                $metadata,
+                $successUrl,
+                $cancelUrl
             );
 
             return $this->redirect($checkoutSession->url, 303);
 
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Erreur Stripe : ' . $e->getMessage());
+            $this->addFlash('error', $translator->trans('payment.stripe_error') . $e->getMessage());
             return $this->redirectToRoute('app_cart_index');
         }
     }
 
     #[Route('/payment/success', name: 'app_payment_success')]
-    public function success(Request $request): Response
+    public function success(Request $request, TranslatorInterface $translator): Response
     {
         $sessionId = $request->query->get('session_id');
         if (!$sessionId) {
@@ -131,21 +138,21 @@ final class PaymentController extends AbstractController
 
             if ($isPaid) {
                 $this->cartService->clear();
-                $this->addFlash('success', 'Merci ! Votre participation a bien été enregistrée.');
+                $this->addFlash('success', $translator->trans('payment.success'));
             } else {
-                $this->addFlash('warning', 'Le paiement est en cours de traitement ou a échoué.');
+                $this->addFlash('warning', $translator->trans('payment.processing'));
             }
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Impossible de vérifier le paiement.');
+            $this->addFlash('error', $translator->trans('payment.verification_error'));
         }
 
         return $this->redirectToRoute('app_home');
     }
 
     #[Route('/payment/cancel', name: 'app_payment_cancel')]
-    public function cancel(): Response
+    public function cancel(TranslatorInterface $translator): Response
     {
-        $this->addFlash('info', 'Le paiement a été annulé. Ton panier est toujours là !');
+        $this->addFlash('info', $translator->trans('payment.cancel'));
         return $this->redirectToRoute('app_cart_index');
     }
 

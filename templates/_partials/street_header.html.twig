@@ -1,6 +1,6 @@
 {% set brand = brand|default(site_brand) %}
-{% set nav_links = nav_links|default([{ label: 'Offres', href: path('app_home') ~ '#offres' }, { label: 'Médias', href: path('app_home') ~ '#medias' }]) %}
-{% set cta_newsletter = cta_newsletter|default({ href: path('app_home') ~ '#newsletter', label: '> Recevoir des notifications et invitations (mailing list)' }) %}
+{% set nav_links = nav_links|default([{ label: 'nav.offres'|trans, href: path('app_home') ~ '#offres' }, { label: 'nav.medias'|trans, href: path('app_home') ~ '#medias' }]) %}
+{% set cta_newsletter = cta_newsletter|default({ href: path('app_home') ~ '#newsletter', label: 'nav.cta_newsletter'|trans }) %}
 
 {{ component('SiteHeader', {
     logoAsset: brand.logo_asset,
