@@ -300,6 +300,9 @@
             "ref": "0df5844274d871b37fc3816c57a768ffc60a43a5"
         }
     },
+    "symfony/ux-cropperjs": {
+        "version": "v3.0.0"
+    },
     "symfony/ux-turbo": {
         "version": "2.34",
         "recipe": {

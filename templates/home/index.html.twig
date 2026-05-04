@@ -5,6 +5,7 @@
 {% block street_main %}
     {# Jeton de sécurité global pour les appels AJAX #}
     <input type="hidden" id="global-csrf-token" value="{{ csrf_token('cart_add') }}">
+    <input type="hidden" id="global-cart-url" value="{{ path('app_cart_index') }}">
 
 
     {# SECTION HERO #}
@@ -60,7 +61,7 @@
     <section class="section section--offres" id="offres">
         <div class="section__inner">
             <h2 class="section__title section__title--tag">{{ sections.offres.title }}</h2>
-            <p class="section__intro">{{ sections.offres.intro }}</p>
+            <p class="section__intro section__intro--muted">{{ sections.offres.intro }}</p>
             <div class="grid grid--tiers">
                 {% for tier in tiers_standard %}
                     {% if tier.id != 'free_donation' %}
@@ -127,7 +128,7 @@
     <section class="section" id="don-libre">
         <div class="section__inner">
             <h2 class="section__title section__title--tag">{{ sections.don_libre.title }}</h2>
-            <p class="section__intro">{{ sections.don_libre.intro }}</p>
+            <p class="section__intro section__intro--muted">{{ sections.don_libre.intro }}</p>
             <article class="card card--tier card--featured card--sticker card--center">
                 <div class="form">
                     <label class="form__label">Montant (€) :</label>
@@ -141,19 +142,6 @@
                     </button>
                 </div>
             </article>
-            <div class="section__actions margin-top-1">
-                <a href="{{ path('app_cart_index') }}" class="btn btn--primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    Panier
-                    {% if cart_line_count is defined and cart_line_count > 0 %}
-                        <span class="site-header__cart-badge">{{ cart_line_count }}</span>
-                    {% endif %}
-                </a>
-            </div>
         </div>
     </section>
 
@@ -161,7 +149,7 @@
     <section class="section section--newsletter" id="newsletter">
         <div class="section__inner">
             <h2 class="section__title section__title--tag">{{ sections.newsletter.title }}</h2>
-            <p class="section__intro">{{ sections.newsletter.intro }}</p>
+            <p class="section__intro section__intro--muted section__intro--multiline">{{ sections.newsletter.intro }}</p>
             <div class="section__actions">
                 {% if is_granted('ROLE_USER') %}
                     <a href="{{ path('app_profile') }}" class="btn btn--primary">Voir mon profil</a>

@@ -25,6 +25,67 @@ window.updateQty = function(id, delta, min, max) {
     }
 }
 
+function updateCartBadges(cartCount) {
+    const count = parseInt(cartCount, 10);
+    if (Number.isNaN(count)) {
+        return;
+    }
+
+    const cartLinks = document.querySelectorAll('.site-header__cart');
+    cartLinks.forEach((link) => {
+        let badge = link.querySelector('.site-header__cart-badge');
+
+        if (count > 0) {
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'site-header__cart-badge';
+                link.appendChild(badge);
+            }
+
+            badge.textContent = count;
+            badge.style.display = 'inline-block';
+        } else if (badge) {
+            badge.remove();
+        }
+    });
+}
+
+function showCartSuccessPopup() {
+    const cartUrl = document.getElementById('global-cart-url')?.value || '/panier';
+    let modal = document.getElementById('cart-success-modal');
+
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'cart-success-modal';
+        modal.className = 'cart-success-modal';
+        modal.innerHTML = `
+            <div class="cart-success-modal__backdrop"></div>
+            <div class="cart-success-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="cart-success-title">
+                <h3 id="cart-success-title" class="cart-success-modal__title">Ajouté au panier ! 🌸</h3>
+                <p class="cart-success-modal__text">Ton article a bien été ajouté.</p>
+                <div class="cart-success-modal__actions">
+                    <button type="button" class="btn btn--secondary" data-cart-modal-action="continue">Continuer</button>
+                    <button type="button" class="btn btn--primary" data-cart-modal-action="cart">Voir le panier</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        modal.addEventListener('click', (event) => {
+            const action = event.target.getAttribute('data-cart-modal-action');
+            if (action === 'continue' || event.target.classList.contains('cart-success-modal__backdrop')) {
+                modal.classList.remove('cart-success-modal--open');
+            }
+            if (action === 'cart') {
+                window.location.href = cartUrl;
+            }
+        });
+    }
+
+    modal.classList.add('cart-success-modal--open');
+}
+
 window.addToCart = function(tierId) {
     const csrfToken = document.getElementById('global-csrf-token').value;
     const formData = new FormData();
@@ -55,12 +116,8 @@ window.addToCart = function(tierId) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            const badge = document.querySelector('.site-header__cart-badge');
-            if (badge) {
-                badge.textContent = data.cartCount;
-                badge.style.display = 'inline-block';
-            }
-            alert('Ajouté au panier ! 🌸');
+            updateCartBadges(data.cartCount);
+            showCartSuccessPopup();
             if (tierId === 'free_donation') document.getElementById('free-amount').value = '';
         } else {
             alert(data.message || 'Erreur lors de l\'ajout');

@@ -5,14 +5,6 @@
         var b=document.querySelector('.construction-banner'),h=document.querySelector('.site-header'),r=document.documentElement.style;
         if(b)r.setProperty('--banner-h',b.offsetHeight+'px');
         if(h)r.setProperty('--header-h',h.offsetHeight+'px');
-
-        // Apply margin-top to EasyAdmin pages
-        var body = document.body;
-        if (body && body.classList.contains('ea')) {
-            var bannerHeight = b ? b.offsetHeight : 0;
-            var headerHeight = h ? h.offsetHeight : 0;
-            body.style.marginTop = (bannerHeight + headerHeight) + 'px';
-        }
     }
     document.addEventListener('DOMContentLoaded',u);
     window.addEventListener('load',u);

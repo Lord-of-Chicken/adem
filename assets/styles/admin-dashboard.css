@@ -1,0 +1,103 @@
+.admin-layout {
+    display: flex;
+    min-height: calc(100vh - var(--banner-h) - var(--header-h));
+}
+
+.admin-sidebar {
+    width: 250px;
+    background: var(--concrete-light);
+    border-right: 2px solid var(--spray-cyan);
+    padding: 1.5rem;
+    position: fixed;
+    top: calc(var(--banner-h) + var(--header-h));
+    left: 0;
+    height: calc(100vh - var(--banner-h) - var(--header-h));
+    overflow-y: auto;
+}
+
+.admin-sidebar__header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--spray-magenta);
+}
+
+.admin-sidebar__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--paper);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.admin-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.admin-nav__link {
+    display: block;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--paper);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.15s ease;
+}
+
+.admin-nav__link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-nav__link--active {
+    background: var(--spray-magenta);
+    border-color: var(--spray-magenta);
+    color: var(--paper);
+}
+
+.admin-main {
+    flex: 1;
+    margin-left: 250px;
+    padding: 2rem;
+}
+
+.admin-title {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    color: var(--paper);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 2rem;
+}
+
+.admin-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.admin-card {
+    background: var(--concrete-light);
+    border: 2px solid var(--spray-cyan);
+    padding: 2rem;
+    border-radius: 0.5rem;
+}
+
+.admin-card__title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--paper);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+}
+
+.admin-card__text {
+    color: var(--paper);
+    line-height: 1.6;
+}

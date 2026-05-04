@@ -1,4 +1,10 @@
 import './stimulus_bootstrap.js';
+import './js/layout-metrics.js';
+import './js/swiper-init.js';
+import './js/home.js';
+import './js/cart.js';
+import './js/admin-media-item-form.js';
+import './js/stripe-init.js';
 /*
  * Welcome to your app's main JavaScript file!
  *

@@ -111,7 +111,7 @@ final class HomeController extends AbstractController
                 'vip' => [
                     'id' => 'vip',
                     'title' => 'Formules V.I.P.',
-                    'subtitle' => 'Grâce à cette formule, tu peux personnaliser ta jardinière ou ta palette. De quoi épater tes amis lorsque tu leur fera visiter la ruelle d\'Adem, ou lorsqu\'il y découvriront ton nom.',
+                    'subtitle' => 'Grâce à cette formule, tu peux personnaliser ta jardinière ou ta palette.  De quoi épater tes amis lorsque tu leur fera visiter la ruelle d\'Adem, ou lorsqu\'il y découvriront ton nom.',
                 ],
                 'don_libre' => [
                     'id' => 'don-libre',
@@ -125,7 +125,7 @@ final class HomeController extends AbstractController
                 'newsletter' => [
                     'id' => 'newsletter',
                     'title' => 'Restez informé',
-                    'intro' => 'TU VEUX CONNAITRE LE NOMBRE DE FLEURS, DE JARDINIERES ET DE PALETTES OFFERTES?<br>Savoir si un événement festif, récréatif ou éducatif se déroule dans la ruelle.',
+                    'intro' => "TU VEUX CONNAITRE LE NOMBRE DE FLEURS, DE JARDINIERES ET DE PALETTES OFFERTES?\nSavoir si un événement festif, récréatif ou éducatif se déroule dans la ruelle.",
                 ],
             ],
             'tiers_standard' => $tiersStandard,

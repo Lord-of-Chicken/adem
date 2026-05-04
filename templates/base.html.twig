@@ -38,7 +38,9 @@
 </head>
 <body class="{% block body_class %}{% endblock %}">
     {# Bandeau chantier + header de navigation #}
-    {% include '_partials/top_bars.html.twig' %}
+    {% block top_bars %}
+        {% include '_partials/top_bars.html.twig' %}
+    {% endblock %}
 
     {% block body %}{% endblock %}
 

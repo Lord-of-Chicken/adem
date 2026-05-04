@@ -2,15 +2,22 @@
 
 {% block title %}Éditer l'image : {{ mediaItem.title }}{% endblock %}
 
-{% block body_class %}page-street{% endblock %}
+{% block body_class %}page-admin{% endblock %}
+
+{% block top_bars %}
+    {% include '_partials/top_bars.html.twig' %}
+{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
 {% endblock %}
 
 {% block body %}
-<div class="image-editor-container" {{ stimulus_controller('cropper-editor') }}>
+<div
+    class="image-editor-container"
+    {{ stimulus_controller('cropper-editor') }}
+    data-action="cropperjs:pre-connect->cropper-editor#onPreConnect cropperjs:connect->cropper-editor#onConnect"
+>
     <div class="editor-header">
         <h1>Éditer l'image</h1>
         <p>{{ mediaItem.title }}</p>
@@ -19,11 +26,23 @@
     <div class="editor-layout">
         <div class="image-preview">
             <div class="cropper-container">
-                <img
-                    src="{{ asset(mediaItem.assetPath) }}"
-                    alt="{{ mediaItem.alt|default(mediaItem.title) }}"
-                    id="cropper-image"
-                    data-cropper-editor-target="image"
+                <input
+                    type="hidden"
+                    data-controller="symfony--ux-cropperjs--cropper"
+                    data-symfony--ux-cropperjs--cropper-public-url-value="{{ asset(mediaItem.assetPath) }}"
+                    data-symfony--ux-cropperjs--cropper-options-value='{{ {
+                        aspectRatio: null,
+                        viewMode: 0,
+                        autoCropArea: 1,
+                        responsive: true,
+                        checkCrossOrigin: false,
+                        background: false,
+                        minContainerWidth: 200,
+                        minContainerHeight: 200,
+                        minCanvasWidth: 0,
+                        minCanvasHeight: 0,
+                        zoomOnWheel: false
+                    }|json_encode|e('html_attr') }}'
                 >
             </div>
         </div>
