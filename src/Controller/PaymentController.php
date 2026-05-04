@@ -4,10 +4,8 @@ namespace App\Controller;
 
 use App\Cart\CartService;
 use App\Participation\ParticipationCatalog;
-use App\Entity\Order;
+use App\Service\StripePaymentService;
 use App\Entity\User;
-use App\Repository\OrderRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,8 +19,7 @@ final class PaymentController extends AbstractController
     public function __construct(
         private readonly CartService $cartService,
         private readonly ParticipationCatalog $catalog,
-        private readonly OrderRepository $orderRepository,
-        private readonly EntityManagerInterface $entityManager,
+        private readonly StripePaymentService $stripePaymentService,
     ) {
     }
 
@@ -38,25 +35,9 @@ final class PaymentController extends AbstractController
             return $this->redirectToRoute('app_cart_index');
         }
 
-        $stripeKey = $this->getParameter('stripe_secret_key');
-        Stripe::setApiKey($stripeKey);
-
-        if ($user) {
-            $existingOrder = $this->orderRepository->findUnpaidOrderByUser($user);
-            if ($existingOrder) {
-                try {
-                    $oldSession = Session::retrieve($existingOrder->getStripeCheckoutSessionId());
-                    if ($oldSession->status === 'open') {
-                        $oldSession->expire();
-                    }
-                } catch (\Exception) {
-                }
-                $this->entityManager->remove($existingOrder);
-                $this->entityManager->flush();
-            }
-        }
-
         $lineItems = [];
+        $metadata = [];
+        
         foreach ($lines as $line) {
             $tier = $this->catalog->require($line['tier_id']);
 
@@ -68,18 +49,18 @@ final class PaymentController extends AbstractController
                 $description = $tier['detail'] ?? null;
             }
 
-            $metadata = [
+            $itemMetadata = [
                 'tier_id' => $line['tier_id'],
                 'tier_title' => $tier['title'],
             ];
 
             if (!empty($line['donor_name'])) {
-                $metadata['donor_name'] = $line['donor_name'];
+                $itemMetadata['donor_name'] = $line['donor_name'];
                 $description .= ' - Don de: ' . $line['donor_name'];
             }
 
             if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
-                $metadata['custom_price_eur'] = number_format($line['custom_price_cents'] / 100, 2, '.', '');
+                $itemMetadata['custom_price_eur'] = number_format($line['custom_price_cents'] / 100, 2, '.', '');
             }
 
             $lineItems[] = [
@@ -88,7 +69,7 @@ final class PaymentController extends AbstractController
                     'product_data' => [
                         'name' => $tier['title'],
                         'description' => $description,
-                        'metadata' => $metadata,
+                        'metadata' => $itemMetadata,
                     ],
                     'unit_amount'  => $unitAmount,
                 ],
@@ -96,11 +77,16 @@ final class PaymentController extends AbstractController
             ];
         }
 
+        if ($user) {
+            $metadata['user_id'] = $user->getId();
+            $metadata['user_email'] = $user->getEmail();
+        }
+
         try {
             $sessionData = [
                 'payment_method_types' => ['card'],
-                'line_items'           => $lineItems,
-                'mode'                 => 'payment',
+                'line_items' => $lineItems,
+                'mode' => 'payment',
                 'success_url' => $this->generateUrl(
                     'app_payment_success',
                     ['session_id' => '{CHECKOUT_SESSION_ID}'],
@@ -111,25 +97,18 @@ final class PaymentController extends AbstractController
                     [],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
+                'metadata' => $metadata,
             ];
 
             if ($user) {
                 $sessionData['customer_email'] = $user->getEmail();
-                $sessionData['metadata'] = [
-                    'order_user_id' => $user->getId(),
-                ];
             }
 
-            $checkoutSession = Session::create($sessionData);
-
-            $order = new Order();
-            $order->setTotalCents($this->cartService->totalCents($this->catalog));
-            $order->setCartData($lines);
-            $order->setStripeCheckoutSessionId($checkoutSession->id);
-            $order->setUser($user);
-
-            $this->entityManager->persist($order);
-            $this->entityManager->flush();
+            $checkoutSession = $this->stripePaymentService->createCheckoutSession(
+                $lineItems,
+                $user ? $user->getEmail() : null,
+                $metadata
+            );
 
             return $this->redirect($checkoutSession->url, 303);
 
@@ -147,24 +126,11 @@ final class PaymentController extends AbstractController
             return $this->redirectToRoute('app_cart_index');
         }
 
-        $order = $this->orderRepository->findOneBy(['stripeCheckoutSessionId' => $sessionId]);
-
-        if (!$order || $order->isPaid()) {
-            return $this->redirectToRoute('app_home');
-        }
-
-        $stripeKey = $this->getParameter('stripe_secret_key');
-        Stripe::setApiKey($stripeKey);
-
         try {
-            $session = Session::retrieve($sessionId);
+            $isPaid = $this->stripePaymentService->isSessionPaid($sessionId);
 
-            if ($session->payment_status === 'paid') {
-                $order->markAsPaid();
-                $this->entityManager->flush();
-
+            if ($isPaid) {
                 $this->cartService->clear();
-
                 $this->addFlash('success', 'Merci ! Votre participation a bien été enregistrée.');
             } else {
                 $this->addFlash('warning', 'Le paiement est en cours de traitement ou a échoué.');

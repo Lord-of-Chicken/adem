@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Entity\MediaItem;
 use App\Repository\MediaItemRepository;
-use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
+use App\Service\StripePaymentService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -45,26 +45,26 @@ final class AdminController extends AbstractController
     }
 
     #[Route('/admin/purchases', name: 'app_admin_purchases')]
-    public function purchases(OrderRepository $orderRepository): Response
+    public function purchases(StripePaymentService $stripePaymentService): Response
     {
-        $purchases = $orderRepository->findBy(['status' => 'paid'], ['paidAt' => 'DESC']);
+        $paymentIntents = $stripePaymentService->listAllPaymentIntents(100);
 
         return $this->render('admin/purchases.html.twig', [
-            'purchases' => $purchases,
+            'payment_intents' => $paymentIntents,
         ]);
     }
 
     #[Route('/admin/purchases/{id}', name: 'app_admin_purchase_detail')]
-    public function purchaseDetail(int $id, OrderRepository $orderRepository): Response
+    public function purchaseDetail(string $id, StripePaymentService $stripePaymentService): Response
     {
-        $purchase = $orderRepository->find($id);
-
-        if (!$purchase) {
-            throw $this->createNotFoundException('Achat non trouvé');
+        try {
+            $paymentIntent = $stripePaymentService->getPaymentIntent($id);
+        } catch (\Exception $e) {
+            throw $this->createNotFoundException('Paiement non trouvé');
         }
 
         return $this->render('admin/purchase_detail.html.twig', [
-            'purchase' => $purchase,
+            'payment_intent' => $paymentIntent,
         ]);
     }
 

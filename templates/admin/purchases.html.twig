@@ -41,24 +41,28 @@
                 </tr>
             </thead>
             <tbody>
-                {% for purchase in purchases %}
-                    <tr data-status="{{ purchase.status }}">
-                        <td>{{ purchase.id }}</td>
-                        <td>{{ purchase.user ? purchase.user.email : 'Anonyme' }}</td>
-                        <td class="amount-cell" data-cents="{{ purchase.totalCents }}">{{ (purchase.totalCents / 100)|number_format(2, ',', ' ') }} €</td>
-                        <td>{{ purchase.paidAt ? purchase.paidAt|date('d/m/Y H:i') : '-' }}</td>
+                {% for paymentIntent in payment_intents %}
+                    <tr data-status="{{ paymentIntent.status }}">
+                        <td>{{ paymentIntent.id }}</td>
+                        <td>{{ paymentIntent.metadata.user_email is defined ? paymentIntent.metadata.user_email : (paymentIntent.receipt_email ?: 'Anonyme') }}</td>
+                        <td class="amount-cell" data-cents="{{ paymentIntent.amount }}">{{ (paymentIntent.amount / 100)|number_format(2, ',', ' ') }} {{ paymentIntent.currency|upper }}</td>
+                        <td>{{ paymentIntent.created|date('d/m/Y H:i') }}</td>
                         <td>
-                            <span class="admin-badge admin-badge--{{ purchase.status }}">
-                                {{ purchase.status == 'paid' ? 'Payé' : purchase.status }}
+                            <span class="admin-badge admin-badge--{{ paymentIntent.status }}">
+                                {% if paymentIntent.status == 'succeeded' %}Payé
+                                {% elseif paymentIntent.status == 'processing' %}En cours
+                                {% elseif paymentIntent.status == 'canceled' %}Annulé
+                                {% else %}{{ paymentIntent.status|capitalize }}
+                                {% endif %}
                             </span>
                         </td>
                         <td>
-                            <a href="{{ path('app_admin_purchase_detail', {id: purchase.id}) }}" class="admin-btn admin-btn--small">Détails</a>
+                            <a href="{{ path('app_admin_purchase_detail', {id: paymentIntent.id}) }}" class="admin-btn admin-btn--small">Détails</a>
                         </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="6" class="admin-empty">Aucun achat finalisé pour le moment.</td>
+                        <td colspan="6" class="admin-empty">Aucun paiement pour le moment.</td>
                     </tr>
                 {% endfor %}
             </tbody>

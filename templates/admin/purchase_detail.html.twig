@@ -1,7 +1,7 @@
 {% extends 'layout/admin.html.twig' %}
 
 {% block admin_content %}
-    <h1 class="admin-title">Détail de l'Achat #{{ purchase.id }}</h1>
+    <h1 class="admin-title">Détail du Paiement #{{ paymentIntent.id }}</h1>
     
     <div class="admin-card">
         <div class="admin-card__header">
@@ -11,29 +11,29 @@
             <div class="admin-info-grid">
                 <div class="admin-info-item">
                     <span class="admin-info-label">ID:</span>
-                    <span class="admin-info-value">{{ purchase.id }}</span>
+                    <span class="admin-info-value">{{ paymentIntent.id }}</span>
                 </div>
                 <div class="admin-info-item">
                     <span class="admin-info-label">Statut:</span>
-                    <span class="admin-badge admin-badge--{{ purchase.status }}">
-                        {{ purchase.status == 'paid' ? 'Payé' : purchase.status }}
+                    <span class="admin-badge admin-badge--{{ paymentIntent.status }}">
+                        {% if paymentIntent.status == 'succeeded' %}Payé
+                        {% elseif paymentIntent.status == 'processing' %}En cours
+                        {% elseif paymentIntent.status == 'canceled' %}Annulé
+                        {% else %}{{ paymentIntent.status|capitalize }}
+                        {% endif %}
                     </span>
                 </div>
                 <div class="admin-info-item">
                     <span class="admin-info-label">Montant:</span>
-                    <span class="admin-info-value">{{ (purchase.totalCents / 100)|number_format(2, ',', ' ') }} €</span>
+                    <span class="admin-info-value">{{ (paymentIntent.amount / 100)|number_format(2, ',', ' ') }} {{ paymentIntent.currency|upper }}</span>
                 </div>
                 <div class="admin-info-item">
                     <span class="admin-info-label">Date de création:</span>
-                    <span class="admin-info-value">{{ purchase.createdAt|date('d/m/Y H:i') }}</span>
+                    <span class="admin-info-value">{{ paymentIntent.created|date('d/m/Y H:i') }}</span>
                 </div>
                 <div class="admin-info-item">
-                    <span class="admin-info-label">Date de paiement:</span>
-                    <span class="admin-info-value">{{ purchase.paidAt ? purchase.paidAt|date('d/m/Y H:i') : '-' }}</span>
-                </div>
-                <div class="admin-info-item">
-                    <span class="admin-info-label">Stripe Session ID:</span>
-                    <span class="admin-info-value">{{ purchase.stripeCheckoutSessionId }}</span>
+                    <span class="admin-info-label">Description:</span>
+                    <span class="admin-info-value">{{ paymentIntent.description ?: '-' }}</span>
                 </div>
             </div>
         </div>
@@ -44,55 +44,45 @@
             <h2 class="admin-card__title">Client</h2>
         </div>
         <div class="admin-card__body">
-            {% if purchase.user %}
-                <div class="admin-info-grid">
-                    <div class="admin-info-item">
-                        <span class="admin-info-label">Email:</span>
-                        <span class="admin-info-value">{{ purchase.user.email }}</span>
-                    </div>
-                    <div class="admin-info-item">
-                        <span class="admin-info-label">Nom:</span>
-                        <span class="admin-info-value">{{ purchase.user.lastName ?? '-' }}</span>
-                    </div>
-                    <div class="admin-info-item">
-                        <span class="admin-info-label">Prénom:</span>
-                        <span class="admin-info-value">{{ purchase.user.firstName ?? '-' }}</span>
-                    </div>
+            <div class="admin-info-grid">
+                <div class="admin-info-item">
+                    <span class="admin-info-label">Email:</span>
+                    <span class="admin-info-value">{{ paymentIntent.receipt_email ?? (paymentIntent.metadata.user_email is defined ? paymentIntent.metadata.user_email : '-') }}</span>
                 </div>
-            {% else %}
-                <p class="admin-empty">Client anonyme</p>
-            {% endif %}
+                {% if paymentIntent.metadata.user_id is defined %}
+                <div class="admin-info-item">
+                    <span class="admin-info-label">ID Utilisateur:</span>
+                    <span class="admin-info-value">{{ paymentIntent.metadata.user_id }}</span>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 
     <div class="admin-card">
         <div class="admin-card__header">
-            <h2 class="admin-card__title">Contenu du Panier</h2>
+            <h2 class="admin-card__title">Métadonnées</h2>
         </div>
         <div class="admin-card__body">
-            {% if purchase.cartData is not empty %}
+            {% if paymentIntent.metadata is not empty %}
                 <table class="admin-table">
                     <thead>
                         <tr>
-                            <th>Produit</th>
-                            <th>Quantité</th>
-                            <th>Prix unitaire</th>
-                            <th>Total</th>
+                            <th>Clé</th>
+                            <th>Valeur</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for item in purchase.cartData %}
-                            <tr>
-                                <td>{{ item.title ?? item.id ?? 'Produit' }}</td>
-                                <td>{{ item.quantity ?? 1 }}</td>
-                                <td>{{ ((item.price ?? 0) / 100)|number_format(2, ',', ' ') }} €</td>
-                                <td>{{ ((item.price ?? 0) * (item.quantity ?? 1) / 100)|number_format(2, ',', ' ') }} €</td>
-                            </tr>
+                        {% for key, value in paymentIntent.metadata %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>{{ value }}</td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             {% else %}
-                <p class="admin-empty">Aucun détail du panier disponible</p>
+                <p class="admin-empty">Aucune métadonnée disponible</p>
             {% endif %}
         </div>
     </div>
