@@ -58,7 +58,7 @@
                                     </button>
                                 </div>
 
-                                <form method="post" action="{{ path('app_cart_remove', { lineId: line.line_id }) }}" onsubmit="return confirm('Retirer cette ligne ?');">
+                                <form method="post" action="{{ path('app_cart_remove', { lineId: line.line_id }) }}" data-confirm-title="Retirer cette ligne" data-confirm-message="Cette action supprimera l'article du panier." data-confirm-confirm-label="Retirer" data-confirm-cancel-label="Annuler">
                                     <input type="hidden" name="_token" value="{{ csrf_token('cart_remove') }}">
                                     <button type="submit" class="btn--remove">{{ page.remove_btn }}</button>
                                 </form>
@@ -73,7 +73,7 @@
                     </p>
                     
                     <div class="cart-actions">
-                        <form method="post" action="{{ path('app_cart_clear') }}" onsubmit="return confirm('Voulez-vous vider tout le panier ?');" class="display-inline-block">
+                        <form method="post" action="{{ path('app_cart_clear') }}" class="display-inline-block" data-confirm-title="Vider le panier" data-confirm-message="Voulez-vous vider tout le panier ?" data-confirm-confirm-label="Vider" data-confirm-cancel-label="Annuler">
                             <input type="hidden" name="_token" value="{{ csrf_token('cart_clear') }}">
                             <button type="submit" class="btn btn--secondary">{{ page.clear_btn }}</button>
                         </form>
@@ -138,5 +138,6 @@
                 location.reload();
             });
         }
+
     </script>
 {% endblock %}

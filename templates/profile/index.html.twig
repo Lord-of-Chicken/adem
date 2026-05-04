@@ -2,6 +2,11 @@
 
 {% block title %}Mon Profil | {{ site_brand.title }}{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('assets/js/confirm-modal.js') }}"></script>
+{% endblock %}
+
 {% block street_main %}
 <div class="main main--narrow">
     <section class="section">
@@ -49,7 +54,7 @@
                 </div>
                 
                 <div class="profile-actions">
-                    <form method="post" action="{{ path('app_profile_delete') }}" class="display-inline" onsubmit="return confirm('{{ page.delete_confirm }}');">
+                    <form method="post" action="{{ path('app_profile_delete') }}" class="display-inline" data-confirm-title="Supprimer mon compte" data-confirm-message="{{ page.delete_confirm }}" data-confirm-confirm-label="Supprimer" data-confirm-cancel-label="Annuler">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete_profile') }}">
                         <button type="submit" class="btn btn--secondary delete-profile">{{ page.delete_btn }}</button>
                     </form>

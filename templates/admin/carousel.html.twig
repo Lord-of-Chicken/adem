@@ -44,7 +44,7 @@
                         <td>
                             <div class="admin-table__actions">
                                 <a href="{{ path('app_admin_carousel_edit', { id: media_item.id }) }}" class="btn btn--secondary">Modifier</a>
-                                <form method="post" action="{{ path('app_admin_carousel_delete', { id: media_item.id }) }}" onsubmit="return confirm('Supprimer cette image ?');">
+                                <form method="post" action="{{ path('app_admin_carousel_delete', { id: media_item.id }) }}" data-confirm-title="Supprimer cette image" data-confirm-message="Supprimer cette image ?" data-confirm-confirm-label="Supprimer" data-confirm-cancel-label="Annuler">
                                     <input type="hidden" name="_token" value="{{ csrf_token('carousel_delete_' ~ media_item.id) }}">
                                     <button type="submit" class="btn btn--danger">Supprimer</button>
                                 </form>

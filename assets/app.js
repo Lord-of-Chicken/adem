@@ -3,6 +3,7 @@ import './js/layout-metrics.js';
 import './js/swiper-init.js';
 import './js/home.js';
 import './js/cart.js';
+import './js/confirm-modal.js';
 import './js/admin-media-item-form.js';
 import './js/stripe-init.js';
 /*
