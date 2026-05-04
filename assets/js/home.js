@@ -1,4 +1,4 @@
-window.updateQty = function(id, delta, min, max) {
+export function updateQty(id, delta, min, max) {
     const input = document.getElementById('qty-' + id);
     const display = document.getElementById('num-' + id);
     const label = document.getElementById('label-' + id);
@@ -86,7 +86,7 @@ function showCartSuccessPopup() {
     modal.classList.add('cart-success-modal--open');
 }
 
-window.addToCart = function(tierId) {
+export function addToCart(tierId) {
     const csrfToken = document.getElementById('global-csrf-token').value;
     const formData = new FormData();
     formData.append('_token', csrfToken);
@@ -125,6 +125,10 @@ window.addToCart = function(tierId) {
     })
     .catch(err => alert('Erreur technique.'));
 }
+
+// Exposer les fonctions globalement pour les attributs onclick
+window.updateQty = updateQty;
+window.addToCart = addToCart;
 
 // Initialisation au chargement pour désactiver les boutons "minus" si qty = min
 document.addEventListener('DOMContentLoaded', () => {
