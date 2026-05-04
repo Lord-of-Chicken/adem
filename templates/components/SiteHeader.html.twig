@@ -16,8 +16,8 @@
             {% for link in navLinks %}
                 <a href="{{ link.href }}" class="site-nav__link">{{ link.label }}</a>
             {% endfor %}
-            <a href="{{ path('app_about') }}" class="site-nav__link">Qui est Adem?</a>
-            <a href="{{ path('app_contact') }}" class="site-nav__link">Contact</a>
+            <a href="{{ path('app_about') }}" class="site-nav__link" style="width: 200%;">Qui est Adem?</a>
+            <a href="{{ path('app_contact') }}" class="site-nav__link">Contactez-nous</a>
 
             <div class="site-header__account site-header__account--mobile">
                 <a href="{{ cartUrl }}" class="site-nav__link">
@@ -35,8 +35,12 @@
                 {% if isAuthenticated %}
                     <a href="{{ profileUrl }}" class="site-nav__link">Profil</a>
                 {% else %}
-                    <a href="{{ loginUrl }}" class="site-nav__link">Connexion</a>
-                    <a href="{{ registerUrl }}" class="site-nav__link">Inscription</a>
+                    <a href="{{ loginUrl }}" class="site-nav__link" aria-label="Connexion">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </a>
                 {% endif %}
             </div>
         </nav>
@@ -61,8 +65,12 @@
             {% if isAuthenticated %}
                 <a href="{{ profileUrl }}" class="site-nav__link">Profil</a>
             {% else %}
-                <a href="{{ loginUrl }}" class="site-nav__link">Connexion</a>
-                <a href="{{ registerUrl }}" class="site-nav__link">Inscription</a>
+                <a href="{{ loginUrl }}" class="site-nav__link" aria-label="Connexion">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
             {% endif %}
         </div>
     </div>

@@ -1,6 +1,6 @@
 {% extends 'layout/street.html.twig' %}
 
-{% block title %}Flower Power  Crowdfunding | {{ site_brand.title }}{% endblock %}
+{% block title %}Fais une fleur à Adem  Crowdfunding | {{ site_brand.title }}{% endblock %}
 
 {% block street_main %}
     {# Jeton de sécurité global pour les appels AJAX #}
@@ -154,7 +154,7 @@
                 {% if is_granted('ROLE_USER') %}
                     <a href="{{ path('app_profile') }}" class="btn btn--primary">Voir mon profil</a>
                 {% else %}
-                    <a href="{{ path('app_register') }}" class="btn btn--primary">Créer un compte pour recevoir les infos</a>
+                    <a href="{{ path('app_register') }}" class="btn btn--primary">Inscris-toi à la mailing list !</a>
                 {% endif %}
             </div>
         </div>
