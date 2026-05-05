@@ -12,9 +12,9 @@
             {% if media_items is not empty %}
                 <div class="gallery-grid">
                     {% for media in media_items %}
-                        <figure class="gallery-item">
-                            <img src="/{{ media.assetPath }}" alt="{{ media.alt|default(site_brand.title) }}" loading="lazy">
-                        </figure>
+                        <div class="gallery-item">
+                            <img src="/{{ media.assetPath }}" alt="{{ media.alt|default(site_brand.title) }}" loading="lazy" decoding="async" width="300" height="300">
+                        </div>
                     {% endfor %}
                 </div>
             {% else %}

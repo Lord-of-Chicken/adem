@@ -26,7 +26,7 @@
                         <td class="drag-handle" style="cursor: move;">☰</td>
                         <td>
                             {% if media_item.assetPath %}
-                                <img src="{{ asset(media_item.assetPath) }}" alt="{{ media_item.alt|default('') }}" class="admin-thumbnail">
+                                <img src="{{ asset(media_item.assetPath) }}" alt="{{ media_item.alt|default('') }}" class="admin-thumbnail" loading="lazy" decoding="async" width="100" height="100">
                             {% else %}
                                 <span class="admin-table__placeholder">-</span>
                             {% endif %}
