@@ -28,6 +28,7 @@ class SitemapController extends AbstractController
             'offres' => ['priority' => '0.9', 'changefreq' => 'weekly'],
             'medias' => ['priority' => '0.8', 'changefreq' => 'weekly'],
             'a-propos' => ['priority' => '0.7', 'changefreq' => 'monthly'],
+            'faq' => ['priority' => '0.8', 'changefreq' => 'monthly'],
         ];
 
         foreach ($staticPages as $path => $meta) {
