@@ -65,6 +65,7 @@ cart.currency_symbol: "€"
 
 # Site
 site.construction: "SITE UNDER CONSTRUCTION - WORK IN PROGRESS"
+site.default_description: "Ruelle d'Adem - Transform your street into a flourishing garden. Support the project by offering flowers, planters or pallets to decorate and maintain the alley."
 
 # JavaScript translations
 js.cart.title: "Added to cart! 🌸"

@@ -1,6 +1,38 @@
 {% extends 'layout/street.html.twig' %}
 
-{% block title %}Fais une fleur à Adem  Crowdfunding | {{ site_brand.title }}{% endblock %}
+{% block title %}{{ 'home.title'|trans }} | {{ site_brand.title }}{% endblock %}
+
+{% block meta_description %}{{ 'home.subtitle'|trans }} - {{ 'home.help_content'|trans }}{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "{{ site_brand.title }}",
+        "url": "{{ app.request.schemeAndHttpHost }}",
+        "description": "{{ 'home.subtitle'|trans }}",
+        "inLanguage": "{{ app.request.locale }}",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ app.request.schemeAndHttpHost }}/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "{{ site_brand.title }}",
+        "url": "{{ app.request.schemeAndHttpHost }}",
+        "description": "{{ 'home.subtitle'|trans }}",
+        "logo": "{{ app.request.schemeAndHttpHost ~ asset(site_brand.logo_asset) }}",
+        "sameAs": []
+    }
+    </script>
+{% endblock %}
 
 {% block street_main %}
     {# Jeton de sécurité global pour les appels AJAX #}

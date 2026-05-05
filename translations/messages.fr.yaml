@@ -59,6 +59,7 @@ cart.clear_confirm_btn: "Vider"
 
 # Site
 site.construction: "SITE EN CHANTIER - TRAVAUX EN COURS"
+site.default_description: "Ruelle d'Adem - Transformons votre rue en un jardin florissant. Soutenez le projet en offrant des fleurs, des jardinières ou des palettes pour décorer et entretenir la ruelle."
 
 # JavaScript translations
 js.cart.title: "Ajouté au panier ! 🌸"
