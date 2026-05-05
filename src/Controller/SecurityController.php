@@ -17,11 +17,12 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class SecurityController extends AbstractController
 {
     #[Route('/connexion', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils, TranslatorInterface $translator): Response
     {
         // 1. Rediriger si l'utilisateur est déjà connecté (évite de voir le formulaire inutilement)
         if ($this->getUser()) {
@@ -38,12 +39,12 @@ final class SecurityController extends AbstractController
             'last_username' => $lastUsername,
             'error' => $error,
             'page' => [
-                'title' => 'Connexion',
-                'intro' => 'Connecte-toi pour gérer ton panier de participations.',
-                'submit' => 'Se connecter',
-                'forgot_link' => 'Mot de passe oublié ?',
-                'register_hint' => 'Pas encore de compte ?',
-                'register_link' => 'Inscription',
+                'title' => $translator->trans('nav.login'),
+                'intro' => $translator->trans('security.login_intro'),
+                'submit' => $translator->trans('security.login_submit'),
+                'forgot_link' => $translator->trans('security.forgot_password'),
+                'register_hint' => $translator->trans('security.register_hint'),
+                'register_link' => $translator->trans('registration.submit'),
             ],
         ]);
     }
@@ -60,7 +61,7 @@ final class SecurityController extends AbstractController
     }
 
     #[Route('/reset-password', name: 'app_forgot_password_request')]
-    public function request(Request $request, UserRepository $userRepository, MailerInterface $mailer, EntityManagerInterface $entityManager): Response
+    public function request(Request $request, UserRepository $userRepository, MailerInterface $mailer, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         $form = $this->createForm(ResetPasswordRequestFormType::class);
         $form->handleRequest($request);
@@ -83,11 +84,11 @@ final class SecurityController extends AbstractController
                     $email = (new Email())
                         ->from($this->getParameter('app.contact_email'))
                         ->to($user->getEmail())
-                        ->subject('Réinitialisation de votre mot de passe')
-                        ->text('Pour réinitialiser votre mot de passe, cliquez sur ce lien : ' . $resetUrl)
-                        ->html('<p>Pour réinitialiser votre mot de passe, cliquez sur ce lien :</p>' .
-                               '<p><a href="' . $resetUrl . '">Réinitialiser mon mot de passe</a></p>' .
-                               '<p>Ce lien expire dans 1 heure.</p>');
+                        ->subject($translator->trans('security.email_subject'))
+                        ->text($translator->trans('security.email_text', ['%url%' => $resetUrl]))
+                        ->html('<p>' . $translator->trans('security.email_html_p1') . '</p>' .
+                               '<p><a href="' . $resetUrl . '">' . $translator->trans('security.email_link') . '</a></p>' .
+                               '<p>' . $translator->trans('security.email_expires') . '</p>');
 
                     $mailer->send($email);
                 } catch (\Exception $e) {
@@ -96,7 +97,7 @@ final class SecurityController extends AbstractController
             }
 
             // Message identique que l'utilisateur existe ou non (sécurité)
-            $this->addFlash('success', 'Si cet email existe, un lien de réinitialisation a été envoyé.');
+            $this->addFlash('success', $translator->trans('security.reset_sent'));
 
             return $this->redirectToRoute('app_login');
         }
@@ -104,22 +105,22 @@ final class SecurityController extends AbstractController
         return $this->render('security/reset_password_request.html.twig', [
             'requestForm' => $form->createView(),
             'page' => [
-                'title' => 'Réinitialiser le mot de passe',
-                'intro' => 'Entrez votre adresse e-mail pour recevoir un lien de réinitialisation.',
-                'submit' => 'Envoyer le lien',
-                'back_link' => 'Retour à la connexion',
+                'title' => $translator->trans('security.reset_title'),
+                'intro' => $translator->trans('security.reset_intro'),
+                'submit' => $translator->trans('security.reset_submit'),
+                'back_link' => $translator->trans('security.back_to_login'),
             ],
         ]);
     }
 
     #[Route('/reset-password/{token}', name: 'app_reset_password')]
-    public function reset(Request $request, string $token, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
+    public function reset(Request $request, string $token, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         // Trouver l'utilisateur avec ce token valide
         $user = $userRepository->findOneBy(['resetToken' => $token]);
 
         if (!$user || $user->getResetTokenExpiresAt() < new \DateTimeImmutable()) {
-            $this->addFlash('danger', 'Le lien de réinitialisation est invalide ou a expiré.');
+            $this->addFlash('danger', $translator->trans('security.reset_invalid'));
             return $this->redirectToRoute('app_forgot_password_request');
         }
 
@@ -138,7 +139,7 @@ final class SecurityController extends AbstractController
             $user->setResetTokenExpiresAt(null);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Votre mot de passe a été réinitialisé avec succès.');
+            $this->addFlash('success', $translator->trans('security.reset_success'));
 
             return $this->redirectToRoute('app_login');
         }
@@ -146,10 +147,10 @@ final class SecurityController extends AbstractController
         return $this->render('security/reset_password.html.twig', [
             'resetForm' => $form->createView(),
             'page' => [
-                'title' => 'Nouveau mot de passe',
-                'intro' => 'Choisis ton nouveau mot de passe.',
-                'submit' => 'Réinitialiser',
-                'back_link' => 'Retour à la connexion',
+                'title' => $translator->trans('security.new_password_title'),
+                'intro' => $translator->trans('security.new_password_intro'),
+                'submit' => $translator->trans('security.new_password_submit'),
+                'back_link' => $translator->trans('security.back_to_login'),
             ],
         ]);
     }

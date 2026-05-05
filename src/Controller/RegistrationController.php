@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class RegistrationController extends AbstractController
 {
@@ -18,6 +19,7 @@ final class RegistrationController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
+        TranslatorInterface $translator,
     ): Response {
         // Sécurité : on empêche un utilisateur déjà connecté de se ré-inscrire
         if ($this->getUser()) {
@@ -41,7 +43,7 @@ final class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Bienvenue ! Ton compte est créé. Tu peux maintenant te connecter.');
+            $this->addFlash('success', $translator->trans('registration.success'));
 
             return $this->redirectToRoute('app_login');
         }
@@ -49,11 +51,11 @@ final class RegistrationController extends AbstractController
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
             'page' => [
-                'title' => 'Créer un compte',
-                'intro' => 'Inscris-toi pour ajouter des formules au panier.',
-                'submit' => 'S\'inscrire',
-                'hint_prefix' => 'Déjà inscrit ?',
-                'hint_link' => 'Connexion',
+                'title' => $translator->trans('registration.title'),
+                'intro' => $translator->trans('registration.intro'),
+                'submit' => $translator->trans('registration.submit'),
+                'hint_prefix' => $translator->trans('registration.hint_prefix'),
+                'hint_link' => $translator->trans('nav.login'),
             ],
         ]);
     }

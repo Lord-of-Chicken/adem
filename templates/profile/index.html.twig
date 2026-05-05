@@ -27,18 +27,18 @@
                     <dd>{{ app.user.email }}</dd>
                 </div>
                 
-                <h3 class="card__title margin-top-2">{{ page.notifications_title }}</h3>
+                <h3 class="card__title mt-2">{{ page.notifications_title }}</h3>
                 <div class="profile-info-row">
                     <p>{{ 'profile.newsletter_status'|trans }} : <strong>{{ app.user.newsletter ? 'profile.subscribed'|trans : 'profile.not_subscribed'|trans }}</strong></p>
                     <form method="post" action="{{ path('app_profile_toggle_newsletter') }}" class="display-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('toggle_newsletter') }}">
-                        <button type="submit" class="btn btn--primary margin-top-0-5">
+                        <button type="submit" class="btn btn--primary mt-0-5">
                             {{ app.user.newsletter ? 'profile.newsletter_unsubscribe'|trans : 'profile.newsletter_subscribe'|trans }}
                         </button>
                     </form>
                 </div>
 
-                <h3 class="card__title margin-top-2">{{ page.actions_title }}</h3>
+                <h3 class="card__title mt-2">{{ page.actions_title }}</h3>
                 <div class="profile-actions">
                     <a href="{{ path('app_profile_edit') }}" class="btn btn--primary">{{ 'profile.edit'|trans }}</a>
                     <a href="{{ path('app_profile_change_password') }}" class="btn btn--secondary">{{ 'profile.password'|trans }}</a>
@@ -47,14 +47,14 @@
                 <div class="profile-actions">
                     <form method="post" action="{{ path('_logout_main') }}" class="display-inline">
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
-                        <button type="submit" class="btn btn--secondary spray-magenta">{{ 'profile.logout'|trans }}</button>
+                        <button type="submit" class="btn btn--secondary bg-spray-magenta">{{ 'profile.logout'|trans }}</button>
                     </form>
                 </div>
 
                 <div class="profile-actions">
                     <form method="post" action="{{ path('app_profile_delete') }}" class="display-inline" data-confirm-title="{{ 'profile.delete_confirm_title'|trans }}" data-confirm-message="{{ page.delete_confirm }}" data-confirm-confirm-label="{{ 'profile.delete_confirm_btn'|trans }}" data-confirm-cancel-label="{{ 'profile.cancel'|trans }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete_profile') }}">
-                        <button type="submit" class="btn btn--secondary delete-profile">{{ 'profile.delete'|trans }}</button>
+                        <button type="submit" class="btn btn--secondary bg-delete-profile">{{ 'profile.delete'|trans }}</button>
                     </form>
                 </div>
             </div>

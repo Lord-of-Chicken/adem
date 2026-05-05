@@ -10,3 +10,13 @@
 controllers:
     resource: ../src/Controller/
     type: attribute
+
+# Locale-aware routes
+locale_routes:
+    resource: ../src/Controller/
+    type: attribute
+    prefix:
+        fr: /fr
+        en: /en
+    requirements:
+        _locale: 'fr|en'

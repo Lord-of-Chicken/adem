@@ -13,23 +13,24 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_ADMIN')]
 final class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'app_admin')]
-    public function index(): Response
+    public function index(TranslatorInterface $translator): Response
     {
         return $this->render('admin/index.html.twig', [
             'page' => [
-                'sidebar_title' => 'Admin',
-                'dashboard_title' => 'Dashboard Admin',
-                'welcome_title' => 'Bienvenue',
-                'welcome_text' => 'Utilisez le menu de gauche pour naviguer dans les différentes sections d\'administration.',
-                'nav_dashboard' => 'Dashboard',
-                'nav_carousel' => 'Carousel',
-                'nav_users' => 'Utilisateurs',
-                'nav_stripe' => 'Paiements Stripe',
+                'sidebar_title' => $translator->trans('admin.sidebar_title'),
+                'dashboard_title' => $translator->trans('admin.dashboard_title'),
+                'welcome_title' => $translator->trans('admin.welcome_title'),
+                'welcome_text' => $translator->trans('admin.welcome_text'),
+                'nav_dashboard' => $translator->trans('admin.nav_dashboard'),
+                'nav_carousel' => $translator->trans('admin.nav_carousel'),
+                'nav_users' => $translator->trans('admin.nav_users'),
+                'nav_stripe' => $translator->trans('admin.nav_stripe'),
             ],
         ]);
     }
@@ -61,12 +62,12 @@ final class AdminController extends AbstractController
     }
 
     #[Route('/admin/purchases/{id}', name: 'app_admin_purchase_detail')]
-    public function purchaseDetail(string $id, StripePaymentService $stripePaymentService): Response
+    public function purchaseDetail(string $id, StripePaymentService $stripePaymentService, TranslatorInterface $translator): Response
     {
         try {
             $paymentIntent = $stripePaymentService->getPaymentIntent($id);
         } catch (\Exception $e) {
-            throw $this->createNotFoundException('Paiement non trouvé');
+            throw $this->createNotFoundException($translator->trans('admin.payment_not_found'));
         }
 
         return $this->render('admin/purchase_detail.html.twig', [
@@ -98,7 +99,8 @@ final class AdminController extends AbstractController
     #[Route('/admin/carousel/add', name: 'app_admin_carousel_add', methods: ['GET', 'POST'])]
     public function carouselAdd(
         Request $request,
-        MediaItemRepository $mediaItemRepository
+        MediaItemRepository $mediaItemRepository,
+        TranslatorInterface $translator
     ): Response {
         $title = trim((string) $request->request->get('title', ''));
         $assetPath = trim((string) $request->request->get('asset_path', ''));
@@ -106,11 +108,11 @@ final class AdminController extends AbstractController
 
         if ($request->isMethod('POST')) {
             if (!$this->isCsrfTokenValid('carousel_manage', (string) $request->request->get('_token'))) {
-                throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+                throw $this->createAccessDeniedException($translator->trans('admin.csrf_invalid'));
             }
 
             if ($title === '' || $assetPath === '') {
-                $this->addFlash('error', 'Le titre et le chemin de l\'image sont obligatoires.');
+                $this->addFlash('error', $translator->trans('admin.title_and_path_required'));
 
                 return $this->redirectToRoute('app_admin_carousel_add');
             }
@@ -128,7 +130,7 @@ final class AdminController extends AbstractController
         }
 
         return $this->render('admin/carousel_form.html.twig', [
-            'title' => 'Ajouter une image',
+            'title' => $translator->trans('admin.add_image'),
         ]);
     }
 
@@ -136,17 +138,18 @@ final class AdminController extends AbstractController
     public function carouselEdit(
         int $id,
         Request $request,
-        MediaItemRepository $mediaItemRepository
+        MediaItemRepository $mediaItemRepository,
+        TranslatorInterface $translator
     ): Response {
         $mediaItem = $mediaItemRepository->find($id);
 
         if (!$mediaItem) {
-            throw $this->createNotFoundException('Image non trouvée');
+            throw $this->createNotFoundException($translator->trans('admin.image_not_found'));
         }
 
         if ($request->isMethod('POST')) {
             if (!$this->isCsrfTokenValid('carousel_manage', (string) $request->request->get('_token'))) {
-                throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+                throw $this->createAccessDeniedException($translator->trans('admin.csrf_invalid'));
             }
 
             $title = trim((string) $request->request->get('title', ''));
@@ -167,7 +170,7 @@ final class AdminController extends AbstractController
         }
 
         return $this->render('admin/carousel_form.html.twig', [
-            'title' => 'Modifier l\'image',
+            'title' => $translator->trans('admin.edit_image'),
             'media_item' => $mediaItem,
         ]);
     }
@@ -176,16 +179,17 @@ final class AdminController extends AbstractController
     public function carouselDelete(
         int $id,
         Request $request,
-        MediaItemRepository $mediaItemRepository
+        MediaItemRepository $mediaItemRepository,
+        TranslatorInterface $translator
     ): Response {
         if (!$this->isCsrfTokenValid('carousel_delete_' . $id, (string) $request->request->get('_token'))) {
-            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+            throw $this->createAccessDeniedException($translator->trans('admin.csrf_invalid'));
         }
 
         $mediaItem = $mediaItemRepository->find($id);
 
         if (!$mediaItem) {
-            throw $this->createNotFoundException('Image non trouvée');
+            throw $this->createNotFoundException($translator->trans('admin.image_not_found'));
         }
 
         $mediaItemRepository->remove($mediaItem, true);
@@ -197,16 +201,17 @@ final class AdminController extends AbstractController
     public function carouselReorder(
         Request $request,
         MediaItemRepository $mediaItemRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator
     ): JsonResponse {
         if (!$this->isCsrfTokenValid('carousel_reorder', (string) $request->headers->get('X-CSRF-TOKEN'))) {
-            return new JsonResponse(['success' => false, 'error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+            return new JsonResponse(['success' => false, 'error' => $translator->trans('admin.invalid_csrf_token')], Response::HTTP_FORBIDDEN);
         }
 
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['orders']) || !is_array($data['orders'])) {
-            return new JsonResponse(['success' => false, 'error' => 'Invalid data'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['success' => false, 'error' => $translator->trans('admin.invalid_data')], Response::HTTP_BAD_REQUEST);
         }
 
         foreach ($data['orders'] as $orderData) {

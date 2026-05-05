@@ -16,7 +16,9 @@ window.updateCartQty = function(lineId, delta, min, max) {
     // Interface réactive (optimiste)
     numberSpan.textContent = newQty;
     displaySpan.textContent = newQty;
-    labelSpan.textContent = newQty > 1 ? 'pièces' : 'pièce';
+    const singular = labelSpan.getAttribute('data-piece-singular') || 'pièce';
+    const plural = labelSpan.getAttribute('data-piece-plural') || 'pièces';
+    labelSpan.textContent = newQty > 1 ? plural : singular;
     btnMinus.disabled = (newQty <= min);
     btnPlus.disabled = (newQty >= max);
 
@@ -47,3 +49,16 @@ window.updateCartQty = function(lineId, delta, min, max) {
         location.reload();
     });
 }
+
+// Initialisation des labels au chargement de la page
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.qty-label').forEach(label => {
+        const singular = label.getAttribute('data-piece-singular') || 'pièce';
+        const plural = label.getAttribute('data-piece-plural') || 'pièces';
+        const qtyDisplay = label.previousElementSibling;
+        if (qtyDisplay && qtyDisplay.classList.contains('qty-number')) {
+            const qty = parseInt(qtyDisplay.textContent);
+            label.textContent = qty > 1 ? plural : singular;
+        }
+    });
+});

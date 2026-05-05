@@ -19,12 +19,6 @@
             <a href="{{ path('app_about') }}" class="site-nav__link">{{ 'nav.about'|trans }}</a>
             <a href="{{ path('app_contact') }}" class="site-nav__link">{{ 'nav.contact'|trans }}</a>
 
-            <div class="site-nav__lang-selector">
-                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'_locale': 'fr'})) }}" class="site-nav__link {% if app.request.locale == 'fr' %}site-nav__link--active{% endif %}">FR</a>
-                <span class="site-nav__lang-separator">|</span>
-                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'_locale': 'en'})) }}" class="site-nav__link {% if app.request.locale == 'en' %}site-nav__link--active{% endif %}">EN</a>
-            </div>
-
             <div class="site-header__account site-header__account--mobile">
                 <a href="{{ cartUrl }}" class="site-nav__link">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

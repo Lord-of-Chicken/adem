@@ -17,7 +17,11 @@ return [
         'entrypoint' => true,
     ],
     'home' => [
-        'path' => './assets/js/home.js',
+        'path' => './assets/js/home_ui.js',
+        'entrypoint' => true,
+    ],
+    'admin-purchases' => [
+        'path' => './assets/js/admin-purchases.js',
         'entrypoint' => true,
     ],
     '@hotwired/stimulus' => [
@@ -30,42 +34,13 @@ return [
         'version' => '7.3.0',
     ],
     'cropperjs' => [
-        'path' => './assets/vendor/cropperjs/cropperjs.index.js',
+        'version' => '1.6.2',
     ],
-    '@cropper/utils' => [
-        'path' => './assets/vendor/@cropper/utils/utils.index.js',
-    ],
-    '@cropper/elements' => [
-        'path' => './assets/vendor/@cropper/elements/elements.index.js',
-    ],
-    '@cropper/element' => [
-        'path' => './assets/vendor/@cropper/element/element.index.js',
-    ],
-    '@cropper/element-canvas' => [
-        'path' => './assets/vendor/@cropper/element-canvas/element-canvas.index.js',
-    ],
-    '@cropper/element-crosshair' => [
-        'path' => './assets/vendor/@cropper/element-crosshair/element-crosshair.index.js',
-    ],
-    '@cropper/element-grid' => [
-        'path' => './assets/vendor/@cropper/element-grid/element-grid.index.js',
-    ],
-    '@cropper/element-handle' => [
-        'path' => './assets/vendor/@cropper/element-handle/element-handle.index.js',
-    ],
-    '@cropper/element-image' => [
-        'path' => './assets/vendor/@cropper/element-image/element-image.index.js',
-    ],
-    '@cropper/element-selection' => [
-        'path' => './assets/vendor/@cropper/element-selection/element-selection.index.js',
-    ],
-    '@cropper/element-shade' => [
-        'path' => './assets/vendor/@cropper/element-shade/element-shade.index.js',
-    ],
-    '@cropper/element-viewer' => [
-        'path' => './assets/vendor/@cropper/element-viewer/element-viewer.index.js',
+    'cropperjs/dist/cropper.min.css' => [
+        'version' => '1.6.2',
+        'type' => 'css',
     ],
     'sortablejs' => [
         'path' => './assets/vendor/sortablejs/sortablejs.index.js',
     ],
-    ];
+];

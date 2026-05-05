@@ -12,52 +12,53 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_USER')]
 final class ProfileController extends AbstractController
 {
     #[Route('/profil', name: 'app_profile')]
-    public function index(): Response
+    public function index(TranslatorInterface $translator): Response
     {
         return $this->render('profile/index.html.twig', [
             'page' => [
-                'title' => 'Mon Profil',
-                'info_title' => 'Informations personnelles',
-                'notifications_title' => 'Notifications',
-                'actions_title' => 'Actions',
-                'edit_btn' => 'Modifier mon profil',
-                'password_btn' => 'Changer mon mot de passe',
-                'logout_btn' => 'Déconnexion',
-                'delete_btn' => 'Supprimer mon compte',
-                'delete_confirm' => 'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible et toutes vos données seront supprimées.',
+                'title' => $translator->trans('profile.title'),
+                'info_title' => $translator->trans('profile.info_title'),
+                'notifications_title' => $translator->trans('profile.notifications_title'),
+                'actions_title' => $translator->trans('profile.actions_title'),
+                'edit_btn' => $translator->trans('profile.edit_btn'),
+                'password_btn' => $translator->trans('profile.password_btn'),
+                'logout_btn' => $translator->trans('profile.logout_btn'),
+                'delete_btn' => $translator->trans('profile.delete_btn'),
+                'delete_confirm' => $translator->trans('profile.delete_confirm'),
             ],
         ]);
     }
 
     #[Route('/profil/newsletter', name: 'app_profile_toggle_newsletter', methods: ['POST'])]
-    public function toggleNewsletter(Request $request, EntityManagerInterface $entityManager): Response
+    public function toggleNewsletter(Request $request, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         $user = $this->getUser();
 
         if (!$this->isCsrfTokenValid('toggle_newsletter', $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Token CSRF invalide.');
+            $this->addFlash('danger', $translator->trans('profile.csrf_invalid'));
             return $this->redirectToRoute('app_profile');
         }
 
         $user->setNewsletter(!$user->isNewsletter());
         $entityManager->flush();
 
-        $message = $user->isNewsletter() 
-            ? 'Vous êtes maintenant inscrit à la newsletter.' 
-            : 'Vous êtes maintenant désinscrit de la newsletter.';
-        
+        $message = $user->isNewsletter()
+            ? $translator->trans('profile.newsletter_subscribed')
+            : $translator->trans('profile.newsletter_unsubscribed');
+
         $this->addFlash('success', $message);
 
         return $this->redirectToRoute('app_profile');
     }
 
     #[Route('/profil/modifier', name: 'app_profile_edit')]
-    public function edit(Request $request, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         $user = $this->getUser();
 
@@ -66,7 +67,7 @@ final class ProfileController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-            $this->addFlash('success', 'Votre profil a été mis à jour avec succès.');
+            $this->addFlash('success', $translator->trans('profile.updated'));
 
             return $this->redirectToRoute('app_profile');
         }
@@ -74,15 +75,15 @@ final class ProfileController extends AbstractController
         return $this->render('profile/edit.html.twig', [
             'form' => $form->createView(),
             'page' => [
-                'title' => 'Modifier mon profil',
-                'submit' => 'Enregistrer',
-                'cancel' => 'Annuler',
+                'title' => $translator->trans('profile.edit_btn'),
+                'submit' => $translator->trans('profile.submit'),
+                'cancel' => $translator->trans('profile.cancel'),
             ],
         ]);
     }
 
     #[Route('/profil/changer-mot-de-passe', name: 'app_profile_change_password')]
-    public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
+    public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         $user = $this->getUser();
 
@@ -95,7 +96,7 @@ final class ProfileController extends AbstractController
 
             // Vérifier que le mot de passe actuel est correct
             if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
-                $this->addFlash('danger', 'Le mot de passe actuel est incorrect.');
+                $this->addFlash('danger', $translator->trans('profile.password_incorrect'));
                 return $this->redirectToRoute('app_profile_change_password');
             }
 
@@ -104,7 +105,7 @@ final class ProfileController extends AbstractController
             $user->setPassword($encodedPassword);
 
             $entityManager->flush();
-            $this->addFlash('success', 'Votre mot de passe a été changé avec succès.');
+            $this->addFlash('success', $translator->trans('profile.password_changed'));
 
             return $this->redirectToRoute('app_profile');
         }
@@ -112,20 +113,20 @@ final class ProfileController extends AbstractController
         return $this->render('profile/change_password.html.twig', [
             'form' => $form->createView(),
             'page' => [
-                'title' => 'Changer mon mot de passe',
-                'submit' => 'Changer le mot de passe',
-                'cancel' => 'Annuler',
+                'title' => $translator->trans('profile.password_btn'),
+                'submit' => $translator->trans('profile.password'),
+                'cancel' => $translator->trans('profile.cancel'),
             ],
         ]);
     }
 
     #[Route('/profil/supprimer', name: 'app_profile_delete', methods: ['POST'])]
-    public function delete(Request $request, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         $user = $this->getUser();
 
         if (!$this->isCsrfTokenValid('delete_profile', $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Token CSRF invalide.');
+            $this->addFlash('danger', $translator->trans('profile.csrf_invalid'));
             return $this->redirectToRoute('app_profile');
         }
 
@@ -137,7 +138,7 @@ final class ProfileController extends AbstractController
         $entityManager->remove($user);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Votre compte a été supprimé avec succès.');
+        $this->addFlash('success', $translator->trans('profile.account_deleted'));
 
         return $this->redirectToRoute('app_home');
     }

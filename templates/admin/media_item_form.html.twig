@@ -71,21 +71,21 @@
                                             <h3>{{ 'admin.adjustments'|trans }}</h3>
                                             <div class="control-item">
                                                 <label for="contrast-slider">{{ 'admin.contrast'|trans }} : <span class="slider-value">100%</span></label>
-                                                <input type="range" id="contrast-slider" class="form-control-range" min="0" max="200" value="100" data-action="input->image-editor#adjustContrast">
+                                                <input type="range" id="contrast-slider" class="form-control-range" min="0" max="200" value="100" data-action="input->image-editor#setContrast">
                                             </div>
                                             <div class="control-item">
                                                 <label for="brightness-slider">{{ 'admin.brightness'|trans }} : <span class="slider-value">100%</span></label>
-                                                <input type="range" id="brightness-slider" class="form-control-range" min="0" max="200" value="100" data-action="input->image-editor#adjustBrightness">
+                                                <input type="range" id="brightness-slider" class="form-control-range" min="0" max="200" value="100" data-action="input->image-editor#setBrightness">
                                             </div>
                                         </div>
 
                                         <div class="control-group">
                                             <h3>{{ 'admin.actions_label'|trans }}</h3>
                                             <button type="button" class="btn btn-primary" data-action="click->image-editor#crop">
-                                                Recadrer et sauvegarder
+                                                {{ 'admin.crop_and_save'|trans }}
                                             </button>
                                             <button type="button" class="btn btn-secondary" data-action="click->image-editor#close">
-                                                Annuler
+                                                {{ 'admin.cancel'|trans }}
                                             </button>
                                         </div>
                                     </div>

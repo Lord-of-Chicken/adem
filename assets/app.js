@@ -1,16 +1,11 @@
 import './stimulus_bootstrap.js';
+import './js/layout.js';
 import './js/layout-metrics.js';
 import './js/swiper-init.js';
-import './js/home.js';
 import './js/cart.js';
 import './js/confirm-modal.js';
+import './js/toast.js';
 import './js/admin-media-item-form.js';
 import './js/stripe-init.js';
-/*
- * Welcome to your app's main JavaScript file!
- *
- * This file will be included onto the page via the importmap() Twig function,
- * which should already be in your base.html.twig.
- */
 import './styles/app.css';
 import './styles/ruelle.css';

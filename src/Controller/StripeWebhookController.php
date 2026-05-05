@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class StripeWebhookController extends AbstractController
 {
@@ -18,6 +19,7 @@ final class StripeWebhookController extends AbstractController
         private readonly OrderRepository $orderRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -30,17 +32,17 @@ final class StripeWebhookController extends AbstractController
 
         if (!$sigHeader || !$webhookSecret || $webhookSecret === 'whsec_CHANGE_ME') {
             $this->logger->warning('Stripe webhook: secret non configuré ou signature manquante.');
-            return new Response('Webhook secret not configured', 400);
+            return new Response($this->translator->trans('stripe.webhook_secret_not_configured'), 400);
         }
 
         try {
             $event = Webhook::constructEvent($payload, $sigHeader, $webhookSecret);
         } catch (\UnexpectedValueException) {
             $this->logger->warning('Stripe webhook: payload invalide.');
-            return new Response('Invalid payload', 400);
+            return new Response($this->translator->trans('stripe.invalid_payload'), 400);
         } catch (\Stripe\Exception\SignatureVerificationException) {
             $this->logger->warning('Stripe webhook: signature invalide.');
-            return new Response('Invalid signature', 400);
+            return new Response($this->translator->trans('stripe.invalid_signature'), 400);
         }
 
         if ($event->type === 'checkout.session.completed') {
@@ -50,11 +52,11 @@ final class StripeWebhookController extends AbstractController
 
             if (!$order) {
                 $this->logger->info('Stripe webhook: aucune commande pour session ' . $session->id);
-                return new Response('No matching order', 200);
+                return new Response($this->translator->trans('stripe.no_matching_order'), 200);
             }
 
             if ($order->isPaid()) {
-                return new Response('Already paid', 200);
+                return new Response($this->translator->trans('stripe.already_paid'), 200);
             }
 
             if ($session->payment_status === 'paid') {
@@ -64,6 +66,6 @@ final class StripeWebhookController extends AbstractController
             }
         }
 
-        return new Response('OK', 200);
+        return new Response($this->translator->trans('stripe.ok'), 200);
     }
 }

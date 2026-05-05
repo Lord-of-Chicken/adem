@@ -43,12 +43,8 @@ final class PaymentController extends AbstractController
             $tier = $this->catalog->require($line['tier_id']);
 
             // Traduire title_key et detail_key en title et detail
-            if (isset($tier['title_key'])) {
-                $tier['title'] = $translator->trans($tier['title_key']);
-            }
-            if (isset($tier['detail_key'])) {
-                $tier['detail'] = $translator->trans($tier['detail_key']);
-            }
+            $tier['title']  = isset($tier['title_key'])  ? $translator->trans($tier['title_key'])  : ($tier['title']  ?? '');
+            $tier['detail'] = isset($tier['detail_key']) ? $translator->trans($tier['detail_key']) : ($tier['detail'] ?? null);
             if (isset($tier['price_key'])) {
                 $tier['price'] = $translator->trans($tier['price_key']);
             }

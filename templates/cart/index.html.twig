@@ -47,7 +47,7 @@
 
                                     <div class="qty-display">
                                         <span class="qty-number" id="number-{{ line.line_id }}">{{ line.quantity }}</span>
-                                        <span class="qty-label" id="label-{{ line.line_id }}">{{ 'cart.piece'|trans }}{{ line.quantity > 1 ? 's' : '' }}</span>
+                                        <span class="qty-label" id="label-{{ line.line_id }}" data-piece-singular="{{ 'cart.piece'|trans }}" data-piece-plural="{{ 'cart.pieces'|trans }}"></span>
                                     </div>
 
                                     <button type="button" class="qty-btn" 
@@ -88,5 +88,12 @@
         </div>
     </section>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="module">
+        import '/assets/js/cart.js';
+    </script>
 {% endblock %}
 

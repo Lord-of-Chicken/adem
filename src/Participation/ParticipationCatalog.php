@@ -2,10 +2,10 @@
 
 namespace App\Participation;
 
-use App\Controller\HomeController;
+use Symfony\Component\Yaml\Yaml;
 
 /**
- * Catalogue des formules (définitions dans HomeController::TIERS).
+ * Catalogue des formules (définitions dans config/tiers.yaml).
  *
  * @phpstan-type Tier array{
  *     id: string,
@@ -24,13 +24,16 @@ use App\Controller\HomeController;
  */
 final class ParticipationCatalog
 {
+    private const TIERS_FILE = __DIR__ . '/../../config/tiers.yaml';
+
     /** @var array<string, Tier> */
     private array $tiers;
 
     public function __construct()
     {
         $this->tiers = [];
-        foreach (HomeController::TIERS as $def) {
+        $tiersData = Yaml::parseFile(self::TIERS_FILE);
+        foreach ($tiersData['tiers'] as $def) {
             $this->tiers[$def['id']] = $def;
         }
     }

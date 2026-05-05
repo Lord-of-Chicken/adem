@@ -21,16 +21,15 @@
     background: #f8fafc;
     border: 2px dashed #cbd5e1;
     border-radius: 8px;
-    min-height: 500px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 500px;
+    position: relative;
     overflow: hidden;
 }
 
-.image-editor-canvas img {
-    max-width: 100%;
-    max-height: 500px;
+/* Force le conteneur Cropper à remplir toute la zone */
+.image-editor-canvas .cropper-container {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 .image-editor-controls {

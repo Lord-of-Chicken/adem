@@ -8,11 +8,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class ContactController extends AbstractController
 {
     #[Route('/contact', name: 'app_contact')]
-    public function index(Request $request, MailerInterface $mailer): Response
+    public function index(Request $request, MailerInterface $mailer, TranslatorInterface $translator): Response
     {
         $form = $this->createForm(ContactFormType::class);
         $form->handleRequest($request);
@@ -33,7 +34,7 @@ final class ContactController extends AbstractController
                         ->from($contactEmail)
                         ->to($contactEmail)
                         ->replyTo($data['email'])
-                        ->subject('Contact - ' . $data['name'])
+                        ->subject($translator->trans('contact.email_subject') . ' - ' . $data['name'])
                         ->text($data['name'] . ' (' . $data['email'] . '):' . "\n\n" . $data['message'])
                         ->html('<h3>' . htmlspecialchars($data['name']) . ' (' . htmlspecialchars($data['email']) . ')</h3>' .
                                '<p>' . nl2br(htmlspecialchars($data['message'])) . '</p>');
@@ -41,16 +42,16 @@ final class ContactController extends AbstractController
                     $mailer->send($email);
                     error_log('Email sent successfully');
 
-                    $this->addFlash('success', 'Votre message a été envoyé avec succès. Nous vous répondrons bientôt.');
+                    $this->addFlash('success', $translator->trans('contact.success'));
 
                     return $this->redirectToRoute('app_contact');
 
                 } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erreur lors de l\'envoi du message : ' . $e->getMessage());
+                    $this->addFlash('error', $translator->trans('contact.error', ['%error%' => $e->getMessage()]));
                     error_log('Mailer error: ' . $e->getMessage());
                 }
             } else {
-                $this->addFlash('error', 'Erreur lors de la validation du formulaire.');
+                $this->addFlash('error', $translator->trans('contact.validation_error'));
                 $errors = [];
                 foreach ($form->getErrors(true) as $error) {
                     $errors[] = $error->getMessage();
@@ -62,9 +63,9 @@ final class ContactController extends AbstractController
         return $this->render('contact/index.html.twig', [
             'form' => $form->createView(),
             'page' => [
-                'title' => 'Contacte-nous',
-                'intro' => 'Une question ? Une suggestion ? N\'hésitez pas à nous envoyer un message.',
-                'submit' => 'Envoyer le message',
+                'title' => $translator->trans('contact.title'),
+                'intro' => $translator->trans('contact.intro'),
+                'submit' => $translator->trans('contact.submit'),
             ],
         ]);
     }

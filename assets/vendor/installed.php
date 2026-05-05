@@ -19,4 +19,24 @@
     array (
     ),
   ),
+  'cropperjs' => 
+  array (
+    'version' => '1.6.2',
+    'dependencies' => 
+    array (
+    ),
+    'extraFiles' => 
+    array (
+    ),
+  ),
+  'cropperjs/dist/cropper.min.css' => 
+  array (
+    'version' => '1.6.2',
+    'dependencies' => 
+    array (
+    ),
+    'extraFiles' => 
+    array (
+    ),
+  ),
 );

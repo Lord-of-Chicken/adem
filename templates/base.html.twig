@@ -20,6 +20,27 @@
     {% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}"{% if app.current_route starts with 'app_checkout' or app.current_route starts with 'app_payment' or app.current_route starts with 'app_cart' %} data-stripe-enabled="1" data-stripe-publishable-key="{{ stripe_publishable_key }}"{% endif %}>
+    {% include '_partials/language_selector.html.twig' %}
+
+    {# JavaScript translations for dynamic content #}
+    <script type="application/json" id="cart-translations">
+        {
+            "title": {{ 'js.cart.title'|trans|json_encode()|raw }},
+            "text": {{ 'js.cart.text'|trans|json_encode()|raw }},
+            "continue": {{ 'js.cart.continue'|trans|json_encode()|raw }},
+            "cart": {{ 'js.cart.cart'|trans|json_encode()|raw }},
+            "invalid_amount": {{ 'js.cart.invalid_amount'|trans|json_encode()|raw }},
+            "add_error": {{ 'js.cart.add_error'|trans|json_encode()|raw }},
+            "technical_error": {{ 'js.cart.technical_error'|trans|json_encode()|raw }},
+            "image_upload_success": {{ 'js.image.upload_success'|trans|json_encode()|raw }},
+            "image_upload_error": {{ 'js.image.upload_error'|trans|json_encode()|raw }},
+            "confirm_title": {{ 'js.confirm.default_title'|trans|json_encode()|raw }},
+            "confirm_message": {{ 'js.confirm.default_message'|trans|json_encode()|raw }},
+            "confirm": {{ 'js.confirm.confirm'|trans|json_encode()|raw }},
+            "cancel": {{ 'js.confirm.cancel'|trans|json_encode()|raw }}
+        }
+    </script>
+
     {# Bandeau chantier + header de navigation #}
     {% block top_bars %}
         {% include '_partials/top_bars.html.twig' %}

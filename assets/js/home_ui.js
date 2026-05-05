@@ -11,19 +11,16 @@ export function updateQty(id, delta, min, max) {
 
     let val = parseInt(input.value) + delta;
 
-    // Validation des limites
     if (val >= min && val <= max) {
         input.value = val;
         display.textContent = val;
 
-        // Mise à jour du label "pièce(s)" avec traduction
         if (label) {
             const singular = label.getAttribute('data-piece-singular') || 'pièce';
             const plural = label.getAttribute('data-piece-plural') || 'pièces';
             label.textContent = val > 1 ? plural : singular;
         }
 
-        // Gestion visuelle des boutons désactivés
         if (btnMinus) btnMinus.disabled = (val <= min);
         if (btnPlus) btnPlus.disabled = (val >= max);
     }
@@ -149,25 +146,21 @@ export function addToCart(tierId) {
     .catch(() => showToast(translations.technical_error || 'Technical error.', 'error'));
 }
 
-// Exposer les fonctions globalement pour les attributs onclick
 window.updateQty = updateQty;
 window.addToCart = addToCart;
 
-// Initialisation au chargement pour désactiver les boutons "minus" si qty = min et initialiser les labels
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.qty-number').forEach(el => {
         const id = el.id.replace('num-', '');
         const val = parseInt(el.textContent);
         const btnMinus = document.getElementById('minus-' + id);
         const label = document.getElementById('label-' + id);
-        
-        // Désactiver le bouton minus si qty = min
+
         if (btnMinus) {
             const minQty = parseInt(document.getElementById('qty-' + id)?.value || 1);
             btnMinus.disabled = (val <= minQty);
         }
-        
-        // Initialiser le label avec la bonne traduction
+
         if (label) {
             const singular = label.getAttribute('data-piece-singular') || 'pièce';
             const plural = label.getAttribute('data-piece-plural') || 'pièces';

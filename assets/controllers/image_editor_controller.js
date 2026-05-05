@@ -1,162 +1,145 @@
 import { Controller } from '@hotwired/stimulus';
-import Cropper from 'cropperjs';
+import { showToast } from '../js/toast.js';
 
 export default class extends Controller {
-    static targets = ['image'];
-    static values = {
-        uploadUrl: String,
-    };
+    static targets = ['modal'];
+    static values  = { uploadUrl: String };
 
-    cropper = null;
-    contrast = 100;
+    cropper    = null;
+    contrast   = 100;
     brightness = 100;
 
-    connect() {
-        this.initCropper();
+    // ── UX CropperJS events ──────────────────────────────────────────────────
+
+    onConnect(event) {
+        this.cropper = event.detail.cropper;
     }
 
-    initCropper() {
-        if (!this.hasImageTarget) return;
+    // ── Modal open / close ───────────────────────────────────────────────────
 
-        this.cropper = new Cropper(this.imageTarget, {
-            aspectRatio: NaN,
-            viewMode: 1,
-            dragMode: 'move',
-            autoCropArea: 0.8,
-            restore: false,
-            guides: true,
-            center: true,
-            highlight: true,
-            cropBoxMovable: true,
-            cropBoxResizable: true,
-            toggleDragModeOnDblclick: false,
+    open() {
+        if (!this.hasModalTarget) return;
+        this.modalTarget.classList.add('image-editor-modal--open');
+        // Cropper was initialized while modal was hidden (0×0) — resize now
+        requestAnimationFrame(() => {
+            if (this.cropper) this.cropper.resize();
         });
     }
+
+    close() {
+        if (this.hasModalTarget) {
+            this.modalTarget.classList.remove('image-editor-modal--open');
+        }
+    }
+
+    // ── Image operations ─────────────────────────────────────────────────────
+
+    rotateLeft()  { if (this.cropper) this.cropper.rotate(-90); }
+    rotateRight() { if (this.cropper) this.cropper.rotate(90);  }
+
+    flipHorizontal() {
+        if (!this.cropper) return;
+        this.cropper.scaleX((this.cropper.getData().scaleX || 1) * -1);
+    }
+
+    flipVertical() {
+        if (!this.cropper) return;
+        this.cropper.scaleY((this.cropper.getData().scaleY || 1) * -1);
+    }
+
+    setContrast(event) {
+        this.contrast = parseInt(event.target.value);
+        event.target.closest('.control-item')
+            ?.querySelector('.slider-value')
+            ?.textContent && this._updateLabel(event.target, this.contrast + '%');
+    }
+
+    setBrightness(event) {
+        this.brightness = parseInt(event.target.value);
+        this._updateLabel(event.target, this.brightness + '%');
+    }
+
+    _updateLabel(input, text) {
+        const label = input.previousElementSibling?.querySelector('.slider-value');
+        if (label) label.textContent = text;
+    }
+
+    reset() {
+        this.contrast   = 100;
+        this.brightness = 100;
+
+        this.element.querySelectorAll('input[type="range"]').forEach(slider => {
+            slider.value = 100;
+            const label = slider.previousElementSibling?.querySelector('.slider-value');
+            if (label) label.textContent = '100%';
+        });
+
+        if (this.cropper) this.cropper.reset();
+    }
+
+    // ── Crop + upload ────────────────────────────────────────────────────────
 
     crop() {
         if (!this.cropper) return;
 
         const canvas = this.cropper.getCroppedCanvas();
+        if (!canvas) return;
+
         this.applyFilters(canvas);
-        
-        canvas.toBlob((blob) => {
-            this.uploadImage(blob);
-        }, 'image/jpeg', 0.9);
+        canvas.toBlob((blob) => this.uploadImage(blob), 'image/jpeg', 0.9);
     }
 
     applyFilters(canvas) {
-        const ctx = canvas.getContext('2d');
+        const ctx       = canvas.getContext('2d');
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
+        const data      = imageData.data;
+
+        const bf = (this.brightness - 100) / 100;
+        const cf = (259 * (this.contrast + 255)) / (255 * (259 - this.contrast));
 
         for (let i = 0; i < data.length; i += 4) {
-            // Luminosité
-            const brightnessFactor = (this.brightness - 100) / 100;
-            data[i] = data[i] * (1 + brightnessFactor);
-            data[i + 1] = data[i + 1] * (1 + brightnessFactor);
-            data[i + 2] = data[i + 2] * (1 + brightnessFactor);
-
-            // Contraste
-            const contrastFactor = (259 * (this.contrast + 255)) / (255 * (259 - this.contrast));
-            data[i] = contrastFactor * (data[i] - 128) + 128;
-            data[i + 1] = contrastFactor * (data[i + 1] - 128) + 128;
-            data[i + 2] = contrastFactor * (data[i + 2] - 128) + 128;
+            data[i]     = cf * (data[i]     * (1 + bf) - 128) + 128;
+            data[i + 1] = cf * (data[i + 1] * (1 + bf) - 128) + 128;
+            data[i + 2] = cf * (data[i + 2] * (1 + bf) - 128) + 128;
         }
 
         ctx.putImageData(imageData, 0, 0);
     }
 
     uploadImage(blob) {
-        const formData = new FormData();
+        const translations = this.getUiTranslations();
+        const config    = document.getElementById('admin-media-item-form-config');
+        const csrfToken = config ? config.dataset.csrfToken : '';
+        const formData  = new FormData();
         formData.append('file', blob, 'edited-image.jpg');
 
         fetch(this.uploadUrlValue, {
-            method: 'POST',
-            body: formData,
+            method:  'POST',
+            headers: { 'X-CSRF-Token': csrfToken },
+            body:    formData,
         })
-        .then(response => response.json())
+        .then(r => r.json())
         .then(data => {
-            if (data.success) {
-                alert('Image sauvegardée avec succès!');
+            if (data.path) {
+                showToast(translations.image_upload_success || 'Image saved successfully!', 'success');
                 window.location.reload();
             } else {
-                alert('Erreur lors de l\'upload de l\'image');
+                showToast(translations.image_upload_error || 'Error while uploading image', 'error');
             }
         })
-        .catch(error => {
-            console.error('Erreur:', error);
-            alert('Erreur lors de l\'upload de l\'image');
-        });
+        .catch(() => showToast(translations.image_upload_error || 'Error while uploading image', 'error'));
     }
 
-    setContrast(event) {
-        this.contrast = parseInt(event.target.value);
-        this.previewImage();
-    }
-
-    setBrightness(event) {
-        this.brightness = parseInt(event.target.value);
-        this.previewImage();
-    }
-
-    previewImage() {
-        if (!this.cropper) return;
-
-        const canvas = this.cropper.getCroppedCanvas();
-        this.applyFilters(canvas);
-        
-        // Mettre à jour l'aperçu
-        const previewCanvas = document.createElement('canvas');
-        previewCanvas.width = canvas.width;
-        previewCanvas.height = canvas.height;
-        previewCanvas.getContext('2d').drawImage(canvas, 0, 0);
-        
-        // Remplacer l'image dans le cropper
-        const imageData = previewCanvas.toDataURL();
-        this.cropper.replace(imageData);
-    }
-
-    reset() {
-        this.contrast = 100;
-        this.brightness = 100;
-        
-        // Reset les sliders
-        const contrastSlider = document.getElementById('contrast-slider');
-        const brightnessSlider = document.getElementById('brightness-slider');
-        if (contrastSlider) contrastSlider.value = 100;
-        if (brightnessSlider) brightnessSlider.value = 100;
-        
-        // Reset le cropper
-        if (this.cropper) {
-            this.cropper.reset();
+    getUiTranslations() {
+        const script = document.getElementById('cart-translations');
+        if (!script) {
+            return {};
         }
-    }
 
-    rotateLeft() {
-        if (this.cropper) {
-            this.cropper.rotate(-90);
-        }
-    }
-
-    rotateRight() {
-        if (this.cropper) {
-            this.cropper.rotate(90);
-        }
-    }
-
-    flipHorizontal() {
-        if (this.cropper) {
-            const data = this.cropper.getData();
-            const scaleX = data.scaleX || 1;
-            this.cropper.scaleX(scaleX === 1 ? -1 : 1);
-        }
-    }
-
-    flipVertical() {
-        if (this.cropper) {
-            const data = this.cropper.getData();
-            const scaleY = data.scaleY || 1;
-            this.cropper.scaleY(scaleY === 1 ? -1 : 1);
+        try {
+            return JSON.parse(script.textContent || '{}');
+        } catch (error) {
+            return {};
         }
     }
 }

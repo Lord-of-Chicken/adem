@@ -2,22 +2,34 @@
     let modal = null;
     let pendingForm = null;
 
+    function getUiTranslations() {
+        const script = document.getElementById('cart-translations');
+        if (!script) {
+            return {};
+        }
+
+        try {
+            return JSON.parse(script.textContent || '{}');
+        } catch (error) {
+            return {};
+        }
+    }
+
     function ensureModal() {
         if (modal) {
             return modal;
         }
 
-        modal = document.createElement('div');
+        modal = document.createElement('dialog');
         modal.id = 'global-confirm-modal';
         modal.className = 'cart-success-modal';
         modal.innerHTML = `
-            <div class="cart-success-modal__backdrop"></div>
-            <div class="cart-success-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="global-confirm-title">
-                <h3 id="global-confirm-title" class="cart-success-modal__title">Confirmation</h3>
+            <div class="cart-success-modal__dialog" aria-labelledby="global-confirm-title">
+                <h3 id="global-confirm-title" class="cart-success-modal__title"></h3>
                 <p class="cart-success-modal__text" id="global-confirm-text"></p>
                 <div class="cart-success-modal__actions">
-                    <button type="button" class="btn btn--secondary" data-confirm-modal-action="cancel">Annuler</button>
-                    <button type="button" class="btn btn--primary" data-confirm-modal-action="confirm">Confirmer</button>
+                    <button type="button" class="btn btn--secondary" data-confirm-modal-action="cancel"></button>
+                    <button type="button" class="btn btn--primary" data-confirm-modal-action="confirm"></button>
                 </div>
             </div>
         `;
@@ -25,16 +37,16 @@
         modal.addEventListener('click', (event) => {
             const action = event.target.getAttribute('data-confirm-modal-action');
 
-            if (action === 'cancel' || event.target.classList.contains('cart-success-modal__backdrop')) {
+            if (action === 'cancel' || event.target === modal) {
                 pendingForm = null;
-                modal.classList.remove('cart-success-modal--open');
+                modal.close();
                 return;
             }
 
             if (action === 'confirm' && pendingForm) {
                 const formToSubmit = pendingForm;
                 pendingForm = null;
-                modal.classList.remove('cart-success-modal--open');
+                modal.close();
                 formToSubmit.submit();
             }
         });
@@ -45,10 +57,11 @@
 
     function openConfirmModal(form) {
         const currentModal = ensureModal();
-        const message = form.getAttribute('data-confirm-message') || 'Confirmer cette action ?';
-        const title = form.getAttribute('data-confirm-title') || 'Confirmation';
-        const confirmLabel = form.getAttribute('data-confirm-confirm-label') || 'Confirmer';
-        const cancelLabel = form.getAttribute('data-confirm-cancel-label') || 'Annuler';
+        const translations = getUiTranslations();
+        const message = form.getAttribute('data-confirm-message') || translations.confirm_message || 'Confirm this action?';
+        const title = form.getAttribute('data-confirm-title') || translations.confirm_title || 'Confirmation';
+        const confirmLabel = form.getAttribute('data-confirm-confirm-label') || translations.confirm || 'Confirm';
+        const cancelLabel = form.getAttribute('data-confirm-cancel-label') || translations.cancel || 'Cancel';
 
         currentModal.querySelector('#global-confirm-title').textContent = title;
         currentModal.querySelector('#global-confirm-text').textContent = message;
@@ -56,7 +69,7 @@
         currentModal.querySelector('[data-confirm-modal-action="cancel"]').textContent = cancelLabel;
 
         pendingForm = form;
-        currentModal.classList.add('cart-success-modal--open');
+        currentModal.showModal();
     }
 
     document.addEventListener('DOMContentLoaded', () => {

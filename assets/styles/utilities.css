@@ -1,0 +1,131 @@
+/* Utilitaires CSS - Classes réutilisables pour éviter les répétitions */
+
+/* Gradients */
+.bg-gradient-cyan-fade {
+    background: linear-gradient(180deg, rgba(0, 232, 255, 0.06), transparent);
+}
+
+.bg-gradient-concrete {
+    background: linear-gradient(135deg, var(--concrete-light), var(--concrete));
+}
+
+.bg-gradient-ink-concrete {
+    background: linear-gradient(135deg, var(--ink), var(--concrete));
+}
+
+.bg-gradient-cyan-magenta {
+    background: linear-gradient(135deg, var(--spray-cyan), var(--spray-magenta));
+}
+
+.bg-gradient-cyan-magenta-horizontal {
+    background: linear-gradient(90deg, var(--spray-cyan), var(--spray-magenta));
+}
+
+.bg-gradient-yellow-magenta {
+    background: linear-gradient(90deg, var(--spray-yellow), var(--spray-magenta));
+}
+
+.bg-gradient-pink-fade {
+    background: linear-gradient(90deg, rgba(255, 45, 149, 0.08), transparent);
+}
+
+.bg-gradient-hot-sticker {
+    background: linear-gradient(135deg, #fffef8 0%, #ffe8f4 100%);
+}
+
+/* Bordures */
+.border-cyan-dashed {
+    border-top: 2px dashed var(--spray-cyan);
+    border-bottom: 2px dashed var(--spray-cyan);
+}
+
+.border-outline {
+    border: var(--outline);
+}
+
+/* Ombres */
+.shadow-ink {
+    box-shadow: 6px 6px 0 var(--ink);
+}
+
+.shadow-ink-8 {
+    box-shadow: 8px 8px 0 var(--ink);
+}
+
+.shadow-cyan {
+    box-shadow: 3px 3px 0 var(--spray-cyan);
+}
+
+.shadow-cyan-4 {
+    box-shadow: 4px 4px 0 var(--spray-cyan);
+}
+
+/* Transformations hover */
+.hover-lift {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hover-lift:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 var(--ink);
+}
+
+.hover-lift-sm {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hover-lift-sm:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 var(--spray-cyan);
+}
+
+/* Flexbox utilitaires */
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Display utilitaires */
+.display-inline {
+    display: inline;
+}
+
+.display-inline-block {
+    display: inline-block;
+}
+
+/* Texte utilitaires */
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Espacement */
+.mt-0 { margin-top: 0; }
+.mb-0 { margin-bottom: 0; }
+.mt-0-5 { margin-top: 0.5rem; }
+.mb-0-5 { margin-bottom: 0.5rem; }
+.mt-1 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 1rem; }
+.mt-2 { margin-top: 2rem; }
+.mb-2 { margin-bottom: 2rem; }
+
+/* Couleurs de fond */
+.bg-spray-magenta {
+    background: var(--spray-magenta);
+    color: var(--paper);
+}
+
+.bg-delete-profile {
+    background: #b00020;
+    color: var(--paper);
+}

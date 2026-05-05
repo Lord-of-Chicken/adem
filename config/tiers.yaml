@@ -1,0 +1,61 @@
+tiers:
+  - id: begonia_unit
+    title_key: home.tier_begonia_title
+    detail_key: home.tier_begonia_detail
+    price: '1'
+    price_unit: '€'
+    price_suffix_key: home.tier_begonia_price_unit
+    unit_price_eur: 1.00
+    priced_per_unit: true
+    min_qty: 1
+    max_qty: 500
+    group: standard
+    donor_field: false
+  - id: pack_3
+    title_key: home.tier_pack3_title
+    detail_key: home.tier_pack3_detail
+    price: '6'
+    price_unit: '€'
+    price_suffix: null
+    unit_price_eur: 6.00
+    priced_per_unit: false
+    min_qty: 1
+    max_qty: 500
+    group: standard
+    donor_field: false
+  - id: vip_20
+    title_key: home.tier_vip20_title
+    detail_key: home.tier_vip20_detail
+    price: '20'
+    price_unit: '€'
+    price_suffix: null
+    unit_price_eur: 20.00
+    priced_per_unit: false
+    min_qty: 1
+    max_qty: 500
+    group: vip
+    donor_field: true
+  - id: vip_50
+    title_key: home.tier_vip50_title
+    detail_key: home.tier_vip50_detail
+    price: '50'
+    price_unit: '€'
+    price_suffix: null
+    unit_price_eur: 50.00
+    priced_per_unit: false
+    min_qty: 1
+    max_qty: 500
+    group: vip
+    donor_field: true
+  - id: free_donation
+    title_key: home.tier_free_title
+    detail_key: home.tier_free_detail
+    price_key: home.tier_free_price
+    price_unit: '€'
+    price_suffix: null
+    unit_price_eur: 0.00
+    priced_per_unit: false
+    min_qty: 1
+    max_qty: 1
+    group: standard
+    donor_field: true

@@ -44,7 +44,7 @@
                         <td>
                             <div class="admin-table__actions">
                                 <a href="{{ path('app_admin_carousel_edit', { id: media_item.id }) }}" class="btn btn--secondary">{{ 'admin.edit'|trans }}</a>
-                                <form method="post" action="{{ path('app_admin_carousel_delete', { id: media_item.id }) }}" data-confirm-title="Supprimer cette image" data-confirm-message="Supprimer cette image ?" data-confirm-confirm-label="Supprimer" data-confirm-cancel-label="Annuler">
+                                <form method="post" action="{{ path('app_admin_carousel_delete', { id: media_item.id }) }}" data-confirm-title="{{ 'admin.delete'|trans }}" data-confirm-message="{{ 'admin.carousel_delete_confirm'|trans }}" data-confirm-confirm-label="{{ 'admin.delete'|trans }}" data-confirm-cancel-label="{{ 'admin.cancel'|trans }}">
                                     <input type="hidden" name="_token" value="{{ csrf_token('carousel_delete_' ~ media_item.id) }}">
                                     <button type="submit" class="btn btn--danger">{{ 'admin.delete'|trans }}</button>
                                 </form>

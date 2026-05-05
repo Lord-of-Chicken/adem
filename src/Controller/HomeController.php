@@ -7,125 +7,81 @@ use App\Repository\MediaItemRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class HomeController extends AbstractController
 {
-    public const TIERS = [
-        [
-            'id' => 'begonia_unit',
-            'title' => '1 bégonia ou plus',
-            'detail' => 'Terreau et jardinière inclus.',
-            'price' => '1',
-            'price_unit' => '€',
-            'price_suffix' => '/ pièce',
-            'unit_price_eur' => 1.00,
-            'priced_per_unit' => true,
-            'min_qty' => 1,
-            'max_qty' => 500,
-            'group' => 'standard',
-            'donor_field' => false,
-        ],
-        [
-            'id' => 'pack_3',
-            'title' => '3 bégonias + jardinière',
-            'detail' => 'Ensemble prêt à planter.',
-            'price' => '6',
-            'price_unit' => '€',
-            'price_suffix' => null,
-            'unit_price_eur' => 6.00,
-            'priced_per_unit' => false,
-            'min_qty' => 1,
-            'max_qty' => 500,
-            'group' => 'standard',
-            'donor_field' => false,
-        ],
-        [
-            'id' => 'vip_20',
-            'title' => '3 bégonias + jardinière',
-            'detail' => 'Ton nom sera affiché en remerciement.',
-            'price' => '20',
-            'price_unit' => '€',
-            'price_suffix' => null,
-            'unit_price_eur' => 20.00,
-            'priced_per_unit' => false,
-            'min_qty' => 1,
-            'max_qty' => 500,
-            'group' => 'vip',
-            'donor_field' => true,
-        ],
-        [
-            'id' => 'vip_50',
-            'title' => '1 palette + 12 bégonias + 4 jardinières zinc',
-            'detail' => 'Soutien visible pour le projet.',
-            'price' => '50',
-            'price_unit' => '€',
-            'price_suffix' => null,
-            'unit_price_eur' => 50.00,
-            'priced_per_unit' => false,
-            'min_qty' => 1,
-            'max_qty' => 500,
-            'group' => 'vip',
-            'donor_field' => true,
-        ],
-        [
-            'id' => 'free_donation',
-            'title' => 'Don Libre',
-            'detail' => 'Soutien personnalisé au projet.',
-            'price' => 'Libre',
-            'price_unit' => '€',
-            'price_suffix' => null,
-            'unit_price_eur' => 0.00,
-            'priced_per_unit' => false,
-            'min_qty' => 1,
-            'max_qty' => 1,
-            'group' => 'standard',
-            'donor_field' => true,
-        ],
-    ];
-
     #[Route('/', name: 'app_home')]
     public function index(
         ParticipationCatalog $catalog,
         MediaItemRepository $mediaItemRepository,
+        TranslatorInterface $translator,
     ): Response {
         $allTiers = $catalog->all();
         $tiersStandard = array_values(array_filter($allTiers, fn ($t) => $t['group'] === 'standard'));
         $tiersVip = array_values(array_filter($allTiers, fn ($t) => $t['group'] === 'vip'));
+
+        // Translate tier titles and details using keys from YAML
+        foreach ($tiersStandard as &$tier) {
+            if (isset($tier['title_key'])) {
+                $tier['title'] = $translator->trans($tier['title_key']);
+            }
+            if (isset($tier['detail_key'])) {
+                $tier['detail'] = $translator->trans($tier['detail_key']);
+            }
+            if (isset($tier['price_key'])) {
+                $tier['price'] = $translator->trans($tier['price_key']);
+            }
+            if (isset($tier['price_suffix_key'])) {
+                $tier['price_suffix'] = $translator->trans($tier['price_suffix_key']);
+            }
+        }
+        unset($tier);
+
+        foreach ($tiersVip as &$tier) {
+            if (isset($tier['title_key'])) {
+                $tier['title'] = $translator->trans($tier['title_key']);
+            }
+            if (isset($tier['detail_key'])) {
+                $tier['detail'] = $translator->trans($tier['detail_key']);
+            }
+        }
+        unset($tier);
 
         return $this->render('home/index.html.twig', [
             'hero' => [
                 'title' => '',
                 'lead' => '',
             ],
-            'nav_links' => [
-                ['label' => 'Offres', 'href' => '#offres'],
-                ['label' => 'Médias', 'href' => '#medias'],
+            'navLinks' => [
+                ['label' => $translator->trans('nav.offres'), 'href' => '#offres'],
+                ['label' => $translator->trans('nav.medias'), 'href' => '#medias'],
             ],
-            'medias_intro' => 'Quelques images de la ruelle — le lieu du projet, tel qu\'on le vit au quotidien.',
+            'medias_intro' => $translator->trans('home.medias_intro'),
             'sections' => [
                 'offres' => [
                     'id' => 'offres',
-                    'title' => 'Offres de soutien',
+                    'title' => $translator->trans('home.offres_title'),
                     'intro' => '',
                 ],
                 'vip' => [
                     'id' => 'vip',
-                    'title' => 'Formules V.I.P.',
-                    'subtitle' => 'Grâce à cette formule, tu peux personnaliser ta jardinière ou ta palette.  De quoi épater tes amis lorsque tu leur fera visiter la ruelle d\'Adem, ou lorsqu\'il y découvriront ton nom.',
+                    'title' => $translator->trans('home.vip_title'),
+                    'subtitle' => $translator->trans('home.vip_subtitle'),
                 ],
                 'don_libre' => [
                     'id' => 'don-libre',
-                    'title' => 'Don libre',
-                    'intro' => 'Tu peux aussi contribuer en offrant le montant de ton choix. Et, si telle est ton envie, nous pouvons afficher ton nom sur ce site.',
+                    'title' => $translator->trans('home.don_libre_title'),
+                    'intro' => $translator->trans('home.don_libre_intro'),
                 ],
                 'medias' => [
                     'id' => 'medias',
-                    'title' => 'Galerie',
+                    'title' => $translator->trans('home.gallery_title'),
                 ],
                 'newsletter' => [
                     'id' => 'newsletter',
-                    'title' => 'Restez informé',
-                    'intro' => "TU VEUX CONNAITRE LE NOMBRE DE FLEURS, DE JARDINIERES ET DE PALETTES OFFERTES?\nSavoir si un événement festif, récréatif ou éducatif se déroule dans la ruelle.",
+                    'title' => $translator->trans('home.newsletter_title'),
+                    'intro' => $translator->trans('home.newsletter_intro'),
                 ],
             ],
             'tiers_standard' => $tiersStandard,

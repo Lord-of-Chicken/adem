@@ -28,7 +28,7 @@
 }
 
 html {
-    overflow-x: hidden;
+    overflow-x: clip; /* clip doesn't create a scroll container, so position:fixed works correctly */
 }
 
 body {
@@ -753,44 +753,25 @@ body.page-street {
     color: var(--paper);
 }
 
-.section--vip {
-    background: linear-gradient(180deg, rgba(0, 232, 255, 0.06), transparent);
-    border-top: 2px dashed var(--spray-cyan);
-    border-bottom: 2px dashed var(--spray-cyan);
-}
-
-.section--offres {
-    background: linear-gradient(180deg, rgba(0, 232, 255, 0.06), transparent);
-    border-top: 2px dashed var(--spray-cyan);
-    border-bottom: 2px dashed var(--spray-cyan);
-}
-
-#crowdfunding {
-    background: linear-gradient(180deg, rgba(0, 232, 255, 0.06), transparent);
-    border-top: 2px dashed var(--spray-cyan);
-    border-bottom: 2px dashed var(--spray-cyan);
-}
-
-#don-libre {
+.section--vip,
+.section--offres,
+#crowdfunding,
+#don-libre,
+.section--newsletter,
+.section--contact {
     background: linear-gradient(180deg, rgba(0, 232, 255, 0.06), transparent);
     border-top: 2px dashed var(--spray-cyan);
     border-bottom: 2px dashed var(--spray-cyan);
 }
 
 .section--newsletter {
-    background: linear-gradient(180deg, rgba(0, 232, 255, 0.06), transparent);
-    border-top: 2px dashed var(--spray-cyan);
-    border-bottom: 2px dashed var(--spray-cyan);
     max-width: var(--max-width);
     padding-top: 2.25rem;
 }
 
 .section--contact {
-    background: linear-gradient(180deg, rgba(0, 232, 255, 0.06), transparent);
     color: inherit;
     margin: 0 auto;
-    border-top: 2px dashed var(--spray-cyan);
-    border-bottom: 2px dashed var(--spray-cyan);
     border-left: 0;
     border-right: 0;
     border-radius: 0;
@@ -1103,8 +1084,9 @@ body.page-street {
     }
 }
 
-/* Slider média simple */
-.media-slider {
+/* Media slider - styles communs pour slider et swiper */
+.media-slider,
+.media-swiper {
     position: relative;
     margin: 2rem 0 0;
     background: linear-gradient(135deg, var(--concrete-light), var(--concrete));
@@ -1114,7 +1096,11 @@ body.page-street {
     border: 2px solid rgba(0, 232, 255, 0.3);
 }
 
-/* Gallery page */
+.media-swiper {
+    padding: 2rem;
+}
+
+/* Swiper media slider with coverflow */
 .page-header {
     margin: 2rem 0;
     text-align: center;
@@ -1627,36 +1613,6 @@ body.page-street {
     margin: 2rem 0;
 }
 
-.margin-top-0-5 {
-    margin-top: 0.5rem;
-}
-
-.margin-top-1 {
-    margin-top: 1rem;
-}
-
-.margin-top-2 {
-    margin-top: 2rem;
-}
-
-.display-inline {
-    display: inline;
-}
-
-.display-inline-block {
-    display: inline-block;
-}
-
-.spray-magenta {
-    background: var(--spray-magenta);
-    color: var(--paper);
-}
-
-.delete-profile {
-    background: #b00020;
-    color: var(--paper);
-}
-
 .btn--remove {
     background: transparent;
     border: 2px solid var(--spray-magenta);
@@ -1811,7 +1767,6 @@ textarea.form__input {
     border-radius: 0;
     cursor: pointer;
     text-decoration: none;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .btn--primary {
@@ -1823,10 +1778,6 @@ textarea.form__input {
 .btn--primary:hover {
     transform: translate(-2px, -2px);
     box-shadow: 8px 8px 0 var(--ink);
-}
-
-.btn--submit-spacing {
-    margin-bottom: 1rem;
 }
 
 .btn--secondary {
@@ -1879,7 +1830,46 @@ textarea.form__input {
     }
 }
 
-/* Footer */
+/* Language selector */
+.language-selector {
+    display: flex !important;
+    gap: 0.5rem !important;
+    position: fixed !important;
+    top: 1rem !important;
+    right: 1rem !important;
+    z-index: 99999 !important;
+    background: var(--paper) !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    border: 2px solid var(--ink) !important;
+}
+
+.language-selector__link {
+    font-size: 1.5rem !important;
+    text-decoration: none !important;
+    opacity: 0.6 !important;
+    transition: opacity 0.15s ease, transform 0.15s ease !important;
+    display: inline-block !important;
+}
+
+.language-selector__link:hover {
+    opacity: 1 !important;
+    transform: scale(1.1) !important;
+}
+
+.language-selector__link--active {
+    opacity: 1 !important;
+    transform: scale(1.15) !important;
+}
+
+.site-header__top {
+    position: relative;
+}
+
+.site-header__top {
+    position: relative;
+}
 .site-footer {
     position: relative;
     z-index: 1;
@@ -2030,12 +2020,139 @@ textarea.form__input {
     line-height: 1.6;
 }
 
+/* ── Confirm / action modal (cart success + generic confirm) ──────────────── */
+/* Legacy div-based modal (old JS still cached) */
+div.cart-success-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+div.cart-success-modal.cart-success-modal--open {
+    display: flex;
+}
+
+div.cart-success-modal .cart-success-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+/* Native dialog-based modal (new JS) */
+dialog.cart-success-modal {
+    padding: 0;
+    border: none;
+    background: transparent;
+    max-width: 90vw;
+    width: 440px;
+    overflow: visible;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}
+
+dialog.cart-success-modal[open] {
+    display: block;
+}
+
+dialog.cart-success-modal::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+}
+
+.cart-success-modal__dialog {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    width: 100%;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+}
+
+.cart-success-modal__title {
+    margin: 0 0 0.75rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--ink, #1a1a1a);
+}
+
+.cart-success-modal__text {
+    margin: 0 0 1.5rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+.cart-success-modal__actions {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.ui-toast-stack {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1300;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    pointer-events: none;
+}
+
+.ui-toast {
+    min-width: 240px;
+    max-width: min(420px, calc(100vw - 2rem));
+    border: 2px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--ink);
+    padding: 0.65rem 0.8rem;
+    font-weight: 700;
+    transform: translateY(8px);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.ui-toast--visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.ui-toast--info {
+    background: var(--spray-cyan);
+    color: var(--ink);
+}
+
+.ui-toast--success {
+    background: var(--spray-lime);
+    color: var(--ink);
+}
+
+.ui-toast--error {
+    background: var(--spray-magenta);
+    color: var(--paper);
+}
+
+/* ── Image editor modal (admin) ───────────────────────────────────────────── */
 .image-editor-modal {
     display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1055;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .image-editor-modal.image-editor-modal--open {
-    display: block;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem 1rem;
 }
 
 .image-editor-container {
