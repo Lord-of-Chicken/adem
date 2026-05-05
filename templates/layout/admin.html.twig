@@ -29,10 +29,15 @@
                 <a href="{{ path('app_admin_users') }}" class="admin-nav__link {{ app.request.attributes.get('_route') == 'app_admin_users' ? 'admin-nav__link--active' : '' }}">
                     Utilisateurs
                 </a>
+                <a href="{{ path('admin_translations', { locale: 'fr' }) }}" class="admin-nav__link {{ app.request.attributes.get('_route') == 'admin_translations' ? 'admin-nav__link--active' : '' }}">
+                    Traductions
+                </a>
             </nav>
         </aside>
         <main class="admin-main">
-            {% block admin_content %}{% endblock %}
+            {% block admin_content %}
+                {% block admin_main %}{% endblock %}
+            {% endblock %}
         </main>
     </div>
 {% endblock %}

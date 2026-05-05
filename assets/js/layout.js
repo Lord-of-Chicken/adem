@@ -40,6 +40,13 @@ document.addEventListener('DOMContentLoaded', function() {
             siteNav.classList.toggle('site-nav--open', !isExpanded);
         });
 
+        siteNav.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', function() {
+                menuToggle.setAttribute('aria-expanded', 'false');
+                siteNav.classList.remove('site-nav--open');
+            });
+        });
+
         // Close menu when clicking outside
         document.addEventListener('click', function(e) {
             if (!menuToggle.contains(e.target) && !siteNav.contains(e.target)) {

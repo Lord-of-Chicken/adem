@@ -1,0 +1,64 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}{{ 'admin.translations_title'|trans }}{% endblock %}
+
+{% block main %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label == 'error' ? 'danger' : 'success' }} mb-3">{{ message }}</div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="content-panel mb-3">
+        <div class="content-panel-body">
+            <label for="locale" class="form-label">{{ 'admin.translation_locale'|trans }}</label>
+            <select id="locale" class="form-select" style="max-width: 240px;" onchange="window.location.href=this.value">
+                <option value="{{ path('admin_translations', { locale: 'fr' }) }}" {{ selected_locale == 'fr' ? 'selected' : '' }}>Français</option>
+                <option value="{{ path('admin_translations', { locale: 'en' }) }}" {{ selected_locale == 'en' ? 'selected' : '' }}>English</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="content-panel" data-controller="translations-editor">
+        <div class="content-panel-body translations-editor">
+            <div class="row g-2 mb-3 translations-editor__tools">
+                <div class="col-12 col-lg-6">
+                    <label for="translation-search" class="form-label mb-1">Recherche</label>
+                    <div class="input-group">
+                        <input id="translation-search" type="text" class="form-control" placeholder="Rechercher dans le fichier..." data-translations-editor-target="searchInput" data-action="input->translations-editor#onSearchInput keydown->translations-editor#onSearchKeydown">
+                        <button id="translation-search-prev" type="button" class="btn btn-outline-secondary" title="Résultat précédent" data-action="translations-editor#previousMatch">↑</button>
+                        <button id="translation-search-next" type="button" class="btn btn-outline-secondary" title="Résultat suivant" data-action="translations-editor#nextMatch">↓</button>
+                    </div>
+                    <small id="translation-search-status" class="text-muted" data-translations-editor-target="searchStatus"></small>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <label for="translation-section-jump" class="form-label mb-1">Navigation par section (#)</label>
+                    <div class="input-group">
+                        <select id="translation-section-jump" class="form-select" data-translations-editor-target="sectionSelect" data-action="change->translations-editor#onSectionChange">
+                            <option value="">Aller à une section…</option>
+                        </select>
+                        <button id="translation-refresh-sections" type="button" class="btn btn-outline-secondary" data-action="translations-editor#rebuildSections">Actualiser</button>
+                    </div>
+                    <small id="translation-section-status" class="text-muted" data-translations-editor-target="sectionStatus"></small>
+                </div>
+            </div>
+
+            <form method="post" action="{{ path('admin_translations', { locale: selected_locale }) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('admin_translations_' ~ selected_locale) }}">
+
+                <label for="translation-content" class="form-label">{{ 'admin.translation_file_content'|trans }}</label>
+                <textarea
+                    id="translation-content"
+                    name="content"
+                    class="form-control translations-editor__textarea"
+                    data-translations-editor-target="textarea"
+                    data-action="input->translations-editor#onTextareaInput"
+                >{{ content }}</textarea>
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">{{ 'admin.save_translations'|trans }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

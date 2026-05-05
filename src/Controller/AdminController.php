@@ -31,6 +31,7 @@ final class AdminController extends AbstractController
                 'nav_carousel' => $translator->trans('admin.nav_carousel'),
                 'nav_users' => $translator->trans('admin.nav_users'),
                 'nav_stripe' => $translator->trans('admin.nav_stripe'),
+                'nav_translations' => $translator->trans('admin.nav_translations'),
             ],
         ]);
     }

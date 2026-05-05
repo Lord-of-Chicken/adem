@@ -121,6 +121,9 @@
                 <a href="{{ path('app_admin_purchases') }}" class="admin-nav__link {{ app.request.attributes.get('_route') == 'app_admin_purchases' ? 'admin-nav__link--active' : '' }}">
                     {{ page.nav_stripe }}
                 </a>
+                <a href="{{ path('admin_translations', { locale: 'fr' }) }}" class="admin-nav__link {{ app.request.attributes.get('_route') == 'admin_translations' ? 'admin-nav__link--active' : '' }}">
+                    {{ page.nav_translations }}
+                </a>
             </nav>
         </aside>
         <main class="admin-main">

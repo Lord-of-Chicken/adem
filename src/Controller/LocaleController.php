@@ -14,7 +14,7 @@ class LocaleController extends AbstractController
     {
         $supportedLocales = ['en', 'fr'];
         if (!in_array($locale, $supportedLocales)) {
-            $locale = 'en';
+            $locale = 'fr';
         }
 
         $request->getSession()->set('_locale', $locale);

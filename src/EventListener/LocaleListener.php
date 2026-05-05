@@ -12,7 +12,7 @@ class LocaleListener
 
     public function __construct(
         private RequestStack $requestStack,
-        string $defaultLocale = 'en'
+        string $defaultLocale = 'fr'
     ) {
         $this->defaultLocale = $defaultLocale;
     }

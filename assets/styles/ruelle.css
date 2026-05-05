@@ -434,41 +434,67 @@ body.page-street {
 @media (max-width: 767px) {
     .site-header__menu-toggle {
         display: flex;
+        position: relative;
+        z-index: 120;
+        background: var(--spray-yellow);
+        box-shadow: 4px 4px 0 var(--ink);
     }
 
     .site-nav {
         position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: var(--paper);
-        border: 2px solid var(--ink);
-        border-top: none;
+        top: calc(100% + 0.4rem);
+        left: 0.05rem;
+        right: 0.05rem;
+        background: linear-gradient(180deg, #fffbe8 0%, var(--paper) 100%);
+        border: 3px solid var(--ink);
+        border-radius: 0.65rem;
         flex-direction: column;
-        padding: 1rem;
-        gap: 0.5rem;
-        display: none !important;
-        z-index: 100;
-        box-shadow: 4px 4px 0 var(--ink);
+        padding: 0.7rem;
+        gap: 0.6rem;
+        display: flex;
+        align-items: stretch;
+        z-index: 115;
+        box-shadow: 8px 8px 0 var(--ink), 0 14px 28px rgba(0, 0, 0, 0.2);
+        transform: translateY(-10px) scale(0.98);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
     }
 
     .site-nav--open {
-        display: flex !important;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0) scale(1);
     }
 
     .site-nav .site-nav__link {
-        padding: 1rem 1.25rem;
+        padding: 0.82rem 1rem;
         border: 2px solid var(--ink);
-        background: var(--paper);
+        background: var(--spray-cyan);
         font-weight: 700;
-        text-align: center;
-        box-shadow: 3px 3px 0 var(--spray-cyan);
+        gap: 0.5rem;
+        justify-content: flex-start;
+        width: 100%;
+        box-sizing: border-box;
+        box-shadow: 3px 3px 0 var(--ink);
         transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .site-header__account--mobile .site-nav__link {
+        justify-content: flex-start;
+        padding-left: 1.05rem;
+    }
+
+    .site-header__account--mobile .site-nav__link svg {
+        margin-right: 0.5rem;
+        flex-shrink: 0;
     }
 
     .site-nav .site-nav__link:hover {
         transform: translate(-2px, -2px);
-        box-shadow: 5px 5px 0 var(--spray-cyan);
+        box-shadow: 5px 5px 0 var(--ink);
         background: var(--spray-lime);
     }
 
@@ -479,14 +505,16 @@ body.page-street {
     .site-header__account--mobile {
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
-        padding-top: 1rem;
-        border-top: 2px solid var(--ink);
+        gap: 0.6rem;
+        margin-top: 0.35rem;
+        padding-top: 0.75rem;
+        border-top: 2px dashed var(--ink);
     }
 
     .site-header__account--mobile .site-header__cart-badge {
-        background: #ff0000;
-        color: #fff;
+        background: var(--ink);
+        color: var(--spray-lime);
+        margin-left: 0.2rem;
     }
 }
 
@@ -2136,6 +2164,33 @@ dialog.cart-success-modal::backdrop {
 .ui-toast--error {
     background: var(--spray-magenta);
     color: var(--paper);
+}
+
+.translations-editor__tools {
+    margin-bottom: 0.25rem;
+}
+
+.translations-editor__textarea {
+    min-height: 72vh;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    background: var(--ea-form-control-bg, #fff);
+    border-color: var(--ea-form-control-border-color, #ced4da);
+    color: var(--ea-body-color, inherit);
+    tab-size: 2;
+    white-space: pre;
+    padding: 0.95rem 1rem;
+}
+
+.translations-editor__textarea:focus {
+    background: var(--ea-form-control-bg, #fff);
+}
+
+.translations-editor__textarea--jump-flash {
+    box-shadow: 0 0 0 0.22rem rgba(13, 110, 253, 0.25);
+    transition: box-shadow 0.25s ease;
 }
 
 /* ── Image editor modal (admin) ───────────────────────────────────────────── */
