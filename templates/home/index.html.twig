@@ -2,11 +2,6 @@
 
 {% block title %}Fais une fleur à Adem  Crowdfunding | {{ site_brand.title }}{% endblock %}
 
-{% block importmap %}
-    {{ parent() }}
-    {{ importmap('home') }}
-{% endblock %}
-
 {% block street_main %}
     {# Jeton de sécurité global pour les appels AJAX #}
     <input type="hidden" id="global-csrf-token" value="{{ csrf_token('cart_add') }}">
