@@ -10,6 +10,8 @@ Allow: /connexion
 Allow: /inscription
 Allow: /offres
 Allow: /medias
+Allow: /faq
+Allow: /qui-est-adem
 Allow: /panier
 Allow: /checkout
 Allow: /payment/success
