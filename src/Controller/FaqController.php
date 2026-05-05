@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class FaqController extends AbstractController
 {
-    #[Route('/faq', name: 'app_faq')]
+    #[Route('/{_locale}/faq', name: 'app_faq', requirements: ['_locale' => 'fr|en'])]
     public function index(): Response
     {
         return $this->render('faq/index.html.twig');
