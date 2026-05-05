@@ -34,6 +34,15 @@ nav.main_navigation: "Main navigation"
 
 # About
 about.coming_soon: "Content coming soon..."
+about.meta_description: "Discover the Ruelle d'Adem project: our mission, transparency, and how we use funds to transform the street into a flourishing garden."
+about.project_title: "The Project"
+about.project_description: "Ruelle d'Adem is an urban transformation project aimed at beautifying our neighborhood by creating a green and welcoming space. One hundred meters of alley to decorate, flower and maintain for the benefit of all."
+about.mission_title: "Our Mission"
+about.mission_description: "Transform an ordinary urban space into a place of life, sharing and beauty. We believe that every flower planted is a gesture of hope and community."
+about.transparency_title: "Transparency"
+about.transparency_description: "We are committed to full transparency on the use of collected funds. Each contribution will be used to purchase flowers, planters, pallets and to maintain the alley."
+about.contact_title: "Contact"
+about.contact_description: "For any questions about the project, feel free to contact us via the contact form available on the site."
 
 # Cart
 cart.title: "Cart"

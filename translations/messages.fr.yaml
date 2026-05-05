@@ -34,6 +34,15 @@ nav.main_navigation: "Navigation principale"
 
 # About
 about.coming_soon: "Contenu à venir..."
+about.meta_description: "Découvrez le projet Ruelle d'Adem : notre mission, notre transparence et comment nous utilisons les fonds pour transformer la rue en un jardin florissant."
+about.project_title: "Le Projet"
+about.project_description: "La Ruelle d'Adem est un projet de transformation urbaine qui vise à embellir notre quartier en créant un espace vert et convivial. Cent mètres de ruelle à décorer, fleurir et entretenir pour le bien de tous."
+about.mission_title: "Notre Mission"
+about.mission_description: "Transformer un espace urbain ordinaire en un lieu de vie, de partage et de beauté. Nous croyons que chaque fleur plantée est un geste d'espoir et de communauté."
+about.transparency_title: "Transparence"
+about.transparency_description: "Nous nous engageons à une totale transparence sur l'utilisation des fonds collectés. Chaque contribution sera utilisée pour l'achat de fleurs, de jardinières, de palettes et pour l'entretien de la ruelle."
+about.contact_title: "Contact"
+about.contact_description: "Pour toute question sur le projet, n'hésitez pas à nous contacter via le formulaire de contact disponible sur le site."
 
 # Cart
 cart.title: "Panier"
