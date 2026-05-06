@@ -1,53 +1,19 @@
-# robots.txt pour La Ruelle d'Adem - Production
-# Configuration pour l'indexation par les moteurs de recherche
-
 User-agent: *
-Allow: /
 
-# Autoriser les pages principales pour le référencement
-Allow: /$
-Allow: /connexion
-Allow: /inscription
-Allow: /offres
-Allow: /medias
-Allow: /faq
-Allow: /qui-est-adem
-Allow: /panier
-Allow: /checkout
-Allow: /payment/success
-Allow: /payment/cancel
+# Pages non indexables (utilitaires, session, paiement)
+Disallow: /connexion
+Disallow: /inscription
+Disallow: /deconnexion
+Disallow: /panier
+Disallow: /panier/
+Disallow: /checkout
+Disallow: /payment/
+Disallow: /reset-password
+Disallow: /admin/
+Disallow: /stripe/
 
-# Interdire l'accès aux zones sensibles et techniques
-Disallow: /panier/ligne/
-Disallow: /panier/vider
-Disallow: /panier/ajouter
-Disallow: /stripe/webhook
+# Zones techniques
 Disallow: /_profiler/
 Disallow: /_error/
-Disallow: /admin/
-Disallow: /api/
-Disallow: /vendor/
-Disallow: /src/
-Disallow: /var/
-Disallow: /config/
-Disallow: /templates/
-Disallow: /migrations/
-Disallow: /bin/
-Disallow: /composer.*
-Disallow: /.env*
-Disallow: /assets/styles/
 
-# Autoriser les assets publics
-Allow: /assets/
-Allow: /assets/img/
-Allow: /assets/styles/
-
-# Sitemap pour les moteurs de recherche
 Sitemap: https://ruelledadem.com/sitemap.xml
-
-# Informations de contact pour les webmasters
-# Site: La Ruelle d'Adem - Street art / Graffiti crowdfunding
-# Contact: via formulaire de contact sur le site
-
-# Délai de crawl (optionnel)
-Crawl-delay: 1

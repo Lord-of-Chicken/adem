@@ -20,35 +20,27 @@ class SitemapController extends AbstractController
     public function index(): Response
     {
         $urls = [];
-        $hostname = $this->urlGenerator->generate('app_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $locales = ['fr', 'en', 'nl'];
+        $today = (new \DateTime())->format('Y-m-d');
 
-        // Pages statiques principales
-        $staticPages = [
-            '' => ['priority' => '1.0', 'changefreq' => 'daily'],
-            'offres' => ['priority' => '0.9', 'changefreq' => 'weekly'],
-            'medias' => ['priority' => '0.8', 'changefreq' => 'weekly'],
-            'a-propos' => ['priority' => '0.7', 'changefreq' => 'monthly'],
-            'faq' => ['priority' => '0.8', 'changefreq' => 'monthly'],
+        // Pages publiques indexables par locale
+        $pages = [
+            'app_home'    => ['priority' => '1.0', 'changefreq' => 'daily'],
+            'app_about'   => ['priority' => '0.7', 'changefreq' => 'monthly'],
+            'app_faq'     => ['priority' => '0.8', 'changefreq' => 'monthly'],
+            'app_contact' => ['priority' => '0.6', 'changefreq' => 'monthly'],
+            'app_gallery' => ['priority' => '0.7', 'changefreq' => 'weekly'],
         ];
 
-        foreach ($staticPages as $path => $meta) {
-            $urls[] = [
-                'loc' => $path ? $hostname . '#' . $path : $hostname,
-                'priority' => $meta['priority'],
-                'changefreq' => $meta['changefreq'],
-                'lastmod' => (new \DateTime())->format('Y-m-d'),
-            ];
-        }
-
-        // Pages dynamiques - médias publiés
-        $mediaItems = $this->mediaItemRepository->findPublishedOrdered();
-        foreach ($mediaItems as $media) {
-            $urls[] = [
-                'loc' => $hostname . '#medias',
-                'priority' => '0.6',
-                'changefreq' => 'monthly',
-                'lastmod' => $media->getUpdatedAt()->format('Y-m-d'),
-            ];
+        foreach ($locales as $locale) {
+            foreach ($pages as $route => $meta) {
+                $urls[] = [
+                    'loc'        => $this->urlGenerator->generate($route, ['_locale' => $locale], UrlGeneratorInterface::ABSOLUTE_URL),
+                    'priority'   => $meta['priority'],
+                    'changefreq' => $meta['changefreq'],
+                    'lastmod'    => $today,
+                ];
+            }
         }
 
         return $this->render('sitemap.xml.twig', [

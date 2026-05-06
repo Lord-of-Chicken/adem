@@ -1,6 +1,27 @@
 {% extends 'layout/street.html.twig' %}
 
 {% block title %}{{ page.title }} | {{ site_brand.title }}{% endblock %}
+{% block meta_description %}{{ 'contact.intro'|trans }}{% endblock %}
+{% block og_title %}{{ page.title }} | {{ site_brand.title }}{% endblock %}
+{% block og_description %}{{ 'contact.intro'|trans }}{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ContactPage",
+        "name": "{{ page.title|e('js') }}",
+        "description": "{{ 'contact.intro'|trans|e('js') }}",
+        "url": "{{ app.request.schemeAndHttpHost ~ app.request.pathInfo }}",
+        "mainEntity": {
+            "@type": "Organization",
+            "name": "{{ site_brand.title|e('js') }}",
+            "url": "{{ url('app_home') }}"
+        }
+    }
+    </script>
+{% endblock %}
 
 {% block street_main %}
 <div class="main main--narrow">

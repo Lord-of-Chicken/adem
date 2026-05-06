@@ -1,6 +1,7 @@
 {% extends 'layout/street.html.twig' %}
 
 {% block title %}{{ 'cart.title'|trans }} | {{ site_brand.title }}{% endblock %}
+{% block meta_robots %}noindex, nofollow{% endblock %}
 
 {% block street_main %}
 <div class="main main--narrow">

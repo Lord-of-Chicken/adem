@@ -3,16 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{{ site_brand.title }}{% endblock %} | {{ site_brand.title }}</title>
+    <title>{% block title %}{{ site_brand.title }}{% endblock %}</title>
     <meta name="description" content="{% block meta_description %}{{ 'site.default_description'|trans }}{% endblock %}">
-    <link rel="canonical" href="{{ app.request.schemeAndHttpHost ~ app.request.requestUri }}">
+    <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
+    <link rel="canonical" href="{{ app.request.schemeAndHttpHost ~ app.request.pathInfo }}">
+    {%- set _og_locale_map = {'fr': 'fr_FR', 'en': 'en_US', 'nl': 'nl_NL'} %}
+    {%- set _current_locale = app.request.locale %}
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="{{ site_brand.title }}">
     <meta property="og:title" content="{% block og_title %}{{ site_brand.title }}{% endblock %}">
     <meta property="og:description" content="{% block og_description %}{{ 'site.default_description'|trans }}{% endblock %}">
-    <meta property="og:url" content="{{ app.request.schemeAndHttpHost ~ app.request.requestUri }}">
+    <meta property="og:url" content="{{ app.request.schemeAndHttpHost ~ app.request.pathInfo }}">
     <meta property="og:image" content="{{ absolute_url(asset(site_brand.logo_asset)) }}">
+    <meta property="og:locale" content="{{ _og_locale_map[_current_locale]|default('fr_FR') }}">
+    {% for _loc, _og_loc in _og_locale_map %}{% if _loc != _current_locale %}
+    <meta property="og:locale:alternate" content="{{ _og_loc }}">
+    {% endif %}{% endfor %}
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ site_brand.title }}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}{{ 'site.default_description'|trans }}{% endblock %}">
+    <meta name="twitter:image" content="{{ absolute_url(asset(site_brand.logo_asset)) }}">
+    {%- set _route_params = app.request.attributes.get('_route_params')|default({}) %}
+    {% if '_locale' in (_route_params|keys) %}
+    <link rel="alternate" hreflang="fr" href="{{ url(app.current_route, _route_params|merge({'_locale': 'fr'})) }}">
+    <link rel="alternate" hreflang="en" href="{{ url(app.current_route, _route_params|merge({'_locale': 'en'})) }}">
+    <link rel="alternate" hreflang="nl" href="{{ url(app.current_route, _route_params|merge({'_locale': 'nl'})) }}">
+    <link rel="alternate" hreflang="x-default" href="{{ url(app.current_route, _route_params|merge({'_locale': 'fr'})) }}">
+    {% endif %}
     {% block head %}{% endblock %}
     {% if app.environment == 'prod' and not app.request.pathInfo starts with '/admin' %}
     <!-- Google tag (gtag.js) -->
