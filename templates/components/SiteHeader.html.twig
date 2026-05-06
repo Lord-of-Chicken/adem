@@ -16,11 +16,15 @@
             {% for link in navLinks %}
                 <a href="{{ link.href }}" class="site-nav__link">{{ link.label }}</a>
             {% endfor %}
-            <a href="{{ path('app_about') }}" class="site-nav__link">{{ 'nav.about'|trans }}</a>
-            <a href="{{ path('app_faq') }}" class="site-nav__link">{{ 'nav.faq'|trans }}</a>
-            <a href="{{ path('app_contact') }}" class="site-nav__link">{{ 'nav.contact'|trans }}</a>
+            <a href="{{ path('app_about') }}" class="site-nav__link{% if app.current_route == 'app_about' %} site-nav__link--active{% endif %}">{{ 'nav.about'|trans }}</a>
+            <a href="{{ path('app_faq') }}" class="site-nav__link{% if app.current_route == 'app_faq' %} site-nav__link--active{% endif %}">{{ 'nav.faq'|trans }}</a>
+            <a href="{{ path('app_contact') }}" class="site-nav__link{% if app.current_route == 'app_contact' %} site-nav__link--active{% endif %}">{{ 'nav.contact'|trans }}</a>
 
             <div class="site-header__account site-header__account--mobile">
+                <div class="lang-inline">
+                    <a href="{{ path('app_locale_switch', { locale: 'fr' }) }}" class="lang-inline__item{% if app.request.locale == 'fr' %} lang-inline__item--active{% endif %}" lang="fr" title="Français">🇫🇷 FR</a>
+                    <a href="{{ path('app_locale_switch', { locale: 'en' }) }}" class="lang-inline__item{% if app.request.locale == 'en' %} lang-inline__item--active{% endif %}" lang="en" title="English">🇬🇧 EN</a>
+                </div>
                 <a href="{{ cartUrl }}" class="site-nav__link">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="9" cy="21" r="1"></circle>
@@ -73,6 +77,17 @@
                     </svg>
                 </a>
             {% endif %}
+
+            <div class="lang-dropdown">
+                <button class="lang-dropdown__toggle" aria-expanded="false" aria-haspopup="true">
+                    {% if app.request.locale == 'fr' %}🇫🇷{% else %}🇬🇧{% endif %}
+                    <svg class="lang-dropdown__arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="lang-dropdown__menu" hidden>
+                    <a href="{{ path('app_locale_switch', { locale: 'fr' }) }}" class="lang-dropdown__item{% if app.request.locale == 'fr' %} lang-dropdown__item--active{% endif %}" lang="fr">🇫🇷 Français</a>
+                    <a href="{{ path('app_locale_switch', { locale: 'en' }) }}" class="lang-dropdown__item{% if app.request.locale == 'en' %} lang-dropdown__item--active{% endif %}" lang="en">🇬🇧 English</a>
+                </div>
+            </div>
         </div>
     </div>
 </header>

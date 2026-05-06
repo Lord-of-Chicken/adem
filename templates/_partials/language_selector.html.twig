@@ -1,8 +1,1 @@
-<div class="language-selector" style="display: flex !important; gap: 0.5rem !important; position: fixed !important; top: 1rem !important; right: 1rem !important; z-index: 99999 !important; background: var(--paper) !important; padding: 0.5rem 1rem !important; border-radius: 8px !important; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important; border: 2px solid var(--ink) !important;">
-    <a href="{{ path('app_locale_switch', { locale: 'fr' }) }}" class="language-selector__link {% if app.request.locale == 'fr' %}language-selector__link--active{% endif %}" title="Français" style="font-size: 1.5rem !important; text-decoration: none !important; opacity: 0.6 !important; display: inline-block !important;">
-        🇫🇷
-    </a>
-    <a href="{{ path('app_locale_switch', { locale: 'en' }) }}" class="language-selector__link {% if app.request.locale == 'en' %}language-selector__link--active{% endif %}" title="English" style="font-size: 1.5rem !important; text-decoration: none !important; opacity: 0.6 !important; display: inline-block !important;">
-        🇬🇧
-    </a>
-</div>
+{# Language selector moved into SiteHeader component #}
