@@ -27,6 +27,18 @@
         {% block street_main %}{% endblock %}
     </main>
 
+    {% if cart_line_count > 0 %}
+    <a href="{{ path('app_cart_index') }}" class="cart-fab" id="cart-fab" aria-label="{{ 'cart.title'|trans }}">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-fab__badge" id="cart-fab-badge">{{ cart_line_count }}</span>
+    </a>
+    {% else %}
+    <a href="{{ path('app_cart_index') }}" class="cart-fab cart-fab--hidden" id="cart-fab" aria-label="{{ 'cart.title'|trans }}">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-fab__badge" id="cart-fab-badge">0</span>
+    </a>
+    {% endif %}
+
     <footer class="site-footer">
         <div class="site-footer__inner">
             <div class="site-footer__brand">

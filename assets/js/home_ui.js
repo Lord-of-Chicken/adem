@@ -54,6 +54,17 @@ function updateCartBadges(cartCount) {
             badge.remove();
         }
     });
+
+    const fab = document.getElementById('cart-fab');
+    const fabBadge = document.getElementById('cart-fab-badge');
+    if (fab) {
+        if (count > 0) {
+            fab.classList.remove('cart-fab--hidden');
+            if (fabBadge) fabBadge.textContent = count;
+        } else {
+            fab.classList.add('cart-fab--hidden');
+        }
+    }
 }
 
 function showCartSuccessPopup() {
