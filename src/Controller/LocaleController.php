@@ -12,7 +12,7 @@ class LocaleController extends AbstractController
     #[Route('/locale/{locale}', name: 'app_locale_switch')]
     public function switchLocale(Request $request, string $locale): Response
     {
-        $supportedLocales = ['en', 'fr'];
+        $supportedLocales = ['en', 'fr', 'nl'];
         if (!in_array($locale, $supportedLocales)) {
             $locale = 'fr';
         }
@@ -24,7 +24,7 @@ class LocaleController extends AbstractController
         if ($referer) {
             $parts = parse_url($referer);
             $path = $parts['path'] ?? '/';
-            $path = preg_replace('#^/(en|fr)(/|$)#', '/'.$locale.'$2', $path, 1);
+            $path = preg_replace('#^/(en|fr|nl)(/|$)#', '/'.$locale.'$2', $path, 1);
 
             $query = isset($parts['query']) ? '?'.$parts['query'] : '';
 

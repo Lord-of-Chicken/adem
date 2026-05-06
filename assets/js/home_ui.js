@@ -28,34 +28,26 @@ export function updateQty(id, delta, min, max) {
 
 function getUiTranslations() {
     const script = document.getElementById('cart-translations');
-    if (!script) {
-        return {};
-    }
-
+    if (!script) return {};
     try {
         return JSON.parse(script.textContent || '{}');
-    } catch (error) {
+    } catch {
         return {};
     }
 }
 
 function updateCartBadges(cartCount) {
     const count = parseInt(cartCount, 10);
-    if (Number.isNaN(count)) {
-        return;
-    }
+    if (Number.isNaN(count)) return;
 
-    const cartLinks = document.querySelectorAll('.site-header__cart');
-    cartLinks.forEach((link) => {
+    document.querySelectorAll('.site-header__cart').forEach((link) => {
         let badge = link.querySelector('.site-header__cart-badge');
-
         if (count > 0) {
             if (!badge) {
                 badge = document.createElement('span');
                 badge.className = 'site-header__cart-badge';
                 link.appendChild(badge);
             }
-
             badge.textContent = count;
             badge.style.display = 'inline-block';
         } else if (badge) {
@@ -83,17 +75,11 @@ function showCartSuccessPopup() {
                 </div>
             </div>
         `;
-
         document.body.appendChild(modal);
-
         modal.addEventListener('click', (event) => {
             const action = event.target.getAttribute('data-cart-modal-action');
-            if (action === 'continue' || event.target === modal) {
-                modal.close();
-            }
-            if (action === 'cart') {
-                window.location.href = cartUrl;
-            }
+            if (action === 'continue' || event.target === modal) modal.close();
+            if (action === 'cart') window.location.href = cartUrl;
         });
     }
 
@@ -101,7 +87,6 @@ function showCartSuccessPopup() {
     modal.querySelector('.cart-success-modal__text').textContent = translations.text || 'Your item has been added.';
     modal.querySelector('[data-cart-modal-action="continue"]').textContent = translations.continue || 'Continue';
     modal.querySelector('[data-cart-modal-action="cart"]').textContent = translations.cart || 'View cart';
-
     modal.showModal();
 }
 
@@ -145,9 +130,6 @@ export function addToCart(tierId) {
     })
     .catch(() => showToast(translations.technical_error || 'Technical error.', 'error'));
 }
-
-window.updateQty = updateQty;
-window.addToCart = addToCart;
 
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.qty-number').forEach(el => {

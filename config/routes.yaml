@@ -18,5 +18,6 @@ locale_routes:
     prefix:
         fr: /fr
         en: /en
+        nl: /nl
     requirements:
-        _locale: 'fr|en'
+        _locale: 'fr|en|nl'

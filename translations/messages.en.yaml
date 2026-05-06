@@ -88,6 +88,7 @@ cart.cart_cleared: "Cart has been cleared."
 cart.currency_symbol: "€"
 
 # Site
+site.tagline: "Give Adem a flower"
 site.construction: "SITE UNDER CONSTRUCTION - WORK IN PROGRESS"
 site.default_description: "Ruelle d'Adem - Transform your street into a flourishing garden. Support the project by offering flowers, planters or pallets to decorate and maintain the alley."
 

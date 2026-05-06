@@ -7,6 +7,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 /**
@@ -18,6 +19,7 @@ final class TwigGlobalsSubscriber implements EventSubscriberInterface
         private readonly Environment $twig,
         private readonly CartService $cartService,
         private readonly ParameterBagInterface $params,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -34,7 +36,7 @@ final class TwigGlobalsSubscriber implements EventSubscriberInterface
         }
 
         $title = 'La Ruelle d\'Adem';
-        $tagline = 'Fais une fleur à Adem';
+        $tagline = $this->translator->trans('site.tagline');
         $logoAsset = 'img/Panneau/IMG_0197.png';
         $cartCount = $this->cartService->countLines();
 

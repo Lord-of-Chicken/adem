@@ -24,6 +24,7 @@
                 <div class="lang-inline">
                     <a href="{{ path('app_locale_switch', { locale: 'fr' }) }}" class="lang-inline__item{% if app.request.locale == 'fr' %} lang-inline__item--active{% endif %}" lang="fr" title="Français">🇫🇷 FR</a>
                     <a href="{{ path('app_locale_switch', { locale: 'en' }) }}" class="lang-inline__item{% if app.request.locale == 'en' %} lang-inline__item--active{% endif %}" lang="en" title="English">🇬🇧 EN</a>
+                    <a href="{{ path('app_locale_switch', { locale: 'nl' }) }}" class="lang-inline__item{% if app.request.locale == 'nl' %} lang-inline__item--active{% endif %}" lang="nl" title="Nederlands">🇳🇱 NL</a>
                 </div>
                 <a href="{{ cartUrl }}" class="site-nav__link">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -80,12 +81,13 @@
 
             <div class="lang-dropdown">
                 <button class="lang-dropdown__toggle" aria-expanded="false" aria-haspopup="true">
-                    {% if app.request.locale == 'fr' %}🇫🇷{% else %}🇬🇧{% endif %}
+                    {% if app.request.locale == 'fr' %}🇫🇷{% elseif app.request.locale == 'nl' %}🇳🇱{% else %}🇬🇧{% endif %}
                     <svg class="lang-dropdown__arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
                 <div class="lang-dropdown__menu" hidden>
                     <a href="{{ path('app_locale_switch', { locale: 'fr' }) }}" class="lang-dropdown__item{% if app.request.locale == 'fr' %} lang-dropdown__item--active{% endif %}" lang="fr">🇫🇷 Français</a>
                     <a href="{{ path('app_locale_switch', { locale: 'en' }) }}" class="lang-dropdown__item{% if app.request.locale == 'en' %} lang-dropdown__item--active{% endif %}" lang="en">🇬🇧 English</a>
+                    <a href="{{ path('app_locale_switch', { locale: 'nl' }) }}" class="lang-dropdown__item{% if app.request.locale == 'nl' %} lang-dropdown__item--active{% endif %}" lang="nl">🇳🇱 Nederlands</a>
                 </div>
             </div>
         </div>

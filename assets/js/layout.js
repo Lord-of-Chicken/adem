@@ -1,38 +1,32 @@
-// Profile dropdown toggle and mobile menu toggle
-document.addEventListener('DOMContentLoaded', function() {
-    const profileToggle = document.getElementById('profileToggle');
-    const profileDropdown = document.getElementById('profileDropdown');
+function initFlashes() {
+    document.querySelectorAll('.flash:not([data-flash-init])').forEach(flash => {
+        flash.setAttribute('data-flash-init', '1');
 
-    if (profileToggle && profileDropdown) {
-        profileToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const isExpanded = profileToggle.getAttribute('aria-expanded') === 'true';
-            profileToggle.setAttribute('aria-expanded', !isExpanded);
-            profileDropdown.hidden = isExpanded;
-        });
+        const btn = document.createElement('button');
+        btn.className = 'flash__close';
+        btn.innerHTML = '&times;';
+        btn.setAttribute('aria-label', 'Fermer');
+        flash.appendChild(btn);
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) {
-                profileToggle.setAttribute('aria-expanded', 'false');
-                profileDropdown.hidden = true;
-            }
-        });
+        function dismiss() {
+            flash.classList.add('flash--dismissed');
+            flash.addEventListener('animationend', () => flash.remove(), { once: true });
+        }
 
-        // Close dropdown on escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                profileToggle.setAttribute('aria-expanded', 'false');
-                profileDropdown.hidden = true;
-            }
-        });
-    }
+        btn.addEventListener('click', dismiss);
+        setTimeout(dismiss, 5000);
+    });
+}
 
+function initLayout() {
     // Mobile menu toggle
     const menuToggle = document.getElementById('menuToggle');
     const siteNav = document.querySelector('.site-nav');
 
     if (menuToggle && siteNav) {
+        // Remove existing backdrop to avoid duplicates on Turbo navigation
+        document.querySelectorAll('.site-nav-backdrop').forEach(el => el.remove());
+
         const backdrop = document.createElement('div');
         backdrop.className = 'site-nav-backdrop';
         document.body.appendChild(backdrop);
@@ -68,27 +62,46 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Language dropdowns
-    const closeAllLangDropdowns = () => {
-        document.querySelectorAll('.lang-dropdown__toggle').forEach(t => {
-            t.setAttribute('aria-expanded', 'false');
-            t.closest('.lang-dropdown').querySelector('.lang-dropdown__menu').hidden = true;
-        });
-    };
-
     document.querySelectorAll('.lang-dropdown__toggle').forEach(toggle => {
-        toggle.addEventListener('click', function(e) {
+        // Clone to remove any stale listeners from previous Turbo visit
+        const fresh = toggle.cloneNode(true);
+        toggle.parentNode.replaceChild(fresh, toggle);
+
+        fresh.addEventListener('click', function(e) {
             e.stopPropagation();
-            const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
-            closeAllLangDropdowns();
+            const isExpanded = fresh.getAttribute('aria-expanded') === 'true';
+            // Close all dropdowns
+            document.querySelectorAll('.lang-dropdown__toggle').forEach(t => {
+                t.setAttribute('aria-expanded', 'false');
+                t.closest('.lang-dropdown').querySelector('.lang-dropdown__menu').hidden = true;
+            });
             if (!isExpanded) {
-                toggle.setAttribute('aria-expanded', 'true');
-                toggle.closest('.lang-dropdown').querySelector('.lang-dropdown__menu').hidden = false;
+                fresh.setAttribute('aria-expanded', 'true');
+                fresh.closest('.lang-dropdown').querySelector('.lang-dropdown__menu').hidden = false;
             }
         });
     });
+}
 
-    document.addEventListener('click', closeAllLangDropdowns);
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeAllLangDropdowns();
+function closeLangDropdowns() {
+    document.querySelectorAll('.lang-dropdown__toggle').forEach(t => {
+        t.setAttribute('aria-expanded', 'false');
+        const menu = t.closest('.lang-dropdown')?.querySelector('.lang-dropdown__menu');
+        if (menu) menu.hidden = true;
     });
+}
+
+document.addEventListener('click', closeLangDropdowns);
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeLangDropdowns();
 });
+
+// turbo:load fires on both initial load and Turbo navigations
+document.addEventListener('turbo:load', initLayout);
+document.addEventListener('turbo:load', initFlashes);
+
+// Fallback if Turbo is absent
+if (typeof Turbo === 'undefined') {
+    document.addEventListener('DOMContentLoaded', initLayout);
+    document.addEventListener('DOMContentLoaded', initFlashes);
+}
