@@ -1,15 +1,23 @@
 (() => {
-    const initSwiper = () => {
-        if (typeof Swiper === 'undefined') {
-            return;
+    let swiperInstance = null;
+
+    const cleanup = () => {
+        if (swiperInstance) {
+            swiperInstance.destroy(true, true);
+            swiperInstance = null;
         }
+        document.querySelector('.lightbox')?.remove();
+    };
+
+    const initSwiper = () => {
+        cleanup();
+
+        if (typeof Swiper === 'undefined') return;
 
         const swiperElement = document.querySelector('.media-swiper');
-        if (!swiperElement) {
-            return;
-        }
+        if (!swiperElement) return;
 
-        const swiper = new Swiper('.media-swiper', {
+        swiperInstance = new Swiper('.media-swiper', {
             effect: 'coverflow',
             grabCursor: true,
             centeredSlides: true,
@@ -24,7 +32,7 @@
             a11y: { enabled: true },
         });
 
-        initLightbox(swiper);
+        initLightbox(swiperInstance);
     };
 
     const initLightbox = (swiper) => {
@@ -34,7 +42,6 @@
         const images = [...swiperEl.querySelectorAll('.swiper-slide:not(.swiper-slide-duplicate) img')];
         if (!images.length) return;
 
-        // Build lightbox DOM
         const lightbox = document.createElement('div');
         lightbox.className = 'lightbox';
         lightbox.innerHTML = `
@@ -66,7 +73,6 @@
             swiper.autoplay.start();
         };
 
-        // Open on slide image click
         swiperEl.addEventListener('click', (e) => {
             const clickedImg = e.target.closest('.swiper-slide:not(.swiper-slide-duplicate) img');
             if (!clickedImg) return;
@@ -78,12 +84,8 @@
         lightbox.querySelector('.lightbox__nav--prev').addEventListener('click', () => show(currentIndex - 1));
         lightbox.querySelector('.lightbox__nav--next').addEventListener('click', () => show(currentIndex + 1));
 
-        // Close on backdrop click
-        lightbox.addEventListener('click', (e) => {
-            if (e.target === lightbox) hide();
-        });
+        lightbox.addEventListener('click', (e) => { if (e.target === lightbox) hide(); });
 
-        // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (!lightbox.classList.contains('lightbox--open')) return;
             if (e.key === 'Escape') hide();
@@ -92,11 +94,13 @@
         });
     };
 
+    // Turbo navigation
+    document.addEventListener('turbo:load', initSwiper);
+
+    // Fallback sans Turbo
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initSwiper);
     } else {
         initSwiper();
     }
-
-    window.addEventListener('load', initSwiper);
 })();
