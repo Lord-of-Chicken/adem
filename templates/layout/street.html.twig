@@ -29,7 +29,16 @@
 
     <footer class="site-footer">
         <div class="site-footer__inner">
-            <p>{{ footer_line|default(site_brand.title) }}</p>
+            <div class="site-footer__brand">
+                <span class="site-footer__title">{{ site_brand.title }}</span>
+                <span class="site-footer__tagline">{{ site_brand.tagline }}</span>
+            </div>
+            <nav class="site-footer__nav" aria-label="Navigation pied de page">
+                <a href="{{ path('app_about') }}" class="site-footer__link">{{ 'nav.about'|trans }}</a>
+                <a href="{{ path('app_faq') }}" class="site-footer__link">{{ 'nav.faq'|trans }}</a>
+                <a href="{{ path('app_contact') }}" class="site-footer__link">{{ 'nav.contact'|trans }}</a>
+            </nav>
+            <p class="site-footer__copy">&copy; {{ "now"|date("Y") }} {{ site_brand.title }}</p>
         </div>
     </footer>
 {% endblock %}
