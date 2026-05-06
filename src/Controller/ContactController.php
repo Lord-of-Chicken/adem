@@ -18,46 +18,32 @@ final class ContactController extends AbstractController
         $form = $this->createForm(ContactFormType::class);
         $form->handleRequest($request);
 
-        error_log('Contact form submitted: ' . ($form->isSubmitted() ? 'yes' : 'no'));
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
 
-        if ($form->isSubmitted()) {
-            error_log('Contact form valid: ' . ($form->isValid() ? 'yes' : 'no'));
-            if ($form->isValid()) {
-                $data = $form->getData();
-                error_log('Form data: ' . json_encode($data));
+            try {
+                $contactEmail = $this->getParameter('app.contact_email');
 
-                try {
-                    $contactEmail = $this->getParameter('app.contact_email');
-                    error_log('Contact email: ' . $contactEmail);
+                $email = (new Email())
+                    ->from($contactEmail)
+                    ->to($contactEmail)
+                    ->replyTo($data['email'])
+                    ->subject($translator->trans('contact.email_subject') . ' - ' . $data['name'])
+                    ->text($data['name'] . ' (' . $data['email'] . '):' . "\n\n" . $data['message'])
+                    ->html('<h3>' . htmlspecialchars($data['name']) . ' (' . htmlspecialchars($data['email']) . ')</h3>' .
+                           '<p>' . nl2br(htmlspecialchars($data['message'])) . '</p>');
 
-                    $email = (new Email())
-                        ->from($contactEmail)
-                        ->to($contactEmail)
-                        ->replyTo($data['email'])
-                        ->subject($translator->trans('contact.email_subject') . ' - ' . $data['name'])
-                        ->text($data['name'] . ' (' . $data['email'] . '):' . "\n\n" . $data['message'])
-                        ->html('<h3>' . htmlspecialchars($data['name']) . ' (' . htmlspecialchars($data['email']) . ')</h3>' .
-                               '<p>' . nl2br(htmlspecialchars($data['message'])) . '</p>');
+                $mailer->send($email);
 
-                    $mailer->send($email);
-                    error_log('Email sent successfully');
+                $this->addFlash('success', $translator->trans('contact.success'));
 
-                    $this->addFlash('success', $translator->trans('contact.success'));
+                return $this->redirectToRoute('app_contact');
 
-                    return $this->redirectToRoute('app_contact');
-
-                } catch (\Exception $e) {
-                    $this->addFlash('error', $translator->trans('contact.error', ['%error%' => $e->getMessage()]));
-                    error_log('Mailer error: ' . $e->getMessage());
-                }
-            } else {
-                $this->addFlash('error', $translator->trans('contact.validation_error'));
-                $errors = [];
-                foreach ($form->getErrors(true) as $error) {
-                    $errors[] = $error->getMessage();
-                }
-                error_log('Form validation errors: ' . implode(', ', $errors));
+            } catch (\Exception $e) {
+                $this->addFlash('error', $translator->trans('contact.error', ['%error%' => $e->getMessage()]));
             }
+        } elseif ($form->isSubmitted()) {
+            $this->addFlash('error', $translator->trans('contact.validation_error'));
         }
 
         return $this->render('contact/index.html.twig', [

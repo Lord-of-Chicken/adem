@@ -1,6 +1,6 @@
 {% extends 'layout/street.html.twig' %}
 
-{% block title %}Contact | {{ site_brand.title }}{% endblock %}
+{% block title %}{{ page.title }} | {{ site_brand.title }}{% endblock %}
 
 {% block street_main %}
 <div class="main main--narrow">
@@ -9,17 +9,14 @@
             <h1 class="section__title section__title--tag">{{ page.title }}</h1>
             <p class="section__intro">{{ page.intro }}</p>
 
-            <div class="card">
-                {{ form_start(form, {'attr': {'class': 'form'}}) }}
-
-                {{ form_row(form.name, { row_attr: { class: 'form__field' }, attr: { class: 'form__input' } }) }}
-                {{ form_row(form.email, { row_attr: { class: 'form__field' }, attr: { class: 'form__input' } }) }}
-                {{ form_row(form.message, { row_attr: { class: 'form__field' }, attr: { class: 'form__input', 'rows': '6' } }) }}
-
-                <button type="submit" class="btn btn--primary">{{ page.submit }}</button>
-
-                {{ form_end(form) }}
-            </div>
+            {{ form_start(form, {'attr': {'class': 'form form--stack'}}) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.email) }}
+                {{ form_row(form.message, { attr: { rows: 6 } }) }}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn--primary btn--full">{{ page.submit }}</button>
+                </div>
+            {{ form_end(form) }}
         </div>
     </section>
 </div>

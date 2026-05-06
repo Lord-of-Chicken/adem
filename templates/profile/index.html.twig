@@ -11,21 +11,23 @@
             <div class="card">
                 <h2 class="card__title">{{ page.info_title }}</h2>
                 <dl class="profile-info">
-                    <dt>{{ 'profile.first_name'|trans }} :</dt>
-                    <dd>{{ app.user.firstName }}</dd>
+                    <div class="profile-info-row">
+                        <dt>{{ 'profile.first_name'|trans }} :</dt>
+                        <dd>{{ app.user.firstName }}</dd>
+                    </div>
+                    <div class="profile-info-row">
+                        <dt>{{ 'profile.last_name'|trans }} :</dt>
+                        <dd>{{ app.user.lastName }}</dd>
+                    </div>
+                    <div class="profile-info-row">
+                        <dt>{{ 'profile.address'|trans }} :</dt>
+                        <dd>{{ app.user.address }}</dd>
+                    </div>
+                    <div class="profile-info-row">
+                        <dt>{{ 'profile.email'|trans }} :</dt>
+                        <dd>{{ app.user.email }}</dd>
+                    </div>
                 </dl>
-                <div class="profile-info-row">
-                    <dt>{{ 'profile.last_name'|trans }} :</dt>
-                    <dd>{{ app.user.lastName }}</dd>
-                </div>
-                <div class="profile-info-row">
-                    <dt>{{ 'profile.address'|trans }} :</dt>
-                    <dd>{{ app.user.address }}</dd>
-                </div>
-                <div class="profile-info-row">
-                    <dt>{{ 'profile.email'|trans }} :</dt>
-                    <dd>{{ app.user.email }}</dd>
-                </div>
                 
                 <h3 class="card__title mt-2">{{ page.notifications_title }}</h3>
                 <div class="profile-info-row">

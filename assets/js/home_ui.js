@@ -90,7 +90,7 @@ function showCartSuccessPopup() {
     modal.showModal();
 }
 
-export function addToCart(tierId) {
+export function addToCart(tierId, btn = null) {
     const csrfToken = document.getElementById('global-csrf-token').value;
     const translations = getUiTranslations();
     const formData = new FormData();
@@ -113,6 +113,8 @@ export function addToCart(tierId) {
     const donor = document.getElementById('donor-' + tierId);
     if (donor) formData.append('donor_name', donor.value);
 
+    if (btn) btn.classList.add('btn--loading');
+
     fetch('/panier/ajouter', {
         method: 'POST',
         body: formData,
@@ -128,7 +130,8 @@ export function addToCart(tierId) {
             showToast(data.message || (translations.add_error || 'Error adding to cart'), 'error');
         }
     })
-    .catch(() => showToast(translations.technical_error || 'Technical error.', 'error'));
+    .catch(() => showToast(translations.technical_error || 'Technical error.', 'error'))
+    .finally(() => { if (btn) btn.classList.remove('btn--loading'); });
 }
 
 document.addEventListener('DOMContentLoaded', () => {

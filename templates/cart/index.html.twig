@@ -12,7 +12,11 @@
             <h1 class="section__title section__title--tag">{{ page.title }}</h1>
 
             {% if lines is empty %}
-                <p class="section__hint">{{ 'cart.empty'|trans }} <a href="{{ path('app_home') }}#offres">{{ page.empty_link }}</a></p>
+                <div class="cart-empty">
+                    <span class="cart-empty__icon">🛒</span>
+                    <p class="cart-empty__text">{{ 'cart.empty'|trans }}</p>
+                    <a href="{{ path('app_home') }}#offres" class="btn btn--primary">{{ page.empty_link }}</a>
+                </div>
             {% else %}
                 <ul class="cart-list">
                     {% for row in lines %}

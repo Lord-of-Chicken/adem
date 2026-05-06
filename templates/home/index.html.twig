@@ -111,7 +111,7 @@
                                 <button type="button" class="qty-btn" id="plus-{{ tier.id }}" onclick="updateQty('{{ tier.id }}', 1, {{ tier.min_qty }}, {{ tier.max_qty }})">+</button>
                             </div>
                             <input type="hidden" id="qty-{{ tier.id }}" value="{{ tier.min_qty }}">
-                            <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}')">{{ 'home.add_to_cart'|trans }}</button>
+                            <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}', this)">{{ 'home.add_to_cart'|trans }}</button>
                         </div>
                     </article>
                     {% endif %}
@@ -146,7 +146,7 @@
                                 <label class="form__label">{{ 'home.displayed_name'|trans }} :</label>
                                 <input type="text" id="donor-{{ tier.id }}" class="form__input form__input--don-libre" placeholder="{{ 'home.name_placeholder'|trans }}">
                             </div>
-                            <button type="button" class="btn btn--primary btn--small mt-0-5" onclick="addToCart('{{ tier.id }}')">
+                            <button type="button" class="btn btn--primary btn--small mt-1" onclick="addToCart('{{ tier.id }}', this)">
                                 {{ 'home.add_to_cart'|trans }}
                             </button>
                         </div>
@@ -169,7 +169,7 @@
                     <label class="form__label mt-1">{{ 'home.displayed_name'|trans }} :</label>
                     <input type="text" id="donor-free_donation" class="form__input form__input--don-libre" placeholder="{{ 'home.anonymous'|trans }}">
 
-                    <button type="button" class="btn btn--primary btn--small mt-1" onclick="addToCart('free_donation')">
+                    <button type="button" class="btn btn--primary btn--small mt-1" onclick="addToCart('free_donation', this)">
                         {{ 'home.add_to_cart'|trans }}
                     </button>
                 </div>

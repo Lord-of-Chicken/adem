@@ -15,7 +15,6 @@ class FaqController extends AbstractController
         return $this->render('faq/index.html.twig', [
             'page' => [
                 'title' => $translator->trans('faq.title'),
-                'intro' => $translator->trans('faq.meta_description'),
             ],
         ]);
     }

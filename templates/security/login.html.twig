@@ -1,6 +1,6 @@
 {% extends 'layout/street.html.twig' %}
 
-{% block title %}Connexion | {{ site_brand.title }}{% endblock %}
+{% block title %}{{ 'nav.login'|trans }} | {{ site_brand.title }}{% endblock %}
 
 {% block street_main %}
 <div class="main main--narrow">
@@ -13,8 +13,7 @@
                 <div class="flash flash--danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}
 
-            <div class="card">
-                <form class="form" method="post" action="{{ path('app_login') }}">
+            <form class="form form--stack" method="post" action="{{ path('app_login') }}">
                 <div class="form__field">
                     <label class="form__label" for="inputEmail">E-mail</label>
                     <input
@@ -40,11 +39,15 @@
                     >
                 </div>
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                <button class="btn btn--primary" type="submit">{{ page.submit }}</button>
+                <div class="form-actions">
+                    <button class="btn btn--primary btn--full" type="submit">{{ page.submit }}</button>
+                </div>
             </form>
+
+            <div class="form-hints">
+                <p class="section__hint"><a href="{{ path('app_forgot_password_request') }}">{{ page.forgot_link }}</a></p>
+                <p class="section__hint">{{ page.register_hint }} <a href="{{ path('app_register') }}">{{ page.register_link }}</a></p>
             </div>
-            <p class="section__hint mt-1"><a href="{{ path('app_forgot_password_request') }}">{{ page.forgot_link }}</a></p>
-            <p class="section__hint">{{ page.register_hint }} <a href="{{ path('app_register') }}">{{ page.register_link }}</a></p>
         </div>
     </section>
 </div>

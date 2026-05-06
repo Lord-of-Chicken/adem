@@ -1,12 +1,12 @@
 # Homepage
-home.title: "Steegje van Adem"
+home.title: "Ruelle d'Adem"
 home.subtitle: "Verander uw straat in een bloeiende tuin"
 home.cta: "Hoeveel bloemen van €1, bloembakken of pallets wilt u aanbieden?"
 home.offres: "Ons aanbod"
 home.medias_intro: "Enkele beelden van het steegje — de projectlocatie, zoals we die dagelijks beleven."
 home.offres_title: "Steunpakketten"
 home.vip_title: "V.I.P. formules"
-home.vip_subtitle: "Met deze formule kunt u uw bloembak of pallet personaliseren. Een manier om indruk te maken op uw vrienden wanneer u hen het steegje van Adem toont, of wanneer ze uw naam daar ontdekken."
+home.vip_subtitle: "Met deze formule kunt u uw bloembak of pallet personaliseren. Een manier om indruk te maken op uw vrienden wanneer u hen la Ruelle d'Adem toont, of wanneer ze uw naam daar ontdekken."
 home.don_libre_title: "Vrije donatie"
 home.don_libre_intro: "U kunt ook bijdragen door een bedrag naar keuze te geven. En als u dat wenst, kunnen we uw naam op deze site vermelden."
 home.gallery_title: "Galerij"
@@ -14,8 +14,8 @@ home.newsletter_title: "Blijf op de hoogte"
 home.newsletter_intro: "WILT U HET AANTAL BLOEMEN, BLOEMBAKKEN EN PALLETS KENNEN?\nWeet of er een feestelijk, recreatief of educatief evenement plaatsvindt in het steegje."
 home.help_title: "ADEM HEEFT UW HULP NODIG"
 home.help_content: "Honderd meter steeg om te versieren, te beplanten en te onderhouden, dat kost geld. Hulp van ouders, vrienden en gemeentelijke subsidies is niet genoeg."
-home.help_vip: "Daarom biedt Adem u de mogelijkheid om begonia's, bloembakken of pallets voor zijn steegje te schenken*. In V.I.P. formule kunt u ze zelfs personaliseren."
-home.help_note: "De aanduidingen van begonia's, bloembakken en pallets (niet-VIP) zijn uitsluitend informatief. De ingezamelde middelen kunnen worden gebruikt voor de aankoop van andere bloemen en planten of voor de decoratie en het onderhoud van het Steegje van Adem."
+home.help_vip: "Daarom biedt Adem u de mogelijkheid om begonia's, bloembakken of pallets voor la Ruelle d'Adem te schenken*. In V.I.P. formule kunt u ze zelfs personaliseren."
+home.help_note: "De aanduidingen van begonia's, bloembakken en pallets (niet-VIP) zijn uitsluitend informatief. De ingezamelde middelen kunnen worden gebruikt voor de aankoop van andere bloemen en planten of voor de decoratie en het onderhoud van la Ruelle d'Adem."
 home.piece: "stuk"
 home.piece_plural: "stuks"
 
@@ -35,9 +35,9 @@ nav.main_navigation: "Hoofdnavigatie"
 
 # About
 about.coming_soon: "Inhoud binnenkort beschikbaar..."
-about.meta_description: "Ontdek het project Steegje van Adem: onze missie, transparantie en hoe we middelen gebruiken om de straat in een bloeiende tuin te veranderen."
+about.meta_description: "Ontdek het project Ruelle d'Adem: onze missie, transparantie en hoe we middelen gebruiken om de straat in een bloeiende tuin te veranderen."
 about.project_title: "Het Project"
-about.project_description: "Het Steegje van Adem is een stedelijk transformatieproject gericht op de verfraaiing van onze wijk door een groene en gastvrije ruimte te creëren. Honderd meter steeg om te versieren, te beplanten en te onderhouden ten bate van iedereen."
+about.project_description: "La Ruelle d'Adem is een stedelijk transformatieproject gericht op de verfraaiing van onze wijk door een groene en gastvrije ruimte te creëren. Honderd meter steeg om te versieren, te beplanten en te onderhouden ten bate van iedereen."
 about.mission_title: "Onze Missie"
 about.mission_description: "Een gewone stedelijke ruimte omvormen tot een plek van leven, delen en schoonheid. Wij geloven dat elke geplante bloem een gebaar van hoop en gemeenschap is."
 about.transparency_title: "Transparantie"
@@ -47,7 +47,7 @@ about.contact_description: "Voor vragen over het project kunt u contact met ons 
 
 # FAQ
 faq.title: "FAQ - Veelgestelde vragen"
-faq.meta_description: "Vind antwoorden op de meest gestelde vragen over het project Steegje van Adem: deelname, gebruik van middelen, levering en meer."
+faq.meta_description: "Vind antwoorden op de meest gestelde vragen over het project Ruelle d'Adem: deelname, gebruik van middelen, levering en meer."
 faq.q1.question: "Hoe kan ik deelnemen aan het project?"
 faq.q1.answer: "U kunt deelnemen door bloemen, bloembakken of pallets te schenken via onze startpagina. Elke bijdrage helpt het steegje om te vormen tot een groene en gastvrije ruimte."
 faq.q2.question: "Waar gaat het ingezamelde geld naartoe?"
@@ -55,7 +55,7 @@ faq.q2.answer: "100% van de ingezamelde middelen wordt gebruikt voor de aankoop 
 faq.q3.question: "Kan ik mijn bijdrage personaliseren?"
 faq.q3.answer: "Ja! Met onze V.I.P. formules kunt u uw bloembak of pallet personaliseren. Uw naam wordt op de site vermeld als dank voor uw steun."
 faq.q4.question: "Hoe ontvang ik mijn bloemen?"
-faq.q4.answer: "Bloemen en bloembakken worden rechtstreeks in het Steegje van Adem geplaatst. U kunt ze komen bewonderen en uw bijdrage in de praktijk zien."
+faq.q4.answer: "Bloemen en bloembakken worden rechtstreeks in la Ruelle d'Adem geplaatst. U kunt ze komen bewonderen en uw bijdrage in de praktijk zien."
 faq.q5.question: "Is het project veilig?"
 faq.q5.answer: "Ja, betalingen zijn beveiligd via Stripe. Wij slaan geen bankgegevens op en alle transacties zijn versleuteld."
 
@@ -90,7 +90,7 @@ cart.currency_symbol: "€"
 # Site
 site.tagline: "Geef Adem een bloem"
 site.construction: "SITE IN AANBOUW - WERK IN UITVOERING"
-site.default_description: "Steegje van Adem - Verander uw straat in een bloeiende tuin. Steun het project door bloemen, bloembakken of pallets te schenken om het steegje te versieren en te onderhouden."
+site.default_description: "Ruelle d'Adem - Verander uw straat in een bloeiende tuin. Steun het project door bloemen, bloembakken of pallets te schenken om het steegje te versieren en te onderhouden."
 
 # JavaScript translations
 js.cart.title: "Toegevoegd aan winkelwagen! 🌸"
