@@ -887,6 +887,7 @@ body.mobile-menu-open {
     position: relative;
     display: inline-block;
     padding: 0.15rem 0.5rem 0.15rem 0;
+    z-index: 0;
 }
 
 .section__title--tag::after {
