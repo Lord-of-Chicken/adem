@@ -102,11 +102,7 @@ function showCartSuccessPopup() {
 }
 
 export function addToCart(tierId, btn = null) {
-    const csrfToken = document.getElementById('global-csrf-token').value;
     const translations = getUiTranslations();
-    const formData = new FormData();
-    formData.append('_token', csrfToken);
-    formData.append('tier_id', tierId);
 
     if (tierId === 'free_donation') {
         const amount = document.getElementById('free-amount').value;
@@ -114,35 +110,45 @@ export function addToCart(tierId, btn = null) {
             showToast(translations.invalid_amount || 'Please enter a valid amount.', 'error');
             return;
         }
-        formData.append('amount', amount);
-        formData.append('quantity', 1);
-    } else {
-        const qty = document.getElementById('qty-' + tierId).value;
-        formData.append('quantity', qty);
     }
-
-    const donor = document.getElementById('donor-' + tierId);
-    if (donor) formData.append('donor_name', donor.value);
 
     if (btn) btn.classList.add('btn--loading');
 
-    fetch('/panier/ajouter', {
-        method: 'POST',
-        body: formData,
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            updateCartBadges(data.cartCount);
-            showCartSuccessPopup();
-            if (tierId === 'free_donation') document.getElementById('free-amount').value = '';
-        } else {
-            showToast(data.message || (translations.add_error || 'Error adding to cart'), 'error');
-        }
-    })
-    .catch(() => showToast(translations.technical_error || 'Technical error.', 'error'))
-    .finally(() => { if (btn) btn.classList.remove('btn--loading'); });
+    fetch('/csrf-token?intent=cart_add')
+        .then(res => res.json())
+        .then(({ token }) => {
+            const formData = new FormData();
+            formData.append('_token', token);
+            formData.append('tier_id', tierId);
+
+            if (tierId === 'free_donation') {
+                formData.append('amount', document.getElementById('free-amount').value);
+                formData.append('quantity', 1);
+            } else {
+                formData.append('quantity', document.getElementById('qty-' + tierId).value);
+            }
+
+            const donor = document.getElementById('donor-' + tierId);
+            if (donor) formData.append('donor_name', donor.value);
+
+            return fetch('/panier/ajouter', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                updateCartBadges(data.cartCount);
+                showCartSuccessPopup();
+                if (tierId === 'free_donation') document.getElementById('free-amount').value = '';
+            } else {
+                showToast(data.message || (translations.add_error || 'Error adding to cart'), 'error');
+            }
+        })
+        .catch(() => showToast(translations.technical_error || 'Technical error.', 'error'))
+        .finally(() => { if (btn) btn.classList.remove('btn--loading'); });
 }
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -35,8 +35,6 @@
 {% endblock %}
 
 {% block street_main %}
-    {# Jeton de sécurité global pour les appels AJAX #}
-    <input type="hidden" id="global-csrf-token" value="{{ csrf_token('cart_add') }}">
     <input type="hidden" id="global-cart-url" value="{{ path('app_cart_index') }}">
 
 

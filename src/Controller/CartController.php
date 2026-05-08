@@ -8,11 +8,21 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class CartController extends AbstractController
 {
+    #[Route('/csrf-token', name: 'app_csrf_token', methods: ['GET'])]
+    public function csrfToken(Request $request, CsrfTokenManagerInterface $csrfTokenManager): Response
+    {
+        $intent = $request->query->get('intent', 'cart_add');
+        $response = $this->json(['token' => $csrfTokenManager->getToken($intent)->getValue()]);
+        $response->headers->set('Cache-Control', 'no-store');
+        return $response;
+    }
+
     #[Route('/panier', name: 'app_cart_index', methods: ['GET'])]
     public function index(CartService $cart, ParticipationCatalog $catalog, TranslatorInterface $translator): Response
     {
