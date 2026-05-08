@@ -1,0 +1,114 @@
+{
+    "app": {
+        "path": "\/assets\/app-nNwV51r.js",
+        "type": "js"
+    },
+    "\/assets\/stimulus_bootstrap.js": {
+        "path": "\/assets\/stimulus_bootstrap-XwB0Xeh.js",
+        "type": "js"
+    },
+    "\/assets\/@symfony\/stimulus-bundle\/controllers.js": {
+        "path": "\/assets\/@symfony\/stimulus-bundle\/controllers-CETBusn.js",
+        "type": "js"
+    },
+    "\/assets\/@symfony\/ux-cropperjs\/controller.js": {
+        "path": "\/assets\/@symfony\/ux-cropperjs\/controller-AoFFWvH.js",
+        "type": "js"
+    },
+    "\/assets\/@symfony\/ux-cropperjs\/style.min.css": {
+        "path": "\/assets\/@symfony\/ux-cropperjs\/style.min-B4noom-.css",
+        "type": "css"
+    },
+    "\/assets\/@symfony\/ux-turbo\/turbo_controller.js": {
+        "path": "\/assets\/@symfony\/ux-turbo\/turbo_controller-bFCo5ub.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/image_editor_controller.js": {
+        "path": "\/assets\/controllers\/image_editor_controller-8hxp0Tt.js",
+        "type": "js"
+    },
+    "\/assets\/js\/toast.js": {
+        "path": "\/assets\/js\/toast-zzpFbZg.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/sortable-carousel_controller.js": {
+        "path": "\/assets\/controllers\/sortable-carousel_controller-izEfkvt.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/street_tilt_controller.js": {
+        "path": "\/assets\/controllers\/street_tilt_controller-yScAbB1.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/translations_editor_controller.js": {
+        "path": "\/assets\/controllers\/translations_editor_controller-qMZpLcP.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/cropper_editor_controller.js": {
+        "path": "\/assets\/controllers\/cropper_editor_controller-fV0TBUB.js",
+        "type": "js"
+    },
+    "\/assets\/js\/layout.js": {
+        "path": "\/assets\/js\/layout-5IVIEsF.js",
+        "type": "js"
+    },
+    "\/assets\/js\/layout-metrics.js": {
+        "path": "\/assets\/js\/layout-metrics-qZtkfck.js",
+        "type": "js"
+    },
+    "\/assets\/js\/swiper-init.js": {
+        "path": "\/assets\/js\/swiper-init-p1c7PsH.js",
+        "type": "js"
+    },
+    "\/assets\/js\/cart.js": {
+        "path": "\/assets\/js\/cart-EmINEoR.js",
+        "type": "js"
+    },
+    "\/assets\/js\/confirm-modal.js": {
+        "path": "\/assets\/js\/confirm-modal-MXuRm3a.js",
+        "type": "js"
+    },
+    "\/assets\/js\/admin-media-item-form.js": {
+        "path": "\/assets\/js\/admin-media-item-form-KF3uhOW.js",
+        "type": "js"
+    },
+    "\/assets\/js\/stripe-init.js": {
+        "path": "\/assets\/js\/stripe-init-39W2gtV.js",
+        "type": "js"
+    },
+    "\/assets\/styles\/ruelle.css": {
+        "path": "\/assets\/styles\/ruelle-hVGfD6C.css",
+        "type": "css"
+    },
+    "home": {
+        "path": "\/assets\/js\/home_ui-cBMUJr_.js",
+        "type": "js"
+    },
+    "admin-purchases": {
+        "path": "\/assets\/js\/admin-purchases-faoIMf6.js",
+        "type": "js"
+    },
+    "@hotwired\/stimulus": {
+        "path": "\/assets\/vendor\/@hotwired\/stimulus\/stimulus.index-S4zNcea.js",
+        "type": "js"
+    },
+    "@symfony\/stimulus-bundle": {
+        "path": "\/assets\/@symfony\/stimulus-bundle\/loader-IOzBDLu.js",
+        "type": "js"
+    },
+    "@hotwired\/turbo": {
+        "path": "\/assets\/vendor\/@hotwired\/turbo\/turbo.index-pT15T6h.js",
+        "type": "js"
+    },
+    "cropperjs": {
+        "path": "\/assets\/vendor\/cropperjs\/cropperjs.index-6R8jlh_.js",
+        "type": "js"
+    },
+    "cropperjs\/dist\/cropper.min.css": {
+        "path": "\/assets\/vendor\/cropperjs\/dist\/cropper.min-eGxf6Ez.css",
+        "type": "css"
+    },
+    "sortablejs": {
+        "path": "\/assets\/vendor\/sortablejs\/sortablejs.index-DASx_kr.js",
+        "type": "js"
+    }
+}
