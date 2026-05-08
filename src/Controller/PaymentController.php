@@ -37,64 +37,63 @@ final class PaymentController extends AbstractController
             return $this->redirectToRoute('app_cart_index');
         }
 
-        $lineItems = [];
-        $metadata = [];
-
-        foreach ($lines as $line) {
-            $tier = $this->catalog->require($line['tier_id']);
-
-            // Traduire title_key et detail_key en title et detail
-            $tier['title']  = isset($tier['title_key'])  ? $translator->trans($tier['title_key'])  : ($tier['title']  ?? '');
-            $tier['detail'] = isset($tier['detail_key']) ? $translator->trans($tier['detail_key']) : ($tier['detail'] ?? null);
-            if (isset($tier['price_key'])) {
-                $tier['price'] = $translator->trans($tier['price_key']);
-            }
-            if (isset($tier['price_suffix_key'])) {
-                $tier['price_suffix'] = $translator->trans($tier['price_suffix_key']);
-            }
-
-            if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
-                $unitAmount = $line['custom_price_cents'];
-                $description = $translator->trans('payment.free_donation') . ($line['custom_price_cents'] / 100) . $translator->trans('cart.currency_symbol');
-            } else {
-                $unitAmount = (int) ((float)$tier['unit_price_eur'] * 100);
-                $description = $tier['detail'] ?? null;
-            }
-
-            $itemMetadata = [
-                'tier_id' => $line['tier_id'],
-                'tier_title' => $tier['title'],
-            ];
-
-            if (!empty($line['donor_name'])) {
-                $itemMetadata['donor_name'] = $line['donor_name'];
-                $description .= $translator->trans('payment.donation_of') . $line['donor_name'];
-            }
-
-            if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
-                $itemMetadata['custom_price_eur'] = number_format($line['custom_price_cents'] / 100, 2, '.', '');
-            }
-
-            $lineItems[] = [
-                'price_data' => [
-                    'currency'     => 'eur',
-                    'product_data' => [
-                        'name' => $tier['title'],
-                        'description' => $description,
-                        'metadata' => $itemMetadata,
-                    ],
-                    'unit_amount'  => $unitAmount,
-                ],
-                'quantity' => $line['quantity'],
-            ];
-        }
-
-        if ($user) {
-            $metadata['user_id'] = $user->getId();
-            $metadata['user_email'] = $user->getEmail();
-        }
-
         try {
+            $lineItems = [];
+            $metadata = [];
+
+            foreach ($lines as $line) {
+                $tier = $this->catalog->require($line['tier_id']);
+
+                $tier['title']  = isset($tier['title_key'])  ? $translator->trans($tier['title_key'])  : ($tier['title']  ?? '');
+                $tier['detail'] = isset($tier['detail_key']) ? $translator->trans($tier['detail_key']) : ($tier['detail'] ?? null);
+                if (isset($tier['price_key'])) {
+                    $tier['price'] = $translator->trans($tier['price_key']);
+                }
+                if (isset($tier['price_suffix_key'])) {
+                    $tier['price_suffix'] = $translator->trans($tier['price_suffix_key']);
+                }
+
+                if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
+                    $unitAmount = $line['custom_price_cents'];
+                    $description = $translator->trans('payment.free_donation') . ($line['custom_price_cents'] / 100) . $translator->trans('cart.currency_symbol');
+                } else {
+                    $unitAmount = (int) ((float)$tier['unit_price_eur'] * 100);
+                    $description = $tier['detail'] ?? '';
+                }
+
+                $itemMetadata = [
+                    'tier_id' => $line['tier_id'],
+                    'tier_title' => $tier['title'],
+                ];
+
+                if (!empty($line['donor_name'])) {
+                    $itemMetadata['donor_name'] = $line['donor_name'];
+                    $description .= $translator->trans('payment.donation_of') . $line['donor_name'];
+                }
+
+                if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
+                    $itemMetadata['custom_price_eur'] = number_format($line['custom_price_cents'] / 100, 2, '.', '');
+                }
+
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency'     => 'eur',
+                        'product_data' => [
+                            'name' => $tier['title'],
+                            'description' => $description ?: null,
+                            'metadata' => $itemMetadata,
+                        ],
+                        'unit_amount'  => $unitAmount,
+                    ],
+                    'quantity' => $line['quantity'],
+                ];
+            }
+
+            if ($user) {
+                $metadata['user_id'] = $user->getId();
+                $metadata['user_email'] = $user->getEmail();
+            }
+
             $successUrl = $this->generateUrl(
                 'app_payment_success',
                 ['session_id' => '{CHECKOUT_SESSION_ID}'],

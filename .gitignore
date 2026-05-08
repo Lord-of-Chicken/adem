@@ -18,6 +18,10 @@
 .env.*.local
 .env.production
 .env.local.php
+.env.*.php
+
+# Fichiers Claude Code locaux
+.claude/settings.local.json
 
 # Fichiers temporaires
 /tmp/
