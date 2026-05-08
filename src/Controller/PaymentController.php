@@ -3,11 +3,11 @@
 namespace App\Controller;
 
 use App\Cart\CartService;
-use App\Participation\ParticipationCatalog;
-use App\Service\StripePaymentService;
+use App\Entity\Order;
 use App\Entity\User;
-use Stripe\Stripe;
-use Stripe\Checkout\Session;
+use App\Participation\ParticipationCatalog;
+use App\Repository\OrderRepository;
+use App\Service\StripePaymentService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +21,7 @@ final class PaymentController extends AbstractController
         private readonly CartService $cartService,
         private readonly ParticipationCatalog $catalog,
         private readonly StripePaymentService $stripePaymentService,
+        private readonly OrderRepository $orderRepository,
     ) {
     }
 
@@ -112,6 +113,14 @@ final class PaymentController extends AbstractController
                 $successUrl,
                 $cancelUrl
             );
+
+            $order = (new Order())
+                ->setStripeCheckoutSessionId($checkoutSession->id)
+                ->setTotalCents($this->cartService->totalCents($this->catalog))
+                ->setCartData($this->cartService->getLines())
+                ->setUser($user);
+
+            $this->orderRepository->save($order, flush: true);
 
             return $this->redirect($checkoutSession->url, 303);
 
