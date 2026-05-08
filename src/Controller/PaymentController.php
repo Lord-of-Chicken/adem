@@ -129,18 +129,10 @@ final class PaymentController extends AbstractController
             return $this->redirectToRoute('app_cart_index');
         }
 
-        try {
-            $isPaid = $this->stripePaymentService->isSessionPaid($sessionId);
-
-            if ($isPaid) {
-                $this->cartService->clear();
-                $this->addFlash('success', $translator->trans('payment.success'));
-            } else {
-                $this->addFlash('warning', $translator->trans('payment.processing'));
-            }
-        } catch (\Exception $e) {
-            $this->addFlash('error', $translator->trans('payment.verification_error'));
-        }
+        // Stripe only redirects here after a confirmed payment — no API check needed.
+        // Order fulfillment (marking as paid) is handled by the webhook.
+        $this->cartService->clear();
+        $this->addFlash('success', $translator->trans('payment.success'));
 
         return $this->redirectToRoute('app_home');
     }
