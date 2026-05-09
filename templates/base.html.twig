@@ -48,10 +48,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Permanent+Marker&family=Rubik:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
-    {% if not app.request.pathInfo starts with '/admin' %}
     {% include '_partials/critical_css.html.twig' %}
     {% block importmap %}{{ importmap('app') }}{% endblock %}
-    {% endif %}
     {% block stylesheets %}
     {% endblock %}
     {% block javascripts %}
