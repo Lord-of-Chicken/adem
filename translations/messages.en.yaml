@@ -29,21 +29,40 @@ nav.login: "Login"
 nav.cart: "Cart"
 nav.about: "Who is Adem?"
 nav.faq: "FAQ"
+nav.press: "Press"
 nav.admin: "Admin"
 nav.menu: "Menu"
 nav.main_navigation: "Main navigation"
 
 # About
-about.coming_soon: "Content coming soon..."
-about.meta_description: "Discover the Ruelle d'Adem project: who Adem is, his mission, and how the funds are used to transform this corner of the street into a living garden."
-about.project_title: "The Project"
-about.project_description: "La Ruelle d'Adem is a hundred metres of street to transform into a living garden. A neighbourhood project, carried by Adem and everyone around him, to turn this corner of the city into a green, joyful and shared space."
-about.mission_title: "Our Mission"
-about.mission_description: "Turn an ordinary urban space into a place of life, sharing and beauty. Every flower planted is a gesture of hope — and community."
-about.transparency_title: "Transparency"
-about.transparency_description: "Every euro counts and every contribution is tracked. The collected funds go towards flowers, planters, pallets and the upkeep of the alley — nothing else."
-about.contact_title: "Contact"
-about.contact_description: "Got a question about the project? Feel free to write to us via the contact form."
+about.meta_description: "Discover the story of Adem, a young boy from Uccle who transformed his alley into a living garden, twice named Bruxellois de l'Année."
+about.who_title: "QUI EST ADEM ?"
+about.section_2022_title: "2022. NAISSANCE DE LA RUELLE D'ADEM"
+about.section_2022_text: |-
+  Du haut de ses sept ans, aidé par ses parents, Adem s'amuse. Il décore sa façade. Il plante. Bricole. Imagine. Crée. Peint. Fabrique des nichoirs et des mangeoires pour les nombreux oiseaux de la ruelle. Résultat, il décroche un premier prix du concours "Uccle en Fleurs". Le magazine communal lui consacre un article. Le blog "Tram 51" et d'autres également. L'hebdomadaire "Le Vif" lui consacre une pleine page et titre "C'est beau comme la ruelle d'Adem.". C'en est fini du "Chemin des Roses", place à "La ruelle d'Adem".
+about.section_expo_title: "PREMIÈRE EXPO"
+about.section_expo_text: |-
+  L'artiste Yorgo (Yorgoland) le remarque. Il apprécie l'originalité de ces nichoirs fabriqués au départ de "déchets", soit des diverses choses qu'Adem trouve sur les trottoirs ou achète en brocantes. En septembre, Yorgo et le collectif BrAMS invitent Adem à exposer en compagnie d'artistes reconnus. Pascal Bernier, Fabio Denker, JPMDR, Serge Vankerck, Didier Engels, Pascal Duquenne, Denis Meyers sont du nombre. Il y rencontre Elvis Pompilio qui l'invite à visiter son atelier. Nombre d'artistes lui achètent un nichoir. Des visiteurs également. Tous l'encouragent à persévérer.
+about.section_2023_title: "2023 PROLONGATION DE LA RUELLE"
+about.section_2023_text: |-
+  Boosté par ces encouragements, Adem veut à tout prix prolonger sa ruelle. À tout prix, car les choses ont un coût. Une demande de subside est introduite et obtenue. Les mille euros reçus couvrent à peine la moitié des frais. Qu'importe. On prolonge. Papa ponce et maman fleurit. Les jouets qui n'intéressent plus Adem sont mis à contribution et transformés en nichoirs. Ce qui lui fera dire plus tard "Ma ruelle, c'est un peu toute ma vie". Fin de l'automne, la ruelle a grandi de trente mètres.
+about.section_expos_title: "LES EXPOS"
+about.section_expos_text: |-
+  "Meet my Arts - Parcours d'artistes - Uccle" attire nombre de visiteurs et popularise la ruelle. Vu l'étonnement qu'il provoque, Adem est à nouveau invité à une expo du collectif BrAMS. Ses nichoirs sur le thème des bananes ne passent pas inaperçus et prennent place à côté des œuvres de Didier Plash, Lou Van T Riet, Jean Pol Lejeune, Stéphane Sola et de tant d'autres. Rebelotte, les nichoirs d'Adem se vendent comme des petits pains. Les artistes en sont fans. Motivé. Gonflé à bloc, encouragé par les riverains, Adem est plus que jamais décidé à poursuivre son chemin, pardon sa ruelle.
+about.section_2024_title: "2024 UN DÉFI INSENSÉ"
+about.section_2024_text: |-
+  Finies les expos. Place aux dépenses. En compagnie de ses financiers, pardon, de ses parents, Adem veut gagner son défi. Il veut étendre sa ruelle de la rue de la Fauvette jusqu'à la chaussée d'Alsemberg. Soit une centaine de mètres. Le subside est dépensé. La recette des ventes de ses nichoirs aussi. Il faut acheter ou trouver des dizaines de palettes, des jardinières, des centaines de fleurs. Il faut aussi de nouvelles machines, un système d'arrosage plus performant. Impossible de tout acheter. Il faut bricoler mais la ruelle s'industrialise. La presse s'intéresse de plus en plus à ce petit phénomène. Voilà qui stimule tout autant que les passants et visiteurs qui y flânent, émerveillés de la quiétude et du charme qui s'en dégage. Certains se rappellent qu'il y a peu encore, la ruelle était infestée de fumeurs de crack, depuis horrifiés d'admettre que leur quiétude à eux ne convenait guère avec l'apparition de passants, de promeneurs, de familles, de curieux, de groupes d'enfants emmenés là par une école ou un autre organisme. Fin de l'été, le pari insensé est quasi gagné, la ruelle est "nettoyée" et parcourt l'entièreté du chemin des roses. Mais il reste du travail.
+about.section_2025_title: |-
+  2025 - ADEM, DOUBLEMENT ÉLU "BRUXELLOIS DE L'ANNÉE"
+about.section_2025_text: |-
+  Il restait du travail. Alors on continue. Plus que jamais aidé par ses parents, Adem crée d'autres nichoirs. D'autres décos. Peaufine. Reçoit des journalistes. Et soudain, dans l'étonnement général, la sentence tombe. Adem est élu "Bruxellois de l'Année". À peine remis de ses émotions et du battage médiatique engendré par cette distinction que le média néerlandophone "BRUZZ" le déclare à son tour "Brusselaar van het jaar". Et, histoire que l'année médiatique se termine en conte de Noël, la VRT invite Adem à prendre part à l'émission "Vrede op Aarde" diffusée le jour de Noël. Il y reçoit le prix de l'émission.
+about.section_2026_title: "2026"
+about.section_2026_text1: "Adem expose les nouveaux nichoirs, cette fois très colorés, en compagnie de Yorgo et Elvis Pompilio (qu'il considère comme ses parrains artistiques) à la Fashion'Art (Dour-Mons)."
+about.section_2026_text2: "Le nouveau subside demandé à la commune est accordé, son montant est vite englouti dans l'achat de matériel, de pots, de plantes et surtout d'un relooking qui rendra la ruelle plus attrayante et verte en hiver."
+about.section_2026_text3: |-
+  Mais les passions d'Adem ont changé. Finis les Minions et les Pokémons. Maintenant ils ornent ses nichoirs, tout comme sa collection de Star Wars. Place à la Nintendo et à la PlayStation. Place à d'autres délires artistiques. Adem rêve plus grand, il imagine des ensembles sur un thème. "Les Rézaux Zoziaux", "Nature en ville", "Les nichoirs Royaux" (fabriqués au départ des breloques et de souvenirs de son défunt grand-père) et d'autres idées qu'il exposera cet été.
+about.section_cta_title: "À VOTRE BON CŒUR MESSIEURS, DAMES... FAIS UNE FLEUR À ADEM !"
+about.section_cta_text: "Adem doit maintenant acheter des fleurs. Beaucoup de fleurs. Des centaines de bégonias, des dizaines de géraniums et d'autres essences. Placer d'autres palettes. Arroser avec du matériel plus professionnel. Faire que la beauté de la ruelle perdure. Voire être à l'initiative d'autres ruelles à créer ailleurs. On peut rêver. Adem aime rêver. Il compte sur toi pour que ses rêves deviennent réalité. Fais une fleur à Adem."
 
 # FAQ
 faq.title: "FAQ - Frequently Asked Questions"
@@ -58,6 +77,8 @@ faq.q4.question: "Where do the flowers go?"
 faq.q4.answer: "Flowers and planters are installed directly in la Ruelle d'Adem. You can come see them in person — and show everyone what you offered!"
 faq.q5.question: "Is the project secure?"
 faq.q5.answer: "Yes, payments are secured via Stripe. We don't store any banking information and all transactions are encrypted."
+faq.q6.question: "POURQUOI DES BÉGONIAS ?"
+faq.q6.answer: "De toutes les fleurs qu'Adem a plantées, ce sont les bégonias qui ont le mieux résisté. Et surtout, ce sont les bégonias qui ont le mieux coloré sa ruelle. Un véritable régal pour les yeux où le(s) bégonia(s) que tu as offert(s) va ou vont trôner en bonne compagnie."
 
 # Cart
 cart.title: "Cart"
@@ -241,6 +262,8 @@ profile.newsletter_unsubscribed: "You are now unsubscribed from the newsletter."
 profile.updated: "Your profile has been updated successfully."
 profile.password_changed: "Your password has been changed successfully."
 profile.password_incorrect: "The current password is incorrect."
+profile.submit: "Save"
+profile.account_deleted: "Your account has been deleted. See you soon!"
 profile.cancel: "Cancel"
 profile.first_name: "First Name"
 profile.last_name: "Last Name"
@@ -324,3 +347,12 @@ stripe.invalid_signature: "Invalid signature"
 stripe.no_matching_order: "No matching order"
 stripe.already_paid: "Already paid"
 stripe.ok: "OK"
+
+# Press
+press.title: "They talk about Adem's Alley"
+press.intro: "TV reports, press articles and official publications: the alley made headlines!"
+press.meta_description: "Full press review about Adem's Alley: video reports, newspaper articles and municipal publications."
+press.category_video: "Video & TV Reports"
+press.category_written: "Written Press"
+press.category_official: "Official Publications"
+press.read_more: "Read more"

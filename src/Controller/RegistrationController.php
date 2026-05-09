@@ -31,11 +31,8 @@ final class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Extraction du mot de passe en clair depuis le champ non-mappé du formulaire
-            $plainPassword = $form->get('plainPassword')->getData();
-            
-            // Hachage sécurisé
-            $user->setPassword($passwordHasher->hashPassword($user, $plainPassword));
+            // Génération d'un mot de passe aléatoire (l'utilisateur le définira via « mot de passe oublié »)
+            $user->setPassword($passwordHasher->hashPassword($user, bin2hex(random_bytes(16))));
             
             // On s'assure que l'utilisateur a au moins le rôle de base
             $user->setRoles(['ROLE_USER']);
@@ -43,9 +40,13 @@ final class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this->addFlash('success', $translator->trans('registration.success'));
+            $message = 'Votre e-mail a bien été enregistré.';
+            if ($user->isNewsletter()) {
+                $message .= ' Vous serez tenu informé des événements à venir.';
+            }
+            $this->addFlash('success', $message);
 
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_register');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -54,8 +55,6 @@ final class RegistrationController extends AbstractController
                 'title' => $translator->trans('registration.title'),
                 'intro' => $translator->trans('registration.intro'),
                 'submit' => $translator->trans('registration.submit'),
-                'hint_prefix' => $translator->trans('registration.hint_prefix'),
-                'hint_link' => $translator->trans('nav.login'),
             ],
         ]);
     }

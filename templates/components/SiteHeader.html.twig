@@ -18,6 +18,7 @@
             {% endfor %}
             <a href="{{ path('app_about') }}" class="site-nav__link{% if app.current_route == 'app_about' %} site-nav__link--active{% endif %}">{{ 'nav.about'|trans }}</a>
             <a href="{{ path('app_faq') }}" class="site-nav__link{% if app.current_route == 'app_faq' %} site-nav__link--active{% endif %}">{{ 'nav.faq'|trans }}</a>
+            <a href="{{ path('app_press') }}" class="site-nav__link{% if app.current_route == 'app_press' %} site-nav__link--active{% endif %}">{{ 'nav.press'|trans }}</a>
             <a href="{{ path('app_contact') }}" class="site-nav__link{% if app.current_route == 'app_contact' %} site-nav__link--active{% endif %}">{{ 'nav.contact'|trans }}</a>
 
             <div class="site-header__account site-header__account--mobile">

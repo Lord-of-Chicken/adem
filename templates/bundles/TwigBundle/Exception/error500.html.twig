@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>500 — Erreur serveur | La Ruelle d'Adem</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Rubik:wght@0,400;0,700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Rubik', sans-serif;
+            background: #fafaf8;
+            color: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .error-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,.08);
+            padding: 3rem 2.5rem;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+        }
+        .error-code {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 6rem;
+            line-height: 1;
+            color: #ffd700;
+            margin-bottom: .5rem;
+        }
+        .error-emoji { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+        .error-title {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: .75rem;
+        }
+        .error-text {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        .btn-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            display: inline-block;
+            padding: .75rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Rubik', sans-serif;
+            font-weight: 700;
+            font-size: .95rem;
+            text-decoration: none;
+            transition: opacity .15s;
+        }
+        .btn:hover { opacity: .85; }
+        .btn--primary { background: #ffd700; color: #1a1a1a; }
+        .btn--secondary { background: #f0f0ee; color: #1a1a1a; }
+        .error-footer {
+            margin-top: 2.5rem;
+            font-size: .8rem;
+            color: #999;
+        }
+        .error-footer a { color: #999; }
+    </style>
+</head>
+<body>
+    <div class="error-card">
+        <span class="error-emoji">🔧</span>
+        <div class="error-code">500</div>
+        <h1 class="error-title">Une erreur s'est produite</h1>
+        <p class="error-text">
+            Quelque chose s'est mal passé de notre côté. On est déjà sur le coup !<br>
+            Réessaie dans quelques instants.
+        </p>
+        <div class="btn-group">
+            <a href="/fr" class="btn btn--primary">Retour à l'accueil</a>
+            <a href="mailto:info@ruelledadem.com?subject=Erreur%20500%20sur%20la%20Ruelle%20d%27Adem&body=Bonjour%2C%0A%0AJ%27ai%20rencontr%C3%A9%20une%20erreur%20500%20sur%20le%20site.%0A%0AMerci%20de%20v%C3%A9rifier." class="btn btn--secondary">Signaler à l'admin</a>
+        </div>
+        <p class="error-footer">
+            Si le problème persiste, écris-nous via <a href="/fr/contact">le formulaire de contact</a>.
+        </p>
+    </div>
+</body>
+</html>

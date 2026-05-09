@@ -1,0 +1,75 @@
+{% extends 'layout/street.html.twig' %}
+
+{% block title %}{{ page.title }} | {{ site_brand.title }}{% endblock %}
+
+{% block meta_description %}{{ 'press.meta_description'|trans }}{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "{{ page.title }}",
+        "description": "{{ 'press.meta_description'|trans }}",
+        "mainEntity": {
+            "@type": "Organization",
+            "name": "{{ site_brand.title }}",
+            "url": "{{ app.request.schemeAndHttpHost }}"
+        }
+    }
+    </script>
+{% endblock %}
+
+{% block street_main %}
+<div class="main main--wide">
+    <section class="section section--press">
+        <div class="section__inner">
+            <h1 class="section__title section__title--tag">{{ page.title }}</h1>
+            <p class="section__intro section__intro--muted">{{ page.intro }}</p>
+
+            {% for categoryKey, category in categories %}
+                <div class="press-category" id="press-{{ categoryKey }}">
+                    <h2 class="press-category__title">
+                        {% if categoryKey == 'video' %}
+                            <span class="press-category__icon">📺</span>
+                        {% elseif categoryKey == 'written' %}
+                            <span class="press-category__icon">📰</span>
+                        {% else %}
+                            <span class="press-category__icon">🏛️</span>
+                        {% endif %}
+                        {{ category.title }}
+                    </h2>
+
+                    <div class="press-grid">
+                        {% for item in category.items %}
+                            <article class="press-card press-card--{{ categoryKey }}">
+                                <div class="press-card__image">
+                                    {% if item.image %}
+                                        <img src="{{ asset(item.image) }}" alt="{{ item.title }}" loading="lazy" decoding="async">
+                                    {% elseif item.url %}
+                                        <div class="press-card__placeholder">
+                                            <img src="https://www.google.com/s2/favicons?domain={{ item.url|split('/')[2] }}&sz=64" alt="" class="press-card__favicon" loading="lazy">
+                                            <span class="press-card__placeholder-source">{{ item.source }}</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="press-card__body">
+                                    <span class="press-card__source">{{ item.source }}</span>
+                                    <h3 class="press-card__title">{{ item.title }}</h3>
+                                    {% if item.url %}
+                                        <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer" class="press-card__link">
+                                            {{ 'press.read_more'|trans }}
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}
