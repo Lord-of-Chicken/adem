@@ -38,6 +38,38 @@ final class PressController extends AbstractController
                 'type' => 'tv',
                 'image' => null,
             ],
+            [
+                'category' => 'video',
+                'source' => 'Commune d\'Uccle',
+                'title' => 'Vidéo de la commune d\'Uccle',
+                'url' => 'https://www.facebook.com/watch/?v=297724479667601',
+                'type' => 'tv',
+                'image' => null,
+            ],
+            [
+                'category' => 'video',
+                'source' => 'Commune d\'Uccle',
+                'title' => 'Vidéo Instagram - Commune d\'Uccle',
+                'url' => 'https://www.instagram.com/reels/CyD0oG8L-R8/',
+                'type' => 'tv',
+                'image' => null,
+            ],
+            [
+                'category' => 'video',
+                'source' => 'Bruxellois de l\'année',
+                'title' => 'Remise du prix Bruxellois de l\'année',
+                'url' => 'https://www.instagram.com/reels/DSH6Y9FiG_8/',
+                'type' => 'tv',
+                'image' => null,
+            ],
+            [
+                'category' => 'video',
+                'source' => 'Instagram',
+                'title' => 'Vidéo récente',
+                'url' => 'https://www.instagram.com/reels/DXycO-kIeH6/',
+                'type' => 'tv',
+                'image' => null,
+            ],
             // Articles de la Presse Écrite
             [
                 'category' => 'written',

@@ -3174,8 +3174,8 @@ dialog.cart-success-modal::backdrop {
 
 .section--press .section__intro {
     max-width: none;
-    margin: 0 auto 2.5rem;
-    text-align: center;
+    margin: 0 0 2.5rem;
+    text-align: left;
 }
 
 .main--wide {
