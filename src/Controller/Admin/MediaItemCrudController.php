@@ -1,22 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Entity\MediaItem;
-use App\Repository\MediaItemRepository;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\EntityManagerInterface;
 
 class MediaItemCrudController extends AbstractCrudController
 {
@@ -79,18 +79,16 @@ class MediaItemCrudController extends AbstractCrudController
 
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        /** @var Request $request */
-        $request = $this->getContext()->getRequest();
-        $file = $request->files->get('MediaItem')['file'] ?? null;
+        $request = $this->getContext()?->getRequest();
+        $files = $request?->files->get('MediaItem');
+        $file = is_array($files) ? ($files['file'] ?? null) : null;
 
-        if ($file instanceof UploadedFile) {
-            $fileName = uniqid() . '.' . $file->guessExtension();
-            
-            // Déplacer le fichier vers le répertoire public
+        if ($file instanceof UploadedFile && $entityInstance instanceof MediaItem) {
+            $fileName = uniqid('', true) . '.' . $file->guessExtension();
+
             $destination = $this->getParameter('kernel.project_dir') . '/public/img/ruelle/';
             $file->move($destination, $fileName);
-            
-            // Définir le chemin de l'asset
+
             $entityInstance->setAssetPath('img/ruelle/' . $fileName);
         }
 

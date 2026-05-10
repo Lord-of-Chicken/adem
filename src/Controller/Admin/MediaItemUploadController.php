@@ -1,18 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_ADMIN')]
-class MediaItemUploadController extends AbstractController
+final class MediaItemUploadController extends AbstractController
 {
     private const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
     private const ALLOWED_MIME_TYPES  = ['image/jpeg', 'image/png', 'image/webp'];
@@ -21,13 +24,13 @@ class MediaItemUploadController extends AbstractController
     #[Route('/admin/media-item/upload', name: 'admin_media_item_upload_image', methods: ['POST'])]
     public function uploadImage(Request $request, SluggerInterface $slugger, TranslatorInterface $translator): Response
     {
-        if (!$this->isCsrfTokenValid('media_upload', $request->headers->get('X-CSRF-Token'))) {
+        if (!$this->isCsrfTokenValid('media_upload', (string) $request->headers->get('X-CSRF-Token'))) {
             return new JsonResponse(['error' => $translator->trans('admin.csrf_invalid')], Response::HTTP_FORBIDDEN);
         }
 
         $file = $request->files->get('file');
 
-        if (!$file) {
+        if (!$file instanceof UploadedFile) {
             return new JsonResponse(['error' => $translator->trans('admin.upload_no_file')], Response::HTTP_BAD_REQUEST);
         }
 
@@ -47,7 +50,8 @@ class MediaItemUploadController extends AbstractController
         $safeName  = $slugger->slug($originalName);
         $fileName  = $safeName . '-' . uniqid() . '.' . $extension;
 
-        $destination = $request->server->get('DOCUMENT_ROOT') . '/../assets/img/ruelle';
+        // Use kernel.project_dir to avoid relying on web-server-controlled DOCUMENT_ROOT.
+        $destination = $this->getParameter('kernel.project_dir') . '/public/img/ruelle';
         $file->move($destination, $fileName);
 
         return new JsonResponse([
