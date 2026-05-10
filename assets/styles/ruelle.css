@@ -820,7 +820,7 @@ body.mobile-menu-open {
 .hero__eyebrow {
     margin: 0;
     font-family: var(--font-marker);
-    font-size: clamp(3rem, 9vw, 6rem);
+    font-size: clamp(1.5rem, 4.5vw, 3rem);
     letter-spacing: 0.01em;
     line-height: 1;
     background: linear-gradient(110deg, var(--spray-yellow) 0%, var(--spray-magenta) 50%, var(--spray-cyan) 100%);
