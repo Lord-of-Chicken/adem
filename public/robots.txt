@@ -1,3 +1,7 @@
+# robots.txt pour La Ruelle d'Adem - Version Production
+
+# Utiliser ce fichier quand le site sera en production
+
 # Robots des réseaux sociaux — accès complet obligatoire pour les aperçus
 User-agent: facebookexternalhit
 Allow: /
@@ -12,21 +16,39 @@ User-agent: WhatsApp
 Allow: /
 
 User-agent: *
+Allow: /
 
-# Pages non indexables (utilitaires, session, paiement)
-Disallow: /connexion
-Disallow: /inscription
-Disallow: /deconnexion
-Disallow: /panier
-Disallow: /panier/
-Disallow: /checkout
-Disallow: /payment/
-Disallow: /reset-password
+# Interdire l'accès aux dossiers système
+Disallow: /var/
+Disallow: /vendor/
+Disallow: /src/
+Disallow: /config/
+Disallow: /templates/
+Disallow: /migrations/
+Disallow: /scripts/
+Disallow: /bin/
+Disallow: /.env*
+
+# Interdire l'accès aux pages d'administration
 Disallow: /admin/
-Disallow: /stripe/
+Disallow: /profile/
 
-# Zones techniques
-Disallow: /_profiler/
-Disallow: /_error/
+# Interdire l'accès aux webhooks et APIs
+Disallow: /stripe/webhook
+Disallow: /api/
 
+# Autoriser les pages publiques importantes
+Allow: /$
+Allow: /$
+Allow: /login
+Allow: /register
+Allow: /cart
+Allow: /checkout
+Allow: /payment/success
+Allow: /payment/cancel
+
+# Sitemap
 Sitemap: https://ruelledadem.com/sitemap.xml
+
+# Délai de crawl
+Crawl-delay: 1
