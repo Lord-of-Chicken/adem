@@ -1,6 +1,19 @@
 # robots.txt pour La Ruelle d'Adem - Version Production
 # Utiliser ce fichier quand le site sera en production
 
+# Robots des réseaux sociaux — accès complet obligatoire pour les aperçus
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
 User-agent: *
 Allow: /
 
@@ -34,7 +47,7 @@ Allow: /payment/success
 Allow: /payment/cancel
 
 # Sitemap
-Sitemap: https://lordofchicken.com/sitemap.xml
+Sitemap: https://ruelledadem.com/sitemap.xml
 
 # Délai de crawl
 Crawl-delay: 1

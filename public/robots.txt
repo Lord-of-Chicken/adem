@@ -1,3 +1,16 @@
+# Robots des réseaux sociaux — accès complet obligatoire pour les aperçus
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
 User-agent: *
 
 # Pages non indexables (utilitaires, session, paiement)
