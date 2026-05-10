@@ -106,6 +106,8 @@ cart.clear_confirm_btn: "Vider"
 site.tagline: "Fais une fleur à Adem"
 site.construction: "SITE EN CHANTIER - TRAVAUX EN COURS"
 site.default_description: "Ruelle d'Adem — Transformons ta ruelle en un jardin florissant. Soutiens le projet en offrant des fleurs, des jardinières ou des palettes pour décorer et entretenir la ruelle."
+home.meta_description: "C'est là qu'Adem a besoin de toi ! Offre des bégonias, une jardinière ou une palette pour sa ruelle. Et avec la formule V.I.P., tu peux même laisser ton nom !"
+home.og_description: "Alors qu'il n'avait que 7 ans, Adem décide de décorer sa ruelle, devenue aujourd'hui un lieu touristique. Il s'est vu décerner les titres de « Bruxellois de l'année 2015 » et « Brusselaar van het jaar ». Aidez-le à embellir sa ruelle !"
 
 # JavaScript translations
 js.cart.title: "Ajouté au panier ! 🌸"

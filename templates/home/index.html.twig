@@ -2,7 +2,9 @@
 
 {% block title %}{{ 'home.title'|trans }} | {{ site_brand.title }}{% endblock %}
 
-{% block meta_description %}{{ 'home.subtitle'|trans }} - {{ 'home.help_content'|trans }}{% endblock %}
+{% block meta_description %}{{ 'home.meta_description'|trans }}{% endblock %}
+{% block og_description %}{{ 'home.og_description'|trans }}{% endblock %}
+{% block og_image %}img/Social/og-home-preview.png{% endblock %}
 
 {% block head %}
     {{ parent() }}

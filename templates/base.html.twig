@@ -15,7 +15,11 @@
     <meta property="og:title" content="{% block og_title %}{{ site_brand.title }}{% endblock %}">
     <meta property="og:description" content="{% block og_description %}{{ 'site.default_description'|trans }}{% endblock %}">
     <meta property="og:url" content="{{ app.request.schemeAndHttpHost ~ app.request.pathInfo }}">
-    <meta property="og:image" content="{{ absolute_url(asset(site_brand.logo_asset)) }}">
+    {%- set _og_image_path %}{% block og_image %}{{ site_brand.logo_asset }}{% endblock %}{% endset %}
+    {%- set _og_image = absolute_url(asset(_og_image_path|trim)) %}
+    <meta property="og:image" content="{{ _og_image }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:locale" content="{{ _og_locale_map[_current_locale]|default('fr_FR') }}">
     {% for _loc, _og_loc in _og_locale_map %}{% if _loc != _current_locale %}
     <meta property="og:locale:alternate" content="{{ _og_loc }}">
@@ -23,7 +27,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{% block twitter_title %}{{ site_brand.title }}{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}{{ 'site.default_description'|trans }}{% endblock %}">
-    <meta name="twitter:image" content="{{ absolute_url(asset(site_brand.logo_asset)) }}">
+    <meta name="twitter:image" content="{{ _og_image }}">
     {%- set _route_params = app.request.attributes.get('_route_params')|default({}) %}
     {% if '_locale' in (_route_params|keys) %}
     <link rel="alternate" hreflang="fr" href="{{ url(app.current_route, _route_params|merge({'_locale': 'fr'})) }}">

@@ -112,6 +112,8 @@ cart.currency_symbol: "€"
 site.tagline: "Fais une fleur à Adem"
 site.construction: "SITE UNDER CONSTRUCTION - WORK IN PROGRESS"
 site.default_description: "Ruelle d'Adem — Transform your corner of the street into a flourishing garden. Support the project by offering flowers, planters or pallets to decorate and maintain the alley."
+home.meta_description: "This is where Adem needs you! Offer begonias, a planter or a pallet for his alley. And with the V.I.P. package, you can even leave your name!"
+home.og_description: "At just 7 years old, Adem decided to decorate his alley, which has become a tourist attraction today. He was awarded the titles of \"Bruxellois de l'année 2015\" and \"Brusselaar van het jaar\". Help him beautify his alley!"
 
 # JavaScript translations
 js.cart.title: "Added to cart! 🌸"

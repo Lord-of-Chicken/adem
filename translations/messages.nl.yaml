@@ -112,6 +112,8 @@ cart.currency_symbol: "€"
 site.tagline: "Fais une fleur à Adem"
 site.construction: "SITE IN AANBOUW - WERK IN UITVOERING"
 site.default_description: "Ruelle d'Adem — Verander jouw hoekje van de straat in een bloeiende tuin. Steun het project door bloemen, bloembakken of pallets aan te bieden om het steegje te versieren en te onderhouden."
+home.meta_description: "Dit is waar Adem jou nodig heeft! Bied begonia's, een bloembak of een pallet aan voor zijn steegje. En met de V.I.P.-formule kun je zelfs je naam achterlaten!"
+home.og_description: "Toen hij pas 7 jaar oud was, besloot Adem zijn steegje te versieren, dat vandaag een toeristische trekpleister is geworden. Hij ontving de titels \"Bruxellois de l'année 2015\" en \"Brusselaar van het jaar\". Help hem zijn steegje te verfraaien!"
 
 # JavaScript translations
 js.cart.title: "Toegevoegd aan winkelwagen! 🌸"
