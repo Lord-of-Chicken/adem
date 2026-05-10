@@ -1,20 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\EventListener;
 
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class LocaleListener
 {
-    private string $defaultLocale;
+    private const SUPPORTED_LOCALES = ['en', 'fr', 'nl'];
 
     public function __construct(
-        private RequestStack $requestStack,
-        string $defaultLocale = 'fr'
+        private readonly string $defaultLocale = 'fr',
     ) {
-        $this->defaultLocale = $defaultLocale;
     }
 
     #[AsEventListener(priority: 20)]
@@ -26,12 +25,9 @@ class LocaleListener
             return;
         }
 
-        // Essayer de récupérer la locale depuis la session
-        $locale = $request->getSession()->get('_locale', $this->defaultLocale);
+        $locale = (string) $request->getSession()->get('_locale', $this->defaultLocale);
 
-        // Valider que la locale est supportée
-        $supportedLocales = ['en', 'fr'];
-        if (!in_array($locale, $supportedLocales)) {
+        if (!in_array($locale, self::SUPPORTED_LOCALES, true)) {
             $locale = $this->defaultLocale;
         }
 

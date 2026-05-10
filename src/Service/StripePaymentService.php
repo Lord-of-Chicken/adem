@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use Stripe\Stripe;
@@ -79,8 +81,19 @@ class StripePaymentService
     public function listPaymentIntentsByMetadata(array $metadata, int $limit = 100): array
     {
         Stripe::setApiKey($this->stripeSecretKey);
-        return PaymentIntent::all([
-            'limit' => $limit
-        ])->data;
+        $paymentIntents = PaymentIntent::all(['limit' => $limit])->data;
+
+        if ($metadata === []) {
+            return $paymentIntents;
+        }
+
+        return array_values(array_filter($paymentIntents, static function (PaymentIntent $pi) use ($metadata): bool {
+            foreach ($metadata as $key => $value) {
+                if (!isset($pi->metadata[$key]) || $pi->metadata[$key] !== $value) {
+                    return false;
+                }
+            }
+            return true;
+        }));
     }
 }
