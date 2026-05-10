@@ -3255,14 +3255,14 @@ dialog.cart-success-modal::backdrop {
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    height: 250px;
+    height: 125px;
     background: linear-gradient(135deg, var(--concrete-light) 0%, var(--concrete) 100%);
     border-bottom: var(--outline);
 }
 
 .press-card__favicon {
-    width: 200px;
-    height: 125px;
+    width: 24px;
+    height: 24px;
     object-fit: contain;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
