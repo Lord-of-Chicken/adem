@@ -4,7 +4,7 @@
 
 {% block meta_description %}{{ 'home.meta_description'|trans }}{% endblock %}
 {% block og_description %}{{ 'home.og_description'|trans }}{% endblock %}
-{% block og_image %}img/Social/og-home-preview.png{% endblock %}
+{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.png')) }}{% endblock %}
 
 {% block head %}
     {{ parent() }}
