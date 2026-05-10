@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
 use App\Repository\MediaItemRepository;
@@ -10,11 +12,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: 'app:restore-media-paths')]
-class RestoreMediaItemPathsCommand extends Command
+final class RestoreMediaItemPathsCommand extends Command
 {
     public function __construct(
-        private MediaItemRepository $mediaItemRepository,
-        private EntityManagerInterface $entityManager
+        private readonly MediaItemRepository $mediaItemRepository,
+        private readonly EntityManagerInterface $entityManager,
     ) {
         parent::__construct();
     }
@@ -22,21 +24,23 @@ class RestoreMediaItemPathsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $mediaItems = $this->mediaItemRepository->findAll();
-        
+
         foreach ($mediaItems as $mediaItem) {
             $currentPath = $mediaItem->getAssetPath();
-            
-            // Add 'img/ruelle/' prefix if not present
+            if ($currentPath === null) {
+                continue;
+            }
+
             if (!str_starts_with($currentPath, 'img/ruelle/')) {
                 $newPath = 'img/ruelle/' . $currentPath;
                 $mediaItem->setAssetPath($newPath);
                 $output->writeln("Restored: {$currentPath} -> {$newPath}");
             }
         }
-        
+
         $this->entityManager->flush();
         $output->writeln('Media item paths restored successfully.');
-        
+
         return Command::SUCCESS;
     }
 }
