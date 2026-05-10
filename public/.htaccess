@@ -11,10 +11,23 @@
     Header always set X-Content-Type-Options nosniff
     Header always set X-Frame-Options DENY
     Header always set X-XSS-Protection "1; mode=block"
-    
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(self \"https://js.stripe.com\")"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header always set Cross-Origin-Opener-Policy "same-origin"
+    Header always set Cross-Origin-Resource-Policy "same-site"
+
     # Content Security Policy pour autoriser Stripe, Swiper et autres
-    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' data: https://js.stripe.com https://b.stripecdn.com https://newassets.hcaptcha.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.stripe.com https://merchant-ui-api.stripe.com https://checkout-cookies.link.com https://client.px-cloud.net; frame-src 'self' https://js.stripe.com https://b.stripecdn.com https://newassets.hcaptcha.com;"
+    Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://checkout.stripe.com; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' data: https://js.stripe.com https://b.stripecdn.com https://newassets.hcaptcha.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.stripe.com https://merchant-ui-api.stripe.com https://checkout-cookies.link.com https://client.px-cloud.net; frame-src 'self' https://js.stripe.com https://b.stripecdn.com https://newassets.hcaptcha.com https://checkout.stripe.com;"
 </IfModule>
+
+# Refuser l'accès direct aux fichiers sensibles
+<FilesMatch "^\.(env|env\..+|gitignore|gitattributes|htaccess|user\.ini)$">
+    Require all denied
+</FilesMatch>
+<FilesMatch "(composer\.(json|lock)|package(-lock)?\.json|symfony\.lock|bun\.lock|\.DS_Store)$">
+    Require all denied
+</FilesMatch>
 
 # Cache
 <IfModule mod_expires.c>

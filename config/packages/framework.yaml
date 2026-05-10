@@ -3,7 +3,16 @@ framework:
     secret: '%env(APP_SECRET)%'
 
     # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    session:
+        cookie_secure: auto
+        cookie_samesite: lax
+        cookie_httponly: true
+        gc_maxlifetime: 1440
+
+    # NOTE: Le rate limiter (anonymous_form / password_reset_request / contact_form)
+    # est désactivé tant que `composer require symfony/rate-limiter` n'a pas été lancé.
+    # Voir ContactController et SecurityController : la limitation IP est en place côté code
+    # mais nécessite ce composant pour être active. À installer avant la mise en prod.
 
     #esi: true
     #fragments: true

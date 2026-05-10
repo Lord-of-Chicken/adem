@@ -29,6 +29,8 @@ security:
                 path: /deconnexion
                 target: app_home
                 csrf_token_id: logout
+            # TODO: activer login_throttling (5 tentatives / 1 minute) après
+            # `composer require symfony/rate-limiter`.
 
     # Note: Only the *first* matching rule is applied
     access_control:
