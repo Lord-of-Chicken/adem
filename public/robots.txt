@@ -1,6 +1,6 @@
 # robots.txt pour La Ruelle d'Adem - Version Production
 
-# Robots des réseaux sociaux — accès complet obligatoire pour les aperçus
+# Réseaux sociaux - Accès prioritaire pour les previews
 User-agent: facebookexternalhit
 Allow: /
 
@@ -13,10 +13,14 @@ Allow: /
 User-agent: WhatsApp
 Allow: /
 
-# Règles pour tous les autres robots (Google, Bing, etc.)
-User-agent: *
+User-agent: Pinterest
+Allow: /
 
-# Interdire l'accès aux dossiers système
+# Moteurs de recherche et Agents IA
+User-agent: *
+Allow: /
+
+# Blocage des dossiers système et sensibles
 Disallow: /var/
 Disallow: /vendor/
 Disallow: /src/
@@ -27,23 +31,20 @@ Disallow: /scripts/
 Disallow: /bin/
 Disallow: /.env*
 
-# Interdire l'accès aux pages d'administration
+# Blocage administration et comptes
 Disallow: /admin/
 Disallow: /profile/
-
-# Interdire l'accès aux webhooks et APIs
-Disallow: /stripe/webhook
-Disallow: /api/
-
-# Interdire les pages privées ou sans intérêt SEO
 Disallow: /connexion
 Disallow: /inscription
 Disallow: /deconnexion
+Disallow: /reset-password
+
+# Blocage tunnel de commande et technique
 Disallow: /panier
-Disallow: /panier/
 Disallow: /checkout
 Disallow: /payment/
-Disallow: /reset-password
+Disallow: /stripe/webhook
+Disallow: /api/
 Disallow: /_profiler/
 Disallow: /_error/
 
