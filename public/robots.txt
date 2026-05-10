@@ -1,52 +1,33 @@
-# robots.txt pour La Ruelle d'Adem - Version Production
-
-# Réseaux sociaux - Accès prioritaire pour les previews
 User-agent: facebookexternalhit
-Allow: /
-
 User-agent: Twitterbot
-Allow: /
-
 User-agent: LinkedInBot
-Allow: /
-
 User-agent: WhatsApp
-Allow: /
-
 User-agent: Pinterest
 Allow: /
 
-# Moteurs de recherche et Agents IA
+# Moteurs de recherche - Tout autoriser sauf sensible
 User-agent: *
 Allow: /
-
-# Blocage des dossiers système et sensibles
+# Systèmes et Code
 Disallow: /var/
 Disallow: /vendor/
 Disallow: /src/
 Disallow: /config/
 Disallow: /templates/
-Disallow: /migrations/
-Disallow: /scripts/
 Disallow: /bin/
 Disallow: /.env*
-
-# Blocage administration et comptes
+# Admin et Privé
 Disallow: /admin/
 Disallow: /profile/
 Disallow: /connexion
 Disallow: /inscription
-Disallow: /deconnexion
 Disallow: /reset-password
-
-# Blocage tunnel de commande et technique
+# Tunnel et Technique
 Disallow: /panier
 Disallow: /checkout
 Disallow: /payment/
-Disallow: /stripe/webhook
 Disallow: /api/
 Disallow: /_profiler/
 Disallow: /_error/
 
-# Sitemap
 Sitemap: https://ruelledadem.com/sitemap.xml
