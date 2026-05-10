@@ -4,6 +4,7 @@
 {% block meta_description %}{{ 'contact.intro'|trans }}{% endblock %}
 {% block og_title %}{{ page.title }} | {{ site_brand.title }}{% endblock %}
 {% block og_description %}{{ 'contact.intro'|trans }}{% endblock %}
+{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.png')) }}{% endblock %}
 
 {% block head %}
     {{ parent() }}

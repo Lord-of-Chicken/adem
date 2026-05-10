@@ -3,6 +3,9 @@
 {% block title %}{{ page.title }} | {{ site_brand.title }}{% endblock %}
 
 {% block meta_description %}{{ 'press.meta_description'|trans }}{% endblock %}
+{% block og_title %}{{ page.title }} | {{ site_brand.title }}{% endblock %}
+{% block og_description %}{{ 'press.meta_description'|trans }}{% endblock %}
+{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.png')) }}{% endblock %}
 
 {% block head %}
     {{ parent() }}
@@ -46,10 +49,10 @@
                             <article class="press-card press-card--{{ categoryKey }}">
                                 <div class="press-card__image">
                                     {% if item.image %}
-                                        <img src="{{ asset(item.image) }}" alt="{{ item.title }}" loading="lazy" decoding="async">
+                                        <img src="{{ asset(item.image) }}" alt="{{ item.title }}" loading="lazy" decoding="async" width="400" height="250">
                                     {% elseif item.url %}
                                         <div class="press-card__placeholder">
-                                            <img src="https://www.google.com/s2/favicons?domain={{ item.url|split('/')[2] }}&sz=64" alt="" class="press-card__favicon" loading="lazy">
+                                            <img src="https://www.google.com/s2/favicons?domain={{ item.url|split('/')[2] }}&sz=64" alt="" class="press-card__favicon" loading="lazy" width="64" height="64">
                                             <span class="press-card__placeholder-source">{{ item.source }}</span>
                                         </div>
                                     {% endif %}

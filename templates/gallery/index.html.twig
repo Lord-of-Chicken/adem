@@ -1,6 +1,10 @@
 {% extends 'layout/street.html.twig' %}
 
 {% block title %}{{ page.title }} | {{ site_brand.title }}{% endblock %}
+{% block meta_description %}{{ 'gallery.meta_description'|trans }}{% endblock %}
+{% block og_title %}{{ page.title }} | {{ site_brand.title }}{% endblock %}
+{% block og_description %}{{ 'gallery.meta_description'|trans }}{% endblock %}
+{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.png')) }}{% endblock %}
 
 {% block street_main %}
 <div class="">

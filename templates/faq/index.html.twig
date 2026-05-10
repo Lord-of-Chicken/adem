@@ -3,6 +3,9 @@
 {% block title %}{{ 'faq.title'|trans }} | {{ site_brand.title }}{% endblock %}
 
 {% block meta_description %}{{ 'faq.meta_description'|trans }}{% endblock %}
+{% block og_title %}{{ 'faq.title'|trans }} | {{ site_brand.title }}{% endblock %}
+{% block og_description %}{{ 'faq.meta_description'|trans }}{% endblock %}
+{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.png')) }}{% endblock %}
 
 {% block head %}
     {{ parent() }}
