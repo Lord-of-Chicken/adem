@@ -23,7 +23,7 @@
             centeredSlides: true,
             loop: true,
             speed: 500,
-            slidesPerView: 'auto',
+            slidesPerView: 1,
             coverflowEffect: { rotate: 30, stretch: 10, depth: 150, modifier: 1, slideShadows: true },
             autoplay: { delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true },
             pagination: { el: '.swiper-pagination', clickable: true, dynamicBullets: true },
