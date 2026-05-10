@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\User;
@@ -40,9 +42,9 @@ final class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $message = 'Votre e-mail a bien été enregistré.';
+            $message = $translator->trans('registration.success');
             if ($user->isNewsletter()) {
-                $message .= ' Vous serez tenu informé des événements à venir.';
+                $message .= ' ' . $translator->trans('registration.newsletter_confirmation');
             }
             $this->addFlash('success', $message);
 

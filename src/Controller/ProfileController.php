@@ -40,7 +40,7 @@ final class ProfileController extends AbstractController
     {
         $user = $this->getUser();
 
-        if (!$this->isCsrfTokenValid('toggle_newsletter', $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('toggle_newsletter', (string) $request->request->get('_token'))) {
             $this->addFlash('danger', $translator->trans('profile.csrf_invalid'));
             return $this->redirectToRoute('app_profile');
         }
@@ -125,18 +125,18 @@ final class ProfileController extends AbstractController
     {
         $user = $this->getUser();
 
-        if (!$this->isCsrfTokenValid('delete_profile', $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('delete_profile', (string) $request->request->get('_token'))) {
             $this->addFlash('danger', $translator->trans('profile.csrf_invalid'));
             return $this->redirectToRoute('app_profile');
         }
 
-        // Déconnecter l'utilisateur avant suppression
-        $this->container->get('security.token_storage')->setToken(null);
-        $request->getSession()->invalidate();
-
-        // Supprimer l'utilisateur (cascade delete supprimera les données liées)
+        // Supprimer l'utilisateur (cascade delete supprimera les données liées),
+        // puis invalider la session pour éviter qu'une session active reste liée à un user purgé.
         $entityManager->remove($user);
         $entityManager->flush();
+
+        $this->container->get('security.token_storage')->setToken(null);
+        $request->getSession()->invalidate();
 
         $this->addFlash('success', $translator->trans('profile.account_deleted'));
 

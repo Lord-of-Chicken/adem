@@ -14,10 +14,21 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class CartController extends AbstractController
 {
+    private const ALLOWED_CSRF_INTENTS = [
+        'cart_add',
+        'cart_remove',
+        'cart_quantity',
+        'cart_clear',
+    ];
+
     #[Route('/csrf-token', name: 'app_csrf_token', methods: ['GET'])]
     public function csrfToken(Request $request, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
-        $intent = $request->query->get('intent', 'cart_add');
+        $intent = (string) $request->query->get('intent', 'cart_add');
+        if (!in_array($intent, self::ALLOWED_CSRF_INTENTS, true)) {
+            return $this->json(['error' => 'invalid_intent'], Response::HTTP_BAD_REQUEST);
+        }
+
         $response = $this->json(['token' => $csrfTokenManager->getToken($intent)->getValue()]);
         $response->headers->set('Cache-Control', 'no-store');
         return $response;

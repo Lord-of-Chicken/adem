@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Form\ContactFormType;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,9 +13,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class ContactController extends AbstractController
 {
+    // TODO: installer symfony/rate-limiter pour activer une limitation par IP
+    // (5 messages / heure recommandé) afin d'endiguer le spam.
     #[Route('/contact', name: 'app_contact')]
-    public function index(Request $request, MailerInterface $mailer, TranslatorInterface $translator): Response
-    {
+    public function index(
+        Request $request,
+        MailerInterface $mailer,
+        TranslatorInterface $translator,
+        LoggerInterface $logger,
+    ): Response {
         $form = $this->createForm(ContactFormType::class);
         $form->handleRequest($request);
 
@@ -40,7 +47,9 @@ final class ContactController extends AbstractController
                 return $this->redirectToRoute('app_contact');
 
             } catch (\Exception $e) {
-                $this->addFlash('error', $translator->trans('contact.error', ['%error%' => $e->getMessage()]));
+                // Never leak internal exception details to the user.
+                $logger->error('Contact form mail failure', ['exception' => $e]);
+                $this->addFlash('error', $translator->trans('contact.error', ['%error%' => '']));
             }
         } elseif ($form->isSubmitted()) {
             $this->addFlash('error', $translator->trans('contact.validation_error'));

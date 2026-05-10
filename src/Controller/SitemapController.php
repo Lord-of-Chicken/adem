@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Repository\MediaItemRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class SitemapController extends AbstractController
+final class SitemapController extends AbstractController
 {
     public function __construct(
-        private MediaItemRepository $mediaItemRepository,
-        private UrlGeneratorInterface $urlGenerator
+        private readonly MediaItemRepository $mediaItemRepository,
+        private readonly UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
@@ -30,6 +32,7 @@ class SitemapController extends AbstractController
             'app_faq'     => ['priority' => '0.8', 'changefreq' => 'monthly'],
             'app_contact' => ['priority' => '0.6', 'changefreq' => 'monthly'],
             'app_gallery' => ['priority' => '0.7', 'changefreq' => 'weekly'],
+            'app_press'   => ['priority' => '0.6', 'changefreq' => 'monthly'],
         ];
 
         foreach ($locales as $locale) {
@@ -45,7 +48,6 @@ class SitemapController extends AbstractController
 
         return $this->render('sitemap.xml.twig', [
             'urls' => $urls,
-            'hostname' => $hostname,
         ]);
     }
 }

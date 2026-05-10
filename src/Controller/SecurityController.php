@@ -60,9 +60,16 @@ final class SecurityController extends AbstractController
         throw new \LogicException('Cette méthode peut rester vide, elle sera interceptée par le logout du firewall.');
     }
 
+    // TODO: installer symfony/rate-limiter pour brider l'énumération via /reset-password
+    // (recommandé : 3 tentatives / 30 minutes par IP).
     #[Route('/reset-password', name: 'app_forgot_password_request')]
-    public function request(Request $request, UserRepository $userRepository, MailerInterface $mailer, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
-    {
+    public function request(
+        Request $request,
+        UserRepository $userRepository,
+        MailerInterface $mailer,
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator,
+    ): Response {
         $form = $this->createForm(ResetPasswordRequestFormType::class);
         $form->handleRequest($request);
 
