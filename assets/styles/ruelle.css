@@ -3243,7 +3243,7 @@ dialog.cart-success-modal::backdrop {
 
 .press-card__image img {
     width: 100%;
-    height: 500px;
+    height: 250px;
     object-fit: cover;
     display: block;
     transition: transform 0.3s ease;
@@ -3255,7 +3255,7 @@ dialog.cart-success-modal::backdrop {
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    height: 500px;
+    height: 250px;
     background: linear-gradient(135deg, var(--concrete-light) 0%, var(--concrete) 100%);
     border-bottom: var(--outline);
 }
@@ -3343,7 +3343,7 @@ dialog.cart-success-modal::backdrop {
     }
 
     .press-card__image img {
-        height: 450px;
+        height: 225px;
     }
 
     .press-category__title {
