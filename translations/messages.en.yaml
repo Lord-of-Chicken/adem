@@ -307,15 +307,18 @@ contact.title: "Contact us"
 contact.intro: "A question? A suggestion? Don't hesitate to send us a message."
 contact.submit: "Send message"
 contact.success: "Your message has been sent. We'll get back to you soon!"
-contact.error: "Error sending message: %error%"
+contact.error: "Error sending the message. Please try again later."
 contact.validation_error: "Error validating the form."
+contact.rate_limited: "Too many messages sent. Try again in one hour."
 contact.email_subject: "Contact"
 
 # Gallery
+gallery.meta_description: "Discover Adem's alley through photos and videos — a unique place in Uccle that became a tourist attraction thanks to a 7-year-old child."
 gallery.empty: "No media available at the moment."
 
 # Registration
-registration.success: "Welcome! Your account has been created. You can now log in."
+registration.success: "Your e-mail has been successfully registered."
+registration.newsletter_confirmation: "You will be informed about upcoming events."
 registration.title: "Create an account"
 registration.intro: "Sign up to add formulas to your cart."
 registration.submit: "Sign up"

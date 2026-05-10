@@ -105,7 +105,7 @@ cart.clear_confirm_btn: "Vider"
 # Site
 site.tagline: "Fais une fleur à Adem"
 site.construction: "SITE EN CHANTIER - TRAVAUX EN COURS"
-site.default_description: "Ruelle d'Adem — Transformons ta ruelle en un jardin florissant. Soutiens le projet en offrant des fleurs, des jardinières ou des palettes pour décorer et entretenir la ruelle."
+site.default_description: "C'est là qu'Adem a besoin de toi ! Offre des bégonias, une jardinière ou une palette pour sa ruelle. Et avec la formule V.I.P., tu peux même laisser ton nom ! Alors qu'il n'avait que 7 ans, Adem décide de décorer sa ruelle, devenue aujourd'hui un lieu touristique. Il s'est vu décerner les titres de « Bruxellois de l'année 2015 » et « Brusselaar van het jaar ». Aidez-le à embellir sa ruelle !"
 home.meta_description: "C'est là qu'Adem a besoin de toi ! Offre des bégonias, une jardinière ou une palette pour sa ruelle. Et avec la formule V.I.P., tu peux même laisser ton nom ! Alors qu'il n'avait que 7 ans, Adem décide de décorer sa ruelle, devenue aujourd'hui un lieu touristique. Il s'est vu décerner les titres de « Bruxellois de l'année 2015 » et « Brusselaar van het jaar ». Aidez-le à embellir sa ruelle !"
 home.og_description: "C'est là qu'Adem a besoin de toi ! Offre des bégonias, une jardinière ou une palette pour sa ruelle. Et avec la formule V.I.P., tu peux même laisser ton nom ! Alors qu'il n'avait que 7 ans, Adem décide de décorer sa ruelle, devenue aujourd'hui un lieu touristique. Il s'est vu décerner les titres de « Bruxellois de l'année 2015 » et « Brusselaar van het jaar ». Aidez-le à embellir sa ruelle !"
 
@@ -307,15 +307,18 @@ contact.title: "Contacte-nous"
 contact.intro: "Une question ? Une suggestion ? N'hésite pas à nous envoyer un message."
 contact.submit: "Envoyer le message"
 contact.success: "Ton message a bien été envoyé. On te répond bientôt !"
-contact.error: "Erreur lors de l'envoi du message : %error%"
+contact.error: "Erreur lors de l'envoi du message. Veuillez réessayer plus tard."
 contact.validation_error: "Erreur lors de la validation du formulaire."
+contact.rate_limited: "Trop de messages envoyés. Réessayez dans une heure."
 contact.email_subject: "Contact"
 
 # Gallery
+gallery.meta_description: "Découvrez la ruelle d'Adem en images — photos et vidéos d'un lieu unique à Uccle, devenu attraction touristique grâce à un enfant de 7 ans."
 gallery.empty: "Aucun média disponible pour le moment."
 
 # Registration
-registration.success: "Bienvenue ! Ton compte est créé. Tu peux maintenant te connecter."
+registration.success: "Votre e-mail a bien été enregistré."
+registration.newsletter_confirmation: "Vous serez tenu informé des événements à venir."
 registration.title: "Inscription à la mailing list"
 registration.intro: ""
 registration.submit: "S'inscrire"

@@ -307,15 +307,18 @@ contact.title: "Neem contact op"
 contact.intro: "Een vraag? Een suggestie? Aarzel niet om ons een bericht te sturen."
 contact.submit: "Bericht versturen"
 contact.success: "Je bericht is succesvol verzonden. We nemen snel contact met je op!"
-contact.error: "Fout bij verzenden van bericht: %error%"
+contact.error: "Fout bij het verzenden van het bericht. Probeer het later opnieuw."
 contact.validation_error: "Fout bij valideren van het formulier."
+contact.rate_limited: "Te veel berichten verzonden. Probeer het over een uur opnieuw."
 contact.email_subject: "Contact"
 
 # Gallery
+gallery.meta_description: "Ontdek het steegje van Adem in beelden — foto's en video's van een unieke plek in Ukkel, een toeristische attractie dankzij een kind van 7 jaar."
 gallery.empty: "Momenteel geen media beschikbaar."
 
 # Registration
-registration.success: "Welkom! Je account is aangemaakt. Je kunt nu inloggen."
+registration.success: "Je e-mailadres is geregistreerd."
+registration.newsletter_confirmation: "Je wordt op de hoogte gehouden van toekomstige evenementen."
 registration.title: "Een account aanmaken"
 registration.intro: "Registreer je om formules aan je winkelwagen toe te voegen."
 registration.submit: "Registreren"
