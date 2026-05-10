@@ -137,14 +137,6 @@ final class PressController extends AbstractController
             ],
             [
                 'category' => 'written',
-                'source' => 'Presse flamande',
-                'title' => 'Article presse flamande',
-                'url' => null,
-                'type' => 'article',
-                'image' => 'img/presses/Presse flamande.jpg',
-            ],
-            [
-                'category' => 'written',
                 'source' => 'VRT',
                 'title' => 'Johan Verminnen is Brusseleir vè et leive, 10-jarig jongetje… De vzw Brusseleir! heeft de 10-jarige Adem Schol uitgeroepen tot Brusseleir van\'t Joêr 2025',
                 'url' => 'https://www.vrt.be',
