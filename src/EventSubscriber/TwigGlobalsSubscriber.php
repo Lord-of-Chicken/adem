@@ -37,13 +37,15 @@ final class TwigGlobalsSubscriber implements EventSubscriberInterface
 
         $title = 'La Ruelle d\'Adem';
         $tagline = $this->translator->trans('site.tagline');
-        $logoAsset = 'img/Social/og-home-preview.png';
+        $logoAsset = 'img/Panneau/IMG_0197.png';
+        $ogImageAsset = 'img/Social/og-home-preview.png';
         $cartCount = $this->cartService->countLines();
 
         $this->twig->addGlobal('site_brand', [
             'title' => $title,
             'tagline' => $tagline,
             'logo_asset' => $logoAsset,
+            'og_image_asset' => $ogImageAsset,
         ]);
         $this->twig->addGlobal('cart_line_count', $cartCount);
         $this->twig->addGlobal('footer_line', $title);
