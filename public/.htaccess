@@ -2,6 +2,14 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # Autoriser explicitement Facebook et autres bots sociaux
+    SetEnvIfNoCase User-Agent "facebookexternalhit" allow_social_bot
+    SetEnvIfNoCase User-Agent "Facebot" allow_social_bot
+    SetEnvIfNoCase User-Agent "Twitterbot" allow_social_bot
+    SetEnvIfNoCase User-Agent "LinkedInBot" allow_social_bot
+    SetEnvIfNoCase User-Agent "WhatsApp" allow_social_bot
+    SetEnvIfNoCase User-Agent "Pinterest" allow_social_bot
+
     # Force HTTPS
     RewriteCond %{HTTPS} !=on
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
@@ -40,7 +48,10 @@
 
 # Autoriser l'accès direct aux images pour les réseaux sociaux
 <Directory "img">
-    Require all granted
+    <RequireAny>
+        Require env allow_social_bot
+        Require all granted
+    </RequireAny>
 </Directory>
 
 # Cache
