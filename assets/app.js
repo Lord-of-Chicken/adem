@@ -8,3 +8,9 @@ import './js/toast.js';
 import './js/admin-media-item-form.js';
 import './js/stripe-init.js';
 import './styles/ruelle.css';
+
+// Import Swiper JS only (CSS loaded via CDN)
+import Swiper from 'swiper';
+
+// Make Swiper available globally for swiper-init.js
+window.Swiper = Swiper;
