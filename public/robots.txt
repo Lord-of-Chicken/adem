@@ -1,14 +1,36 @@
+# =========================
+# Facebook
+# =========================
 User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
+# =========================
+# Réseaux sociaux
+# =========================
 User-agent: Twitterbot
+Allow: /
+
 User-agent: LinkedInBot
+Allow: /
+
 User-agent: WhatsApp
+Allow: /
+
 User-agent: Pinterest
 Allow: /
 
-# Moteurs de recherche - Tout autoriser sauf sensible
+# =========================
+# Moteurs de recherche
+# =========================
 User-agent: *
 Allow: /
-# Systèmes et Code
+
+# =========================
+# Sécurité (Symfony / backend)
+# =========================
 Disallow: /var/
 Disallow: /vendor/
 Disallow: /src/
@@ -16,13 +38,15 @@ Disallow: /config/
 Disallow: /templates/
 Disallow: /bin/
 Disallow: /.env*
-# Admin et Privé
+
+# Admin / users
 Disallow: /admin/
 Disallow: /profile/
 Disallow: /connexion
 Disallow: /inscription
 Disallow: /reset-password
-# Tunnel et Technique
+
+# Paiement / technique
 Disallow: /panier
 Disallow: /checkout
 Disallow: /payment/
@@ -30,4 +54,5 @@ Disallow: /api/
 Disallow: /_profiler/
 Disallow: /_error/
 
+# Sitemap
 Sitemap: https://ruelledadem.com/sitemap.xml
