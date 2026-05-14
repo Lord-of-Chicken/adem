@@ -30,6 +30,11 @@
     Require all denied
 </FilesMatch>
 
+# Autoriser l'accès direct aux images pour les réseaux sociaux
+<Directory "img">
+    Require all granted
+</Directory>
+
 # Cache
 <IfModule mod_expires.c>
     ExpiresActive On
