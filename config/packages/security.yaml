@@ -41,6 +41,8 @@ security:
         - { path: ^/payment/,       roles: PUBLIC_ACCESS }
         - { path: ^/stripe/webhook, roles: PUBLIC_ACCESS }
         - { path: ^/panier,         roles: PUBLIC_ACCESS }
+        - { path: ^/img,            roles: PUBLIC_ACCESS }
+        - { path: ^/assets,         roles: PUBLIC_ACCESS }
         - { path: ^/admin/,         roles: ROLE_ADMIN }
 
 when@test:

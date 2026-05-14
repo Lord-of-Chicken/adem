@@ -39,4 +39,14 @@
     array (
     ),
   ),
+  'swiper' => 
+  array (
+    'version' => '11.1.4',
+    'dependencies' => 
+    array (
+    ),
+    'extraFiles' => 
+    array (
+    ),
+  ),
 );

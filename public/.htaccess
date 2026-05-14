@@ -2,57 +2,58 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Autoriser explicitement Facebook et autres bots sociaux
-    SetEnvIfNoCase User-Agent "facebookexternalhit" allow_social_bot
-    SetEnvIfNoCase User-Agent "Facebot" allow_social_bot
-    SetEnvIfNoCase User-Agent "Twitterbot" allow_social_bot
-    SetEnvIfNoCase User-Agent "LinkedInBot" allow_social_bot
-    SetEnvIfNoCase User-Agent "WhatsApp" allow_social_bot
-    SetEnvIfNoCase User-Agent "Pinterest" allow_social_bot
+    # Détection bots sociaux
+    SetEnvIfNoCase User-Agent "facebookexternalhit" social_bot
+    SetEnvIfNoCase User-Agent "Facebot" social_bot
+    SetEnvIfNoCase User-Agent "Twitterbot" social_bot
+    SetEnvIfNoCase User-Agent "LinkedInBot" social_bot
+    SetEnvIfNoCase User-Agent "WhatsApp" social_bot
+    SetEnvIfNoCase User-Agent "Pinterest" social_bot
 
-    # Force HTTPS
+    # HTTPS
     RewriteCond %{HTTPS} !=on
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+    # Symfony Front Controller
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php [QSA,L]
+    RewriteRule ^ index.php [QSA,L]
 </IfModule>
 
-# Sécurité
+# Headers sécurité
 <IfModule mod_headers.c>
-    Header always set X-Content-Type-Options nosniff
-    Header always set X-Frame-Options DENY
-    Header always set X-XSS-Protection "1; mode=block"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
-    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(self \"https://js.stripe.com\")"
-    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-    # Cross-Origin-Resource-Policy désactivé pour permettre le scraping par les réseaux sociaux
-    # Header always set Cross-Origin-Opener-Policy "same-origin"
-    # Header always set Cross-Origin-Resource-Policy "same-site"
 
-    # Content Security Policy pour autoriser Stripe, Swiper et autres
+    # IMPORTANT : ne pas bloquer les bots sociaux
+    Header unset Cross-Origin-Resource-Policy
+    Header unset Cross-Origin-Opener-Policy
+
+    # CSP temporairement désactivée pour tester Facebook
+    # Header unset Content-Security-Policy
+
+    # CSP pour autoriser Stripe, Swiper et autres (réactivée après test)
     Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://checkout.stripe.com; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' data: https://js.stripe.com https://b.stripecdn.com https://newassets.hcaptcha.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.stripe.com https://merchant-ui-api.stripe.com https://checkout-cookies.link.com https://client.px-cloud.net; frame-src 'self' https://js.stripe.com https://b.stripecdn.com https://newassets.hcaptcha.com https://checkout.stripe.com;"
 
-    # CORS pour autoriser le scraping Facebook
+    # CORS
     Header always set Access-Control-Allow-Origin "*"
 </IfModule>
 
-# Refuser l'accès direct aux fichiers sensibles
-<FilesMatch "^\.(env|env\..+|gitignore|gitattributes|htaccess|user\.ini)$">
-    Require all denied
-</FilesMatch>
-<FilesMatch "(composer\.(json|lock)|package(-lock)?\.json|symfony\.lock|bun\.lock|\.DS_Store)$">
+# mod_security : désactiver pour autoriser Facebook
+<IfModule mod_security.c>
+    SecFilterEngine Off
+    SecFilterScanPOST Off
+</IfModule>
+
+# Bloquer fichiers sensibles
+<FilesMatch "^(\.env|\.env\..+|\.gitignore|\.gitattributes|\.htaccess)$">
     Require all denied
 </FilesMatch>
 
-# Autoriser l'accès direct aux images pour les réseaux sociaux
-<Directory "img">
-    <RequireAny>
-        Require env allow_social_bot
-        Require all granted
-    </RequireAny>
-</Directory>
+<FilesMatch "^(composer\.(json|lock)|package(-lock)?\.json|symfony\.lock)$">
+    Require all denied
+</FilesMatch>
 
 # Cache
 <IfModule mod_expires.c>

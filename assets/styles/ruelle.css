@@ -2818,15 +2818,11 @@ dialog.cart-success-modal::backdrop {
 }
 
 /* Merged admin image-edit styles (previously admin-image-edit.css) */
-.editor-header {
+.editor-header/* La Ruelle d'Adem — street art / graffiti */
+:root {
     text-align: center;
-    margin-bottom: 2rem;
-    padding: 2rem;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    transform: none;
+    padding-bottom: 1rem;
+    border-bottom: 3px dashed var(--spray-cyan);
 }
 
 .editor-header h1 {
