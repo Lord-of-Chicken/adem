@@ -44,6 +44,6 @@ return [
         'path' => './assets/vendor/sortablejs/sortablejs.index.js',
     ],
     'swiper' => [
-        'version' => '11.1.4',
+        'version' => '12.1.4',
     ],
 ];

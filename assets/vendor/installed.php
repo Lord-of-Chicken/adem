@@ -41,7 +41,7 @@
   ),
   'swiper' => 
   array (
-    'version' => '11.1.4',
+    'version' => '12.1.4',
     'dependencies' => 
     array (
     ),
