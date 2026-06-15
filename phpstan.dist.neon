@@ -1,0 +1,37 @@
+parameters:
+    level: 10
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: true
+    paths:
+        - bin/
+        - config/
+        - public/
+        - src/
+        - tests/
+    excludePaths:
+        - src/var/*
+        - var/*
+        - vendor/*
+    ignoreErrors:
+        # Doctrine génère $id via la BDD ; le type nullable est attendu côté ORM.
+        - '#Property .*::\$id \(int\|null\) is never assigned int so it can be removed from the property type\.#'
+        # Signatures internes du framework Symfony non typées strictement (API tierce, irréductible).
+        - '#Parameter .* of method Symfony\\Component\\.*#'
+        - '#Parameter .* of method Symfony\\Bundle\\.*#'
+        - '#Parameter .* of method Symfony\\Contracts\\.*#'
+        # Accès/opérations sur des valeurs `mixed` issues de payloads externes (Stripe webhook, config YAML).
+        - '#Cannot access offset.*on mixed\.#'
+        - '#Binary operation.*between mixed.*#'
+        - '#Binary operation.*between non-falsy-string and mixed.*#'
+        - '#Binary operation.*between array\|bool\|float\|int\|string\|UnitEnum\|null and.*#'
+        - '#Strict comparison.*between mixed.*#'
+        - '#Cannot cast mixed to int\.#'
+        # Données externes (cart/session, métadonnées Stripe) passées à des setters typés.
+        - '#Parameter .* of method App\\Service\\StripePaymentService::createCheckoutSession\(\) expects.*#'
+        - '#Parameter .* of method App\\Entity\\Order::setCartData\(\) expects.*#'
+        - '#Parameter .* of function htmlspecialchars expects string, mixed given\.#'
+        - '#Parameter .* of class App\\Kernel constructor expects string, mixed given\.#'
+        # Propriété injectée mais non lue (réservée pour usage futur du sitemap média).
+        - '#Property App\\Controller\\SitemapController::\$mediaItemRepository is never read, only written\.#'
+        # getSubscribedEvents() : type de retour array imposé par l'interface Symfony.
+        - '#Method .* return type has no value type specified in iterable type array\.#'

@@ -4,7 +4,7 @@
 {% block meta_description %}{{ 'contact.intro'|trans }}{% endblock %}
 {% block og_title %}{{ page.title }} | {{ site_brand.title }}{% endblock %}
 {% block og_description %}{{ 'contact.intro'|trans }}{% endblock %}
-{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.png')) }}{% endblock %}
+{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.jpg')) }}{% endblock %}
 
 {% block head %}
     {{ parent() }}
@@ -39,6 +39,11 @@
                     <button type="submit" class="btn btn--primary btn--full">{{ page.submit }}</button>
                 </div>
             {{ form_end(form) }}
+
+            <p class="form__disclaimer section__intro--muted">
+                {{ 'contact.privacy_disclaimer'|trans }}
+                <a href="{{ path('app_privacy') }}">{{ 'contact.privacy_link'|trans }}</a>
+            </p>
         </div>
     </section>
 </div>

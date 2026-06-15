@@ -1,0 +1,25 @@
+{#
+   Reusable BreadcrumbList JSON-LD (schema.org) for AI/search citability (AEO/GEO).
+   Usage:
+     {% include '_partials/breadcrumb_jsonld.html.twig' with { items: [
+         { name: 'nav.home'|trans, url: url('app_home') },
+         { name: page.title, url: url('app_faq') }
+     ] } %}
+   Each item: { name: string, url: absolute URL }.
+#}
+{%- set _breadcrumb_elements = [] %}
+{%- for item in items %}
+    {%- set _breadcrumb_elements = _breadcrumb_elements|merge([{
+        '@type': 'ListItem',
+        'position': loop.index,
+        'name': item.name,
+        'item': item.url
+    }]) %}
+{%- endfor %}
+<script type="application/ld+json">
+{{ {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': _breadcrumb_elements
+}|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_UNESCAPED_UNICODE'))|raw }}
+</script>

@@ -7,20 +7,22 @@
 {% endblock %}
 
 {% block body %}
-    <main class="street-main-content">
-        <div class="flash-container">
-            {# Flash messages displayed once for all pages #}
+    <main class="street-main-content" id="main-content">
+        <div class="flash-container" aria-live="polite" aria-atomic="true">
             {% for message in app.flashes('success') %}
-                <div class="flash flash--success">{{ message }}</div>
+                <div class="flash flash--success" role="status">{{ message }}</div>
+            {% endfor %}
+            {% for message in app.flashes('danger') %}
+                <div class="flash flash--danger" role="alert">{{ message }}</div>
             {% endfor %}
             {% for message in app.flashes('error') %}
-                <div class="flash flash--danger">{{ message }}</div>
+                <div class="flash flash--danger" role="alert">{{ message }}</div>
             {% endfor %}
             {% for message in app.flashes('warning') %}
-                <div class="flash flash--warning">{{ message }}</div>
+                <div class="flash flash--warning" role="status">{{ message }}</div>
             {% endfor %}
             {% for message in app.flashes('info') %}
-                <div class="flash flash--info">{{ message }}</div>
+                <div class="flash flash--info" role="status">{{ message }}</div>
             {% endfor %}
         </div>
 
@@ -50,6 +52,9 @@
                 <a href="{{ path('app_faq') }}" class="site-footer__link">{{ 'nav.faq'|trans }}</a>
                 <a href="{{ path('app_press') }}" class="site-footer__link">{{ 'nav.press'|trans }}</a>
                 <a href="{{ path('app_contact') }}" class="site-footer__link">{{ 'nav.contact'|trans }}</a>
+                <a href="{{ path('app_privacy') }}" class="site-footer__link">{{ 'nav.privacy'|trans }}</a>
+                <a href="{{ path('app_legal_mentions') }}" class="site-footer__link">{{ 'nav.legal_mentions'|trans }}</a>
+                <a href="{{ path('app_cookies_policy') }}" class="site-footer__link">{{ 'nav.cookies_policy'|trans }}</a>
             </nav>
             <p class="site-footer__copy">&copy; {{ "now"|date("Y") }} {{ site_brand.title }}</p>
         </div>

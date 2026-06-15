@@ -7,6 +7,8 @@
 /var/log/*
 !var/cache/.gitkeep
 !var/log/.gitkeep
+# Ancien emplacement de cache compilé (ne jamais committer)
+/src/var/
 
 # Répertoires de build et dépendances
 /build/
@@ -93,3 +95,7 @@ compose.override.yml
 
 # PHPUnit cache
 .phpunit.cache/
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###

@@ -6,7 +6,7 @@
     <div class="admin-toolbar">
         <div class="admin-filters">
             <label for="newsletter-filter" class="admin-filter__label">{{ 'admin.newsletter_filter'|trans }}</label>
-            <select id="newsletter-filter" class="admin-filter__select" onchange="window.location.href='?newsletter=' + this.value">
+            <select id="newsletter-filter" class="admin-filter__select" data-controller="nav-select" data-nav-select-mode-value="query" data-nav-select-param-value="newsletter" data-action="change->nav-select#navigate">
                 <option value="">{{ 'admin.filter_all'|trans }}</option>
                 <option value="subscribed" {{ newsletter_filter == 'subscribed' ? 'selected' : '' }}>{{ 'admin.filter_subscribed'|trans }}</option>
                 <option value="not_subscribed" {{ newsletter_filter == 'not_subscribed' ? 'selected' : '' }}>{{ 'admin.filter_not_subscribed'|trans }}</option>
@@ -50,4 +50,16 @@
             </tbody>
         </table>
     </div>
+
+    {% if pagination.last_page > 1 %}
+        <nav class="admin-pagination" aria-label="{{ 'admin.pagination'|trans }}">
+            {% if pagination.page > 1 %}
+                <a class="admin-btn admin-btn--small" href="{{ path('app_admin_users', { newsletter: newsletter_filter, page: pagination.page - 1 }) }}">{{ 'admin.previous'|trans }}</a>
+            {% endif %}
+            <span class="admin-pagination__status">{{ pagination.page }} / {{ pagination.last_page }}</span>
+            {% if pagination.page < pagination.last_page %}
+                <a class="admin-btn admin-btn--small" href="{{ path('app_admin_users', { newsletter: newsletter_filter, page: pagination.page + 1 }) }}">{{ 'admin.next'|trans }}</a>
+            {% endif %}
+        </nav>
+    {% endif %}
 {% endblock %}

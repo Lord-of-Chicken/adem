@@ -1,5 +1,5 @@
 # Homepage
-home.title: "Ruelle d'Adem"
+home.title: "Steun Adem — zijn steegje heeft jou nodig"
 home.subtitle: "Een hoekje van de straat dat wacht op jouw bloemen"
 home.cta: "En jij, hoeveel begonia's van €1, bloembakken of pallets ga jij aanbieden?"
 home.offres: "Ons aanbod"
@@ -34,35 +34,41 @@ nav.admin: "Beheer"
 nav.menu: "Menu"
 nav.main_navigation: "Hoofdnavigatie"
 
+# Taalkeuze
+lang.fr: "Frans"
+lang.en: "Engels"
+lang.nl: "Nederlands"
+lang.choose: "Taal kiezen"
+
 # About
 about.meta_description: "Ontdek het verhaal van Adem, een jongen uit Ukkel die zijn steegje omtoverde tot een levende tuin en tweemaal Bruxellois de l'Année werd."
-about.who_title: "QUI EST ADEM ?"
-about.section_2022_title: "2022. NAISSANCE DE LA RUELLE D'ADEM"
+about.who_title: "WIE IS ADEM?"
+about.section_2022_title: "2022. DE GEBOORTE VAN ADEMS STEEGJE"
 about.section_2022_text: |-
-  Du haut de ses sept ans, aidé par ses parents, Adem s'amuse. Il décore sa façade. Il plante. Bricole. Imagine. Crée. Peint. Fabrique des nichoirs et des mangeoires pour les nombreux oiseaux de la ruelle. Résultat, il décroche un premier prix du concours "Uccle en Fleurs". Le magazine communal lui consacre un article. Le blog "Tram 51" et d'autres également. L'hebdomadaire "Le Vif" lui consacre une pleine page et titre "C'est beau comme la ruelle d'Adem.". C'en est fini du "Chemin des Roses", place à "La ruelle d'Adem".
-about.section_expo_title: "PREMIÈRE EXPO"
+  Amper zeven jaar oud en geholpen door zijn ouders, vermaakt Adem zich. Hij versiert zijn gevel. Hij plant. Knutselt. Verzint. Creëert. Schildert. Hij maakt nestkastjes en voederbakjes voor de vele vogels in het steegje. Het resultaat: hij wint een eerste prijs in de wedstrijd "Uccle en Fleurs". Het gemeenteblad wijdt een artikel aan hem. De blog "Tram 51" en andere ook. Het weekblad "Le Vif" geeft hem een volledige pagina met als titel "Zo mooi als het steegje van Adem.". Het is gedaan met de "Chemin des Roses", plaats voor "Het steegje van Adem".
+about.section_expo_title: "EERSTE TENTOONSTELLING"
 about.section_expo_text: |-
-  L'artiste Yorgo (Yorgoland) le remarque. Il apprécie l'originalité de ces nichoirs fabriqués au départ de "déchets", soit des diverses choses qu'Adem trouve sur les trottoirs ou achète en brocantes. En septembre, Yorgo et le collectif BrAMS invitent Adem à exposer en compagnie d'artistes reconnus. Pascal Bernier, Fabio Denker, JPMDR, Serge Vankerck, Didier Engels, Pascal Duquenne, Denis Meyers sont du nombre. Il y rencontre Elvis Pompilio qui l'invite à visiter son atelier. Nombre d'artistes lui achètent un nichoir. Des visiteurs également. Tous l'encouragent à persévérer.
-about.section_2023_title: "2023 PROLONGATION DE LA RUELLE"
+  De kunstenaar Yorgo (Yorgoland) merkt hem op. Hij waardeert de originaliteit van die nestkastjes, gemaakt van "afval" — allerlei dingen die Adem op de stoep vindt of op rommelmarkten koopt. In september nodigen Yorgo en het collectief BrAMS Adem uit om te exposeren naast gevestigde kunstenaars. Pascal Bernier, Fabio Denker, JPMDR, Serge Vankerck, Didier Engels, Pascal Duquenne en Denis Meyers zijn van de partij. Daar ontmoet hij Elvis Pompilio, die hem uitnodigt om zijn atelier te bezoeken. Veel kunstenaars kopen een nestkastje van hem. Bezoekers ook. Iedereen moedigt hem aan om door te zetten.
+about.section_2023_title: "2023 VERLENGING VAN HET STEEGJE"
 about.section_2023_text: |-
-  Boosté par ces encouragements, Adem veut à tout prix prolonger sa ruelle. À tout prix, car les choses ont un coût. Une demande de subside est introduite et obtenue. Les mille euros reçus couvrent à peine la moitié des frais. Qu'importe. On prolonge. Papa ponce et maman fleurit. Les jouets qui n'intéressent plus Adem sont mis à contribution et transformés en nichoirs. Ce qui lui fera dire plus tard "Ma ruelle, c'est un peu toute ma vie". Fin de l'automne, la ruelle a grandi de trente mètres.
-about.section_expos_title: "LES EXPOS"
+  Gesterkt door deze aanmoedigingen wil Adem zijn steegje koste wat het kost verlengen. Koste wat het kost, want alles heeft een prijs. Een subsidieaanvraag wordt ingediend en goedgekeurd. De ontvangen duizend euro dekt amper de helft van de kosten. Het maakt niet uit. Men verlengt. Papa schuurt en mama plant bloemen. Het speelgoed waar Adem niet meer in geïnteresseerd is, wordt ingezet en omgetoverd tot nestkastjes. Wat hem later zal doen zeggen: "Mijn steegje, dat is een beetje mijn hele leven." Tegen het einde van de herfst is het steegje dertig meter langer geworden.
+about.section_expos_title: "DE TENTOONSTELLINGEN"
 about.section_expos_text: |-
-  "Meet my Arts - Parcours d'artistes - Uccle" attire nombre de visiteurs et popularise la ruelle. Vu l'étonnement qu'il provoque, Adem est à nouveau invité à une expo du collectif BrAMS. Ses nichoirs sur le thème des bananes ne passent pas inaperçus et prennent place à côté des œuvres de Didier Plash, Lou Van T Riet, Jean Pol Lejeune, Stéphane Sola et de tant d'autres. Rebelotte, les nichoirs d'Adem se vendent comme des petits pains. Les artistes en sont fans. Motivé. Gonflé à bloc, encouragé par les riverains, Adem est plus que jamais décidé à poursuivre son chemin, pardon sa ruelle.
-about.section_2024_title: "2024 UN DÉFI INSENSÉ"
+  "Meet my Arts - Kunstenaarsparcours - Ukkel" trekt veel bezoekers en maakt het steegje populair. Gezien de verbazing die hij wekt, wordt Adem opnieuw uitgenodigd voor een tentoonstelling van het collectief BrAMS. Zijn nestkastjes met bananenthema blijven niet onopgemerkt en krijgen een plaats naast de werken van Didier Plash, Lou Van T Riet, Jean Pol Lejeune, Stéphane Sola en zovele anderen. Opnieuw gaan Adems nestkastjes als warme broodjes over de toonbank. De kunstenaars zijn er fan van. Gemotiveerd. Vol goede moed en aangemoedigd door de buurtbewoners is Adem vastberadener dan ooit om zijn weg — pardon, zijn steegje — voort te zetten.
+about.section_2024_title: "2024 EEN WAANZINNIGE UITDAGING"
 about.section_2024_text: |-
-  Finies les expos. Place aux dépenses. En compagnie de ses financiers, pardon, de ses parents, Adem veut gagner son défi. Il veut étendre sa ruelle de la rue de la Fauvette jusqu'à la chaussée d'Alsemberg. Soit une centaine de mètres. Le subside est dépensé. La recette des ventes de ses nichoirs aussi. Il faut acheter ou trouver des dizaines de palettes, des jardinières, des centaines de fleurs. Il faut aussi de nouvelles machines, un système d'arrosage plus performant. Impossible de tout acheter. Il faut bricoler mais la ruelle s'industrialise. La presse s'intéresse de plus en plus à ce petit phénomène. Voilà qui stimule tout autant que les passants et visiteurs qui y flânent, émerveillés de la quiétude et du charme qui s'en dégage. Certains se rappellent qu'il y a peu encore, la ruelle était infestée de fumeurs de crack, depuis horrifiés d'admettre que leur quiétude à eux ne convenait guère avec l'apparition de passants, de promeneurs, de familles, de curieux, de groupes d'enfants emmenés là par une école ou un autre organisme. Fin de l'été, le pari insensé est quasi gagné, la ruelle est "nettoyée" et parcourt l'entièreté du chemin des roses. Mais il reste du travail.
+  Gedaan met de tentoonstellingen. Tijd om uit te geven. Samen met zijn financiers — pardon, zijn ouders — wil Adem zijn uitdaging winnen. Hij wil zijn steegje uitbreiden van de rue de la Fauvette tot aan de chaussée d'Alsemberg. Zo'n honderd meter. De subsidie is uitgegeven. De opbrengst van de verkoop van zijn nestkastjes ook. Hij moet tientallen paletten, bloembakken en honderden bloemen kopen of vinden. Hij heeft ook nieuwe machines nodig en een beter besproeiingssysteem. Alles kopen is onmogelijk. Hij moet knutselen, maar het steegje industrialiseert. De pers raakt steeds meer geïnteresseerd in dit kleine fenomeen. Dat stimuleert net zozeer als de voorbijgangers en bezoekers die er rondslenteren, verwonderd over de rust en de charme die het uitstraalt. Sommigen herinneren zich dat het steegje nog niet zo lang geleden vergeven was van crackrokers, sindsdien met afgrijzen toegevend dat hun eigen rust slecht samenging met het verschijnen van voorbijgangers, wandelaars, gezinnen, nieuwsgierigen en groepen kinderen die er door een school of een andere organisatie naartoe werden gebracht. Tegen het einde van de zomer is de waanzinnige weddenschap zo goed als gewonnen, het steegje is "opgeruimd" en loopt over de hele lengte van de Chemin des Roses. Maar er is nog werk aan de winkel.
 about.section_2025_title: |-
-  2025 - ADEM, DOUBLEMENT ÉLU "BRUXELLOIS DE L'ANNÉE"
+  2025 - ADEM, TWEEMAAL VERKOZEN TOT "BRUSSELAAR VAN HET JAAR"
 about.section_2025_text: |-
-  Il restait du travail. Alors on continue. Plus que jamais aidé par ses parents, Adem crée d'autres nichoirs. D'autres décos. Peaufine. Reçoit des journalistes. Et soudain, dans l'étonnement général, la sentence tombe. Adem est élu "Bruxellois de l'Année". À peine remis de ses émotions et du battage médiatique engendré par cette distinction que le média néerlandophone "BRUZZ" le déclare à son tour "Brusselaar van het jaar". Et, histoire que l'année médiatique se termine en conte de Noël, la VRT invite Adem à prendre part à l'émission "Vrede op Aarde" diffusée le jour de Noël. Il y reçoit le prix de l'émission.
+  Er was nog werk aan de winkel. Dus gaat het verder. Meer dan ooit geholpen door zijn ouders maakt Adem nog meer nestkastjes. Nog meer decoraties. Hij verfijnt. Hij ontvangt journalisten. En plots, tot ieders verbazing, valt het oordeel. Adem wordt verkozen tot "Brusselaar van het Jaar". Amper bekomen van de emoties en de mediahype rond deze onderscheiding, roept het Nederlandstalige medium "BRUZZ" hem op zijn beurt uit tot "Brusselaar van het jaar". En, alsof het mediajaar als een kerstverhaal moest eindigen, nodigt de VRT Adem uit om deel te nemen aan het programma "Vrede op Aarde" dat op kerstdag wordt uitgezonden. Daar ontvangt hij de prijs van het programma.
 about.section_2026_title: "2026"
-about.section_2026_text1: "Adem expose les nouveaux nichoirs, cette fois très colorés, en compagnie de Yorgo et Elvis Pompilio (qu'il considère comme ses parrains artistiques) à la Fashion'Art (Dour-Mons)."
-about.section_2026_text2: "Le nouveau subside demandé à la commune est accordé, son montant est vite englouti dans l'achat de matériel, de pots, de plantes et surtout d'un relooking qui rendra la ruelle plus attrayante et verte en hiver."
+about.section_2026_text1: "Adem stelt de nieuwe nestkastjes tentoon, dit keer felgekleurd, samen met Yorgo en Elvis Pompilio (die hij als zijn artistieke peters beschouwt) op Fashion'Art (Dour-Mons)."
+about.section_2026_text2: "De nieuwe subsidie die aan de gemeente werd gevraagd, is toegekend; het bedrag verdwijnt al snel in de aankoop van materiaal, potten, planten en vooral een make-over die het steegje aantrekkelijker en groener zal maken in de winter."
 about.section_2026_text3: |-
-  Mais les passions d'Adem ont changé. Finis les Minions et les Pokémons. Maintenant ils ornent ses nichoirs, tout comme sa collection de Star Wars. Place à la Nintendo et à la PlayStation. Place à d'autres délires artistiques. Adem rêve plus grand, il imagine des ensembles sur un thème. "Les Rézaux Zoziaux", "Nature en ville", "Les nichoirs Royaux" (fabriqués au départ des breloques et de souvenirs de son défunt grand-père) et d'autres idées qu'il exposera cet été.
-about.section_cta_title: "À VOTRE BON CŒUR MESSIEURS, DAMES... FAIS UNE FLEUR À ADEM !"
-about.section_cta_text: "Adem doit maintenant acheter des fleurs. Beaucoup de fleurs. Des centaines de bégonias, des dizaines de géraniums et d'autres essences. Placer d'autres palettes. Arroser avec du matériel plus professionnel. Faire que la beauté de la ruelle perdure. Voire être à l'initiative d'autres ruelles à créer ailleurs. On peut rêver. Adem aime rêver. Il compte sur toi pour que ses rêves deviennent réalité. Fais une fleur à Adem."
+  Maar Adems passies zijn veranderd. Gedaan met de Minions en de Pokémon. Nu sieren ze zijn nestkastjes, net als zijn Star Wars-collectie. Plaats voor Nintendo en PlayStation. Plaats voor andere artistieke fantasieën. Adem droomt groter; hij verzint themareeksen. "Les Rézaux Zoziaux", "Natuur in de stad", "De Koninklijke Nestkastjes" (gemaakt van de prullaria en souvenirs van zijn overleden grootvader) en andere ideeën die hij deze zomer zal tentoonstellen.
+about.section_cta_title: "UIT DE GOEDHEID VAN UW HART, DAMES EN HEREN... DOE ADEM EEN PLEZIER!"
+about.section_cta_text: "Adem moet nu bloemen kopen. Veel bloemen. Honderden begonia's, tientallen geraniums en andere soorten. Nog meer paletten plaatsen. Besproeien met professioneler materiaal. Ervoor zorgen dat de schoonheid van het steegje blijft duren. Misschien zelfs de aanzet geven tot andere steegjes elders. Dromen mag. Adem droomt graag. Hij rekent op jou om zijn dromen waar te maken. Doe Adem een plezier."
 
 # FAQ
 faq.title: "FAQ - Veelgestelde vragen"
@@ -77,8 +83,8 @@ faq.q4.question: "Waar gaan de bloemen naartoe?"
 faq.q4.answer: "Bloemen en bloembakken worden rechtstreeks in la Ruelle d'Adem geplaatst. Je kunt ze komen bewonderen — en aan iedereen laten zien wat jij hebt aangeboden!"
 faq.q5.question: "Is het project veilig?"
 faq.q5.answer: "Ja, betalingen zijn beveiligd via Stripe. We slaan geen bankgegevens op en alle transacties zijn versleuteld."
-faq.q6.question: "POURQUOI DES BÉGONIAS ?"
-faq.q6.answer: "De toutes les fleurs qu'Adem a plantées, ce sont les bégonias qui ont le mieux résisté. Et surtout, ce sont les bégonias qui ont le mieux coloré sa ruelle. Un véritable régal pour les yeux où le(s) bégonia(s) que tu as offert(s) va ou vont trôner en bonne compagnie."
+faq.q6.question: "WAAROM BEGONIA'S?"
+faq.q6.answer: "Van alle bloemen die Adem heeft geplant, hebben de begonia's het het best gehouden. En vooral: het zijn de begonia's die zijn steegje het meeste kleur hebben gegeven. Een echte lust voor het oog, waar de begonia('s) die jij hebt geschonken in goed gezelschap zullen pronken."
 
 # Cart
 cart.title: "Winkelwagen"
@@ -123,6 +129,7 @@ js.cart.cart: "Winkelwagen bekijken"
 js.cart.invalid_amount: "Voer een geldig bedrag in."
 js.cart.add_error: "Fout bij toevoegen aan winkelwagen"
 js.cart.technical_error: "Technische fout."
+js.cart.donor_consent_required: "Bevestig je toestemming om je naam weer te geven."
 js.confirm.default_title: "Bevestiging"
 js.confirm.default_message: "Deze actie bevestigen?"
 js.confirm.confirm: "Bevestigen"
@@ -140,6 +147,8 @@ payment.processing: "Betaling wordt verwerkt of is mislukt."
 payment.verification_error: "Betaling kan niet worden geverifieerd."
 payment.free_donation: "Vrije donatie van "
 payment.donation_of: " - Donatie van: "
+payment.amount_invalid: "Ongeldig bedrag. Het bedrag moet tussen € 1 en € 100.000 liggen."
+payment.donor_name_invalid: "De naam van de donateur is te lang (maximaal 255 tekens)."
 
 # Admin
 admin.dashboard: "Dashboard"
@@ -218,8 +227,12 @@ admin.brightness: "Helderheid"
 admin.actions_label: "Acties"
 admin.image_editor: "Afbeeldingsbewerker"
 admin.view: "Bekijken"
+admin.pagination: "Paginering"
+admin.previous: "Vorige"
+admin.next: "Volgende"
 admin.description: "Beschrijving"
 admin.edit: "Bewerken"
+admin.drag_to_reorder: "Sleep om te herordenen"
 admin.delete: "Verwijderen"
 admin.order: "Volgorde"
 admin.rotate_left: "Links draaien"
@@ -243,6 +256,9 @@ admin.order_label_plural: "Aankopen"
 admin.roles: "Rollen"
 admin.role_admin: "Beheerder"
 admin.role_user: "Gebruiker"
+admin.lang_fr: "Frans"
+admin.lang_en: "Engels"
+admin.lang_nl: "Nederlands"
 
 # Profile
 profile.title: "Mijn profiel"
@@ -295,7 +311,10 @@ home.tier_free_price: "Vrij"
 home.add: "Toevoegen"
 home.displayed_name: "Weergegeven naam"
 home.name_placeholder: "Jouw naam of Anoniem"
+home.donor_consent: "Ik ga ermee akkoord dat de ingevoerde naam openbaar op de website wordt getoond en wordt doorgegeven aan onze betaalprovider Stripe (buiten de EU) om mijn bijdrage te verwerken."
 home.add_to_cart: "In winkelwagen"
+home.qty_minus: "Aantal verlagen"
+home.qty_plus: "Aantal verhogen"
 home.amount: "Bedrag"
 home.amount_example: "Bv: 15"
 home.anonymous: "Anoniem"
@@ -311,6 +330,8 @@ contact.error: "Fout bij het verzenden van het bericht. Probeer het later opnieu
 contact.validation_error: "Fout bij valideren van het formulier."
 contact.rate_limited: "Te veel berichten verzonden. Probeer het over een uur opnieuw."
 contact.email_subject: "Contact"
+contact.privacy_disclaimer: "De gegevens die je via dit formulier verstuurt (naam, e-mail, bericht) worden uitsluitend gebruikt om je vraag te behandelen, op basis van je toestemming (AVG art. 6.1.a), en maximaal 12 maanden bewaard. Je kunt op elk moment je recht op inzage, correctie en verwijdering uitoefenen."
+contact.privacy_link: "Meer weten over de verwerking van je gegevens"
 
 # Gallery
 gallery.meta_description: "Ontdek het steegje van Adem in beelden — foto's en video's van een unieke plek in Ukkel, een toeristische attractie dankzij een kind van 7 jaar."
@@ -323,13 +344,36 @@ registration.title: "Een account aanmaken"
 registration.intro: "Registreer je om formules aan je winkelwagen toe te voegen."
 registration.submit: "Registreren"
 registration.hint_prefix: "Al geregistreerd?"
+registration.form.first_name: "Voornaam"
+registration.form.last_name: "Achternaam"
+registration.form.email: "E-mail"
+registration.form.newsletter: "Wil je op de hoogte blijven van komende evenementen?"
+registration.form.age_confirm: "Ik bevestig dat ik 16 jaar of ouder ben."
+registration.form.age_required: "Je moet 16 jaar of ouder zijn om je in te schrijven."
+registration.newsletter_double_optin: "Er is een bevestigingsmail naar je verzonden: klik op de link om je inschrijving op de nieuwsbrief te bevestigen."
+
+# Newsletter double opt-in
+newsletter.email_subject: "Bevestig je inschrijving op de nieuwsbrief van Ruelle d'Adem"
+newsletter.email_text: "Bevestig je inschrijving op de nieuwsbrief via deze link: %url%"
+newsletter.email_html_p1: "Bedankt voor je interesse! Bevestig je e-mailadres om je inschrijving op de nieuwsbrief van Ruelle d'Adem te voltooien:"
+newsletter.email_confirm_link: "Mijn inschrijving bevestigen"
+newsletter.email_expires: "Deze link is 7 dagen geldig. Als je dit niet hebt aangevraagd, kun je deze e-mail negeren."
+newsletter.email_unsubscribe_hint: "Wil je geen e-mails meer ontvangen?"
+newsletter.email_unsubscribe_link: "Uitschrijven"
+newsletter.confirm_success: "Bedankt! Je inschrijving op de nieuwsbrief is bevestigd."
+newsletter.confirm_invalid: "Deze bevestigingslink is ongeldig of verlopen."
+newsletter.unsubscribe_success: "Je bent uitgeschreven van de nieuwsbrief."
+newsletter.unsubscribe_invalid: "Deze uitschrijflink is ongeldig."
 
 # Security
 security.reset_sent: "Als dit e-mailadres bestaat, is er een herstelkoppeling verzonden."
+security.reset_send_failed: "De e-mail kon momenteel niet worden verzonden. Probeer het later opnieuw."
 security.reset_invalid: "De herstelkoppeling is ongeldig of verlopen."
 security.reset_success: "Je wachtwoord is succesvol opnieuw ingesteld."
 security.login_intro: "Log in om je deelnamewinkelwagen te beheren."
 security.login_submit: "Inloggen"
+security.email_label: "E-mail"
+security.password_label: "Wachtwoord"
 security.forgot_password: "Wachtwoord vergeten?"
 security.register_hint: "Nog geen account?"
 security.email_subject: "Je wachtwoord opnieuw instellen"
@@ -341,9 +385,15 @@ security.reset_title: "Wachtwoord herstellen"
 security.reset_intro: "Voer je e-mailadres in om een herstelkoppeling te ontvangen."
 security.reset_submit: "Link versturen"
 security.back_to_login: "Terug naar inloggen"
+security.rate_limited: "Te veel pogingen. Probeer het over een paar minuten opnieuw."
 security.new_password_title: "Nieuw wachtwoord"
 security.new_password_intro: "Kies je nieuwe wachtwoord."
 security.new_password_submit: "Herstellen"
+
+# Cookie consent (AVG)
+cookie.banner_text: "Deze site gebruikt cookies om je ervaring te verbeteren en het verkeer te meten."
+cookie.accept: "Accepteren"
+cookie.refuse: "Weigeren"
 
 # Stripe Webhook
 stripe.webhook_secret_not_configured: "Webhook-geheim niet geconfigureerd"
@@ -351,6 +401,7 @@ stripe.invalid_payload: "Ongeldig payload"
 stripe.invalid_signature: "Ongeldige handtekening"
 stripe.no_matching_order: "Geen overeenkomende bestelling"
 stripe.already_paid: "Al betaald"
+stripe.amount_mismatch: "Het betaalde bedrag komt niet overeen met de bestelling."
 stripe.ok: "OK"
 
 # Press
@@ -361,3 +412,89 @@ press.category_video: "Video & TV-reportages"
 press.category_written: "Geschreven Pers"
 press.category_official: "Officiële Publicaties"
 press.read_more: "Lees meer"
+
+# Navigatie — juridische pagina's
+nav.privacy: "Privacybeleid"
+nav.legal_mentions: "Juridische vermeldingen"
+nav.cookies_policy: "Cookiebeleid"
+
+# Cookietoestemming (AVG) — beheerknop
+cookie.manage: "Mijn cookies beheren"
+
+# Juridische pagina's (AVG)
+legal.last_updated: "Laatst bijgewerkt: juni 2026"
+
+# Juridische vermeldingen
+legal.mentions.title: "Juridische vermeldingen"
+legal.mentions.meta_description: "Juridische vermeldingen van het Steegje van Adem: verantwoordelijke uitgever, hostingprovider en contactgegevens."
+legal.mentions.editor_title: "Verantwoordelijke uitgever"
+legal.mentions.host_title: "Hostingprovider"
+legal.mentions.contact_title: "Contact"
+legal.mentions.contact_text: "Voor elke vraag kun je ons bereiken via ons"
+legal.mentions.ip_title: "Intellectuele eigendom"
+legal.mentions.ip_text: "Alle inhoud van deze website (teksten, foto's, illustraties, logo) is beschermd door het auteursrecht. Elke reproductie zonder voorafgaande toestemming is verboden."
+legal.mentions.editor_placeholder: "[TODO RGPD — ÉDITEUR RESPONSABLE : nom, statut (ASBL / personne physique), adresse, n° BCE à compléter]"
+legal.mentions.host_placeholder: "[TODO RGPD — HÉBERGEUR : raison sociale, adresse, pays à compléter]"
+legal.mentions.contact_placeholder: "[TODO RGPD — COORDONNÉES DE CONTACT : e-mail / téléphone à compléter]"
+
+# Privacybeleid
+legal.privacy.title: "Privacybeleid"
+legal.privacy.meta_description: "Privacybeleid van het Steegje van Adem: doeleinden, rechtsgrond, bewaartermijnen, doorgiften en je AVG-rechten."
+legal.privacy.intro: "Dit beleid legt uit welke persoonsgegevens we verzamelen, waarom, hoe lang we ze bewaren en welke rechten je hebt op grond van de Algemene Verordening Gegevensbescherming (AVG)."
+legal.privacy.controller_title: "Verwerkingsverantwoordelijke"
+legal.privacy.purposes_title: "Doeleinden van de verwerking"
+legal.privacy.legal_basis_title: "Rechtsgrond"
+legal.privacy.retention_title: "Bewaartermijnen"
+legal.privacy.recipients_title: "Ontvangers en doorgiften buiten de EU"
+legal.privacy.rights_title: "Jouw rechten"
+legal.privacy.cookies_title: "Cookies"
+legal.privacy.cookies_text: "Deze website gebruikt cookies. Voor details over de gebruikte cookies en hoe je je toestemming beheert, raadpleeg je ons"
+legal.privacy.controller_placeholder: "[TODO RGPD — RESPONSABLE DU TRAITEMENT : nom, adresse, n° BCE/ASBL à compléter]"
+legal.privacy.dpo_placeholder: "[TODO RGPD — CONTACT VIE PRIVÉE / DPO : adresse e-mail dédiée à compléter]"
+legal.privacy.purposes_intro: "Wij verwerken persoonsgegevens voor de volgende doeleinden:"
+legal.privacy.purposes_account: "<strong>Aanmaken en beheren van een account</strong> — registratie, authenticatie en toegang tot je bijdragegeschiedenis mogelijk maken."
+legal.privacy.purposes_newsletter: "<strong>Nieuwsbrief / mailinglijst</strong> — je informatie sturen over het steegje en zijn evenementen, alleen na vrijwillige inschrijving."
+legal.privacy.purposes_payment: "<strong>Betaling en bijdragen</strong> — giften en aankopen (begonia's, plantenbakken, paletten) verwerken via onze betaaldienstverlener."
+legal.privacy.purposes_contact: "<strong>Contactformulier</strong> — je vragen en verzoeken beantwoorden."
+legal.privacy.purposes_gallery: "<strong>Fotogalerij</strong> — afbeeldingen van het steegje tonen; in voorkomend geval tonen VIP-bijdragen de naam die je ons meedeelt."
+legal.privacy.purposes_analytics: "<strong>Publieksmeting</strong> — begrijpen hoe de site wordt gebruikt (alleen met je toestemming voor analytische cookies)."
+legal.privacy.basis_contract: "<strong>Uitvoering van een overeenkomst</strong> (AVG art. 6.1.b) — accountbeheer, verwerking van betalingen en bijdragen."
+legal.privacy.basis_consent: "<strong>Toestemming</strong> (AVG art. 6.1.a) — nieuwsbrief, cookies voor publieksmeting, weergave van je naam voor VIP-bijdragen. Op elk moment intrekbaar."
+legal.privacy.basis_legal: "<strong>Wettelijke verplichting</strong> (AVG art. 6.1.c) — bewaring van boekhoudkundige bewijsstukken."
+legal.privacy.basis_interest: "<strong>Gerechtvaardigd belang</strong> (AVG art. 6.1.f) — beveiliging van de site en fraudepreventie."
+legal.privacy.retention_invoicing: "<strong>Bestel- / factuurgegevens</strong> — <strong>7 jaar</strong> bewaard, overeenkomstig de Belgische wettelijke verplichting om boekhoudkundige stukken te bewaren."
+legal.privacy.retention_newsletter: "<strong>Nieuwsbrief</strong> — tot je je uitschrijft (uitschrijflink in elke e-mail)."
+legal.privacy.retention_contact: "<strong>Berichten van het contactformulier</strong> — <strong>30 dagen</strong> nadat je verzoek is behandeld."
+legal.privacy.retention_account: "<strong>Gebruikersaccount</strong> — zolang het account actief is; verwijderd op verzoek."
+legal.privacy.recipients_intro: "Je gegevens worden nooit verkocht. Ze kunnen worden gedeeld met verwerkers die strikt noodzakelijk zijn voor de werking van de dienst:"
+legal.privacy.recipients_stripe: "<strong>Stripe</strong> — betaaldienstverlener. De verwerking van betalingen kan een <strong>doorgifte van gegevens naar de Verenigde Staten (VS)</strong> met zich meebrengen. Deze doorgifte wordt geregeld door een <strong>gegevensverwerkingsovereenkomst (DPA)</strong> en door de <strong>standaardcontractbepalingen (SCC)</strong> van de Europese Commissie, die een passend beschermingsniveau waarborgen."
+legal.privacy.recipients_host_placeholder: "[TODO RGPD — HÉBERGEUR : nom et localisation des serveurs à compléter]"
+legal.privacy.recipients_analytics: "<strong>Google Analytics</strong> — geanonimiseerde publieksmeting, alleen na toestemming (zie het cookiebeleid)."
+legal.privacy.rights_intro: "Op grond van de AVG heb je de volgende rechten op je gegevens:"
+legal.privacy.rights_access: "<strong>Recht op inzage</strong> — een kopie verkrijgen van de gegevens die wij over je bewaren."
+legal.privacy.rights_rectification: "<strong>Recht op rectificatie</strong> — onjuiste gegevens corrigeren."
+legal.privacy.rights_erasure: "<strong>Recht op gegevenswissing</strong> („recht om vergeten te worden”) — onder voorbehoud van wettelijke bewaarverplichtingen."
+legal.privacy.rights_portability: "<strong>Recht op overdraagbaarheid</strong> — je gegevens ontvangen in een gestructureerd, leesbaar formaat."
+legal.privacy.rights_objection: "<strong>Recht van bezwaar</strong> — bezwaar maken tegen een verwerking op basis van gerechtvaardigd belang."
+legal.privacy.rights_withdraw: "<strong>Recht om je toestemming in te trekken</strong> — op elk moment, zonder afbreuk te doen aan de rechtmatigheid van de eerdere verwerking."
+legal.privacy.rights_exercise: "Om deze rechten uit te oefenen, neem contact met ons op:"
+legal.privacy.rights_exercise_placeholder: "[TODO RGPD — CONTACT EXERCICE DES DROITS : adresse e-mail / postale à compléter]"
+legal.privacy.rights_complaint: "Je hebt ook het recht om een klacht in te dienen bij de <strong>Gegevensbeschermingsautoriteit (GBA / APD)</strong>, Drukpersstraat 35, 1000 Brussel —"
+
+# Cookiebeleid
+legal.cookies.title: "Cookiebeleid"
+legal.cookies.meta_description: "Cookiebeleid van het Steegje van Adem: cookiecategorieën (essentieel, publieksmeting, betaling), duur en hoe je je toestemming intrekt."
+legal.cookies.intro: "Een cookie is een klein bestand dat op je apparaat wordt geplaatst. We delen cookies in per categorie; alleen essentiële cookies worden zonder je toestemming geplaatst."
+legal.cookies.essential_title: "Essentiële cookies"
+legal.cookies.essential_text: "Onmisbaar voor de werking van de site en je veiligheid. Ze kunnen niet worden uitgeschakeld."
+legal.cookies.analytics_title: "Cookies voor publieksmeting"
+legal.cookies.analytics_text: "Ze helpen ons begrijpen hoe de site wordt gebruikt. Ze worden pas geplaatst na je uitdrukkelijke toestemming."
+legal.cookies.payment_title: "Betalingscookies"
+legal.cookies.payment_text: "Geplaatst door Stripe tijdens een betaling, om de transactie te beveiligen en fraude te voorkomen."
+legal.cookies.revoke_title: "Hoe trek je je toestemming in"
+legal.cookies.revoke_text: "Je kunt je toestemming op elk moment wijzigen of intrekken via de knop hieronder, of door cookies te verwijderen in de instellingen van je browser."
+legal.cookies.essential_session: "<strong>Sessie (PHPSESSID)</strong> — behoud van de sessie (winkelmandje, authenticatie). Duur: sessie."
+legal.cookies.essential_csrf: "<strong>CSRF-token</strong> — bescherming van formulieren tegen cross-site request forgery. Duur: sessie."
+legal.cookies.essential_consent: "<strong>cookie_consent</strong> — onthoudt je cookiekeuze. Duur: 6 maanden."
+legal.cookies.analytics_ga: "<strong>Google Analytics (_ga, _ga_*)</strong> — geanonimiseerde publieksmeting (anonymize_ip ingeschakeld). Duur: tot 13 maanden. Alleen geladen na je toestemming."
+legal.cookies.payment_stripe: "<strong>Stripe (__stripe_mid, __stripe_sid)</strong> — beveiliging van de betaling en fraudepreventie, geplaatst tijdens een betaling. Duur: tot 1 jaar."

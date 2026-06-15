@@ -5,7 +5,7 @@
 {% block meta_description %}{{ 'press.meta_description'|trans }}{% endblock %}
 {% block og_title %}{{ page.title }} | {{ site_brand.title }}{% endblock %}
 {% block og_description %}{{ 'press.meta_description'|trans }}{% endblock %}
-{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.png')) }}{% endblock %}
+{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.jpg')) }}{% endblock %}
 
 {% block head %}
     {{ parent() }}
@@ -22,6 +22,10 @@
         }
     }
     </script>
+    {% include '_partials/breadcrumb_jsonld.html.twig' with { items: [
+        { name: 'nav.home'|trans, url: url('app_home') },
+        { name: page.title, url: url('app_press') }
+    ] } %}
 {% endblock %}
 
 {% block street_main %}
@@ -35,11 +39,17 @@
                 <div class="press-category" id="press-{{ categoryKey }}">
                     <h2 class="press-category__title">
                         {% if categoryKey == 'video' %}
-                            <span class="press-category__icon">📺</span>
+                            <span class="press-category__icon" aria-hidden="true">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                            </span>
                         {% elseif categoryKey == 'written' %}
-                            <span class="press-category__icon">📰</span>
+                            <span class="press-category__icon" aria-hidden="true">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
+                            </span>
                         {% else %}
-                            <span class="press-category__icon">🏛️</span>
+                            <span class="press-category__icon" aria-hidden="true">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+                            </span>
                         {% endif %}
                         {{ category.title }}
                     </h2>

@@ -4,7 +4,29 @@
 {% block meta_description %}{{ 'gallery.meta_description'|trans }}{% endblock %}
 {% block og_title %}{{ page.title }} | {{ site_brand.title }}{% endblock %}
 {% block og_description %}{{ 'gallery.meta_description'|trans }}{% endblock %}
-{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.png')) }}{% endblock %}
+{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.jpg')) }}{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ImageGallery",
+        "name": "{{ page.title }}",
+        "description": "{{ 'gallery.meta_description'|trans }}",
+        "url": "{{ app.request.schemeAndHttpHost ~ app.request.pathInfo }}",
+        "provider": {
+            "@type": "Organization",
+            "name": "{{ site_brand.title }}",
+            "url": "{{ app.request.schemeAndHttpHost }}"
+        }
+    }
+    </script>
+    {% include '_partials/breadcrumb_jsonld.html.twig' with { items: [
+        { name: 'nav.home'|trans, url: url('app_home') },
+        { name: page.title, url: url('app_gallery') }
+    ] } %}
+{% endblock %}
 
 {% block street_main %}
 <div class="">

@@ -23,6 +23,34 @@ User-agent: Pinterest
 Allow: /
 
 # =========================
+# Crawlers IA (AEO / GEO)
+# Autorisés explicitement à parcourir le contenu public, mais les zones
+# privées (admin, profil, paiement, technique) restent bloquées.
+# NB : un robot qui matche son propre groupe ignore le groupe « * », d'où
+# la répétition des Disallow critiques ici.
+# =========================
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-Web
+User-agent: PerplexityBot
+User-agent: Google-Extended
+User-agent: CCBot
+Allow: /
+Disallow: /admin/
+Disallow: /profile/
+Disallow: /connexion
+Disallow: /inscription
+Disallow: /reset-password
+Disallow: /panier
+Disallow: /checkout
+Disallow: /payment/
+Disallow: /api/
+Disallow: /_profiler/
+Disallow: /_error/
+
+# =========================
 # Moteurs de recherche
 # =========================
 User-agent: *
@@ -55,4 +83,7 @@ Disallow: /_profiler/
 Disallow: /_error/
 
 # Sitemap
-Sitemap: https://ruelledadem.com/sitemap.xml
+Sitemap: https://www.ruelledadem.com/sitemap.xml
+
+# Résumé structuré pour les moteurs de recherche IA (AEO / GEO)
+# https://www.ruelledadem.com/llms.txt

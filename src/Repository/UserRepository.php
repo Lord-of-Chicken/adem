@@ -12,6 +12,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
+ * Repository for User entity.
+ *
  * @extends ServiceEntityRepository<User>
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
@@ -23,6 +25,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
+     *
+     * @param PasswordAuthenticatedUserInterface $user The user to upgrade
+     * @param string $newHashedPassword The new hashed password
+     * @return void
+     * @throws UnsupportedUserException If user is not supported
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
@@ -35,21 +42,60 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    /**
+     * Finds a user by email address.
+     *
+     * @param string $email The email address
+     * @return User|null The user or null if not found
+     */
     public function findOneByEmail(string $email): ?User
     {
         return $this->findOneBy(['email' => $email]);
     }
 
     /**
-     * @return list<User>
+     * Returns a paginated slice of users, optionally filtered by newsletter status.
+     *
+     * @param int $page The 1-based page number
+     * @param int $perPage The number of users per page
+     * @param bool|null $newsletter Newsletter filter, or null for all users
+     * @return list<User> The users on the requested page
      */
-    public function findByNewsletterSubscription(bool $subscribed): array
+    public function findPaginated(int $page, int $perPage, ?bool $newsletter = null): array
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.newsletter = :subscribed')
-            ->setParameter('subscribed', $subscribed)
+        $page = max(1, $page);
+        $perPage = max(1, $perPage);
+
+        $qb = $this->createQueryBuilder('u')
             ->orderBy('u.id', 'ASC')
-            ->getQuery()
-            ->getResult();
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage);
+
+        if ($newsletter !== null) {
+            $qb->andWhere('u.newsletter = :subscribed')
+                ->setParameter('subscribed', $newsletter);
+        }
+
+        /** @var list<User> */
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Counts users, optionally filtered by newsletter status.
+     *
+     * @param bool|null $newsletter Newsletter filter, or null for all users
+     * @return int The total number of matching users
+     */
+    public function countUsers(?bool $newsletter = null): int
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)');
+
+        if ($newsletter !== null) {
+            $qb->andWhere('u.newsletter = :subscribed')
+                ->setParameter('subscribed', $newsletter);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 }

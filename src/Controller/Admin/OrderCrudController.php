@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Entity\Order;
+use App\Enum\OrderStatus;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -14,6 +17,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * @extends AbstractCrudController<Order>
+ */
 class OrderCrudController extends AbstractCrudController
 {
     public function __construct(
@@ -34,9 +40,9 @@ class OrderCrudController extends AbstractCrudController
             TextField::new('stripeCheckoutSessionId', $this->translator->trans('admin.order_stripe_session'))->hideOnIndex(),
             ChoiceField::new('status', $this->translator->trans('admin.order_status'))
                 ->setChoices([
-                    $this->translator->trans('admin.order_status_pending') => 'pending',
-                    $this->translator->trans('admin.order_status_paid') => 'paid',
-                    $this->translator->trans('admin.order_status_cancelled') => 'cancelled',
+                    $this->translator->trans('admin.order_status_pending') => OrderStatus::Pending,
+                    $this->translator->trans('admin.order_status_paid') => OrderStatus::Paid,
+                    $this->translator->trans('admin.order_status_cancelled') => OrderStatus::Failed,
                 ]),
             IntegerField::new('totalCents', $this->translator->trans('admin.order_amount_cents')),
             DateTimeField::new('createdAt', $this->translator->trans('admin.order_created_at'))->hideOnForm(),

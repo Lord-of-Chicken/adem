@@ -1,0 +1,82 @@
+{% extends 'layout/street.html.twig' %}
+
+{% block title %}{{ 'legal.mentions.title'|trans }} | {{ site_brand.title }}{% endblock %}
+
+{% block meta_description %}{{ 'legal.mentions.meta_description'|trans }}{% endblock %}
+{% block og_title %}{{ 'legal.mentions.title'|trans }} | {{ site_brand.title }}{% endblock %}
+{% block og_description %}{{ 'legal.mentions.meta_description'|trans }}{% endblock %}
+{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.jpg')) }}{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "{{ 'legal.mentions.title'|trans|e('js') }}",
+        "description": "{{ 'legal.mentions.meta_description'|trans|e('js') }}",
+        "url": "{{ app.request.schemeAndHttpHost ~ app.request.pathInfo }}",
+        "inLanguage": "{{ app.request.locale }}",
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": "{{ site_brand.title|e('js') }}",
+            "url": "{{ url('app_home') }}"
+        },
+        "breadcrumb": {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "{{ 'nav.home'|trans|e('js') }}", "item": "{{ url('app_home') }}" },
+                { "@type": "ListItem", "position": 2, "name": "{{ 'legal.mentions.title'|trans|e('js') }}", "item": "{{ app.request.schemeAndHttpHost ~ app.request.pathInfo }}" }
+            ]
+        }
+    }
+    </script>
+{% endblock %}
+
+{% block street_main %}
+<div class="main main--narrow">
+    <section class="section section--auth">
+        <div class="section__inner section__inner--narrow legal-page">
+            <h1 class="section__title section__title--tag">{{ 'legal.mentions.title'|trans }}</h1>
+            <p class="legal-page__updated">{{ 'legal.last_updated'|trans }}</p>
+
+            <div class="card legal-page__body">
+                {# Éditeur responsable #}
+                <h2 class="card__title">{{ 'legal.mentions.editor_title'|trans }}</h2>
+                <p>
+                    {# Placeholder à compléter par l'éditeur — voir clé legal.mentions.editor_placeholder #}
+                    <strong>{{ 'legal.mentions.editor_placeholder'|trans }}</strong>
+                </p>
+
+                {# Hébergeur #}
+                <h2 class="card__title">{{ 'legal.mentions.host_title'|trans }}</h2>
+                <p>
+                    {# Placeholder à compléter par l'éditeur — voir clé legal.mentions.host_placeholder #}
+                    <strong>{{ 'legal.mentions.host_placeholder'|trans }}</strong>
+                </p>
+
+                {# Contact #}
+                <h2 class="card__title">{{ 'legal.mentions.contact_title'|trans }}</h2>
+                <p>
+                    {{ 'legal.mentions.contact_text'|trans }}
+                    <a href="{{ path('app_contact') }}">{{ 'nav.contact'|trans }}</a>.
+                </p>
+                <p>
+                    {# Placeholder à compléter par l'éditeur — voir clé legal.mentions.contact_placeholder #}
+                    <strong>{{ 'legal.mentions.contact_placeholder'|trans }}</strong>
+                </p>
+
+                {# Propriété intellectuelle #}
+                <h2 class="card__title">{{ 'legal.mentions.ip_title'|trans }}</h2>
+                <p>{{ 'legal.mentions.ip_text'|trans }}</p>
+            </div>
+
+            <p class="legal-page__nav">
+                <a href="{{ path('app_privacy') }}">{{ 'nav.privacy'|trans }}</a>
+                &middot;
+                <a href="{{ path('app_cookies_policy') }}">{{ 'nav.cookies_policy'|trans }}</a>
+            </p>
+        </div>
+    </section>
+</div>
+{% endblock %}

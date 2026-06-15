@@ -7,11 +7,16 @@
 # To list all registered routes, run the following command:
 #   bin/console debug:router
 
-controllers:
-    resource: ../src/Controller/
+# Sitemap — must be at root, no locale prefix (Google doesn't follow redirects)
+sitemap:
+    resource: ../src/Controller/SitemapController.php
     type: attribute
 
-# Locale-aware routes
+root:
+    resource: ../src/Controller/RootController.php
+    type: attribute
+
+# Locale-aware routes (seule source de routes publiques)
 locale_routes:
     resource: ../src/Controller/
     type: attribute
@@ -21,3 +26,6 @@ locale_routes:
         nl: /nl
     requirements:
         _locale: 'fr|en|nl'
+    exclude:
+        - ../src/Controller/SitemapController.php
+        - ../src/Controller/RootController.php

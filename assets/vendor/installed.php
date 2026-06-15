@@ -49,4 +49,14 @@
     array (
     ),
   ),
+  'swiper/modules' => 
+  array (
+    'version' => '12.1.4',
+    'dependencies' => 
+    array (
+    ),
+    'extraFiles' => 
+    array (
+    ),
+  ),
 );

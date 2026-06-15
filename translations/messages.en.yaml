@@ -1,5 +1,5 @@
 # Homepage
-home.title: "Ruelle d'Adem"
+home.title: "Support Adem — his Brussels alley needs you"
 home.subtitle: "A corner of the street waiting for your flowers"
 home.cta: "So, how many begonias at €1, planters or pallets are you going to offer?"
 home.offres: "Our offers"
@@ -34,35 +34,41 @@ nav.admin: "Admin"
 nav.menu: "Menu"
 nav.main_navigation: "Main navigation"
 
+# Language selector
+lang.fr: "French"
+lang.en: "English"
+lang.nl: "Dutch"
+lang.choose: "Choose language"
+
 # About
 about.meta_description: "Discover the story of Adem, a young boy from Uccle who transformed his alley into a living garden, twice named Bruxellois de l'Année."
-about.who_title: "QUI EST ADEM ?"
-about.section_2022_title: "2022. NAISSANCE DE LA RUELLE D'ADEM"
+about.who_title: "WHO IS ADEM?"
+about.section_2022_title: "2022. THE BIRTH OF ADEM'S ALLEY"
 about.section_2022_text: |-
-  Du haut de ses sept ans, aidé par ses parents, Adem s'amuse. Il décore sa façade. Il plante. Bricole. Imagine. Crée. Peint. Fabrique des nichoirs et des mangeoires pour les nombreux oiseaux de la ruelle. Résultat, il décroche un premier prix du concours "Uccle en Fleurs". Le magazine communal lui consacre un article. Le blog "Tram 51" et d'autres également. L'hebdomadaire "Le Vif" lui consacre une pleine page et titre "C'est beau comme la ruelle d'Adem.". C'en est fini du "Chemin des Roses", place à "La ruelle d'Adem".
-about.section_expo_title: "PREMIÈRE EXPO"
+  Just seven years old and helped by his parents, Adem has fun. He decorates his front wall. He plants. Tinkers. Imagines. Creates. Paints. He builds birdhouses and feeders for the alley's many birds. As a result, he wins first prize in the "Uccle en Fleurs" contest. The local council magazine devotes an article to him. So does the "Tram 51" blog and others. The weekly "Le Vif" gives him a full page with the headline "As beautiful as Adem's alley." The "Chemin des Roses" is no more — make way for "Adem's Alley".
+about.section_expo_title: "FIRST EXHIBITION"
 about.section_expo_text: |-
-  L'artiste Yorgo (Yorgoland) le remarque. Il apprécie l'originalité de ces nichoirs fabriqués au départ de "déchets", soit des diverses choses qu'Adem trouve sur les trottoirs ou achète en brocantes. En septembre, Yorgo et le collectif BrAMS invitent Adem à exposer en compagnie d'artistes reconnus. Pascal Bernier, Fabio Denker, JPMDR, Serge Vankerck, Didier Engels, Pascal Duquenne, Denis Meyers sont du nombre. Il y rencontre Elvis Pompilio qui l'invite à visiter son atelier. Nombre d'artistes lui achètent un nichoir. Des visiteurs également. Tous l'encouragent à persévérer.
-about.section_2023_title: "2023 PROLONGATION DE LA RUELLE"
+  The artist Yorgo (Yorgoland) notices him. He admires the originality of these birdhouses built from "waste" — the various things Adem finds on the pavements or buys at flea markets. In September, Yorgo and the BrAMS collective invite Adem to exhibit alongside established artists. Pascal Bernier, Fabio Denker, JPMDR, Serge Vankerck, Didier Engels, Pascal Duquenne and Denis Meyers are among them. There he meets Elvis Pompilio, who invites him to visit his studio. Many artists buy a birdhouse from him. So do visitors. Everyone encourages him to keep going.
+about.section_2023_title: "2023 EXTENDING THE ALLEY"
 about.section_2023_text: |-
-  Boosté par ces encouragements, Adem veut à tout prix prolonger sa ruelle. À tout prix, car les choses ont un coût. Une demande de subside est introduite et obtenue. Les mille euros reçus couvrent à peine la moitié des frais. Qu'importe. On prolonge. Papa ponce et maman fleurit. Les jouets qui n'intéressent plus Adem sont mis à contribution et transformés en nichoirs. Ce qui lui fera dire plus tard "Ma ruelle, c'est un peu toute ma vie". Fin de l'automne, la ruelle a grandi de trente mètres.
-about.section_expos_title: "LES EXPOS"
+  Boosted by this encouragement, Adem is determined to extend his alley at any cost. At any cost indeed, because everything has a price. A grant application is submitted and approved. The thousand euros received barely cover half the costs. Never mind. The work goes on. Dad sands and Mum plants. The toys Adem has outgrown are put to use and turned into birdhouses — which will later lead him to say "My alley is a bit like my whole life." By the end of autumn, the alley has grown by thirty metres.
+about.section_expos_title: "THE EXHIBITIONS"
 about.section_expos_text: |-
-  "Meet my Arts - Parcours d'artistes - Uccle" attire nombre de visiteurs et popularise la ruelle. Vu l'étonnement qu'il provoque, Adem est à nouveau invité à une expo du collectif BrAMS. Ses nichoirs sur le thème des bananes ne passent pas inaperçus et prennent place à côté des œuvres de Didier Plash, Lou Van T Riet, Jean Pol Lejeune, Stéphane Sola et de tant d'autres. Rebelotte, les nichoirs d'Adem se vendent comme des petits pains. Les artistes en sont fans. Motivé. Gonflé à bloc, encouragé par les riverains, Adem est plus que jamais décidé à poursuivre son chemin, pardon sa ruelle.
-about.section_2024_title: "2024 UN DÉFI INSENSÉ"
+  "Meet my Arts - Artists' Trail - Uccle" draws many visitors and makes the alley popular. Given the amazement he sparks, Adem is once again invited to a BrAMS collective exhibition. His banana-themed birdhouses do not go unnoticed and take their place beside works by Didier Plash, Lou Van T Riet, Jean Pol Lejeune, Stéphane Sola and many others. Once again, Adem's birdhouses sell like hot cakes. The artists are fans. Motivated. Fired up and encouraged by the locals, Adem is more determined than ever to keep going on his path — sorry, his alley.
+about.section_2024_title: "2024 AN INSANE CHALLENGE"
 about.section_2024_text: |-
-  Finies les expos. Place aux dépenses. En compagnie de ses financiers, pardon, de ses parents, Adem veut gagner son défi. Il veut étendre sa ruelle de la rue de la Fauvette jusqu'à la chaussée d'Alsemberg. Soit une centaine de mètres. Le subside est dépensé. La recette des ventes de ses nichoirs aussi. Il faut acheter ou trouver des dizaines de palettes, des jardinières, des centaines de fleurs. Il faut aussi de nouvelles machines, un système d'arrosage plus performant. Impossible de tout acheter. Il faut bricoler mais la ruelle s'industrialise. La presse s'intéresse de plus en plus à ce petit phénomène. Voilà qui stimule tout autant que les passants et visiteurs qui y flânent, émerveillés de la quiétude et du charme qui s'en dégage. Certains se rappellent qu'il y a peu encore, la ruelle était infestée de fumeurs de crack, depuis horrifiés d'admettre que leur quiétude à eux ne convenait guère avec l'apparition de passants, de promeneurs, de familles, de curieux, de groupes d'enfants emmenés là par une école ou un autre organisme. Fin de l'été, le pari insensé est quasi gagné, la ruelle est "nettoyée" et parcourt l'entièreté du chemin des roses. Mais il reste du travail.
+  No more exhibitions. Time to spend. Together with his financiers — sorry, his parents — Adem wants to win his challenge. He wants to extend his alley from rue de la Fauvette all the way to chaussée d'Alsemberg. Around a hundred metres. The grant is spent. So are the proceeds from selling his birdhouses. He needs to buy or find dozens of pallets, planters and hundreds of flowers. He also needs new machines and a more efficient watering system. Buying everything is impossible. He has to improvise, yet the alley is becoming industrialised. The press takes more and more interest in this little phenomenon. That is just as stimulating as the passers-by and visitors who stroll there, marvelling at the calm and charm it gives off. Some remember that not so long ago the alley was infested with crack smokers, since horrified to admit that their own peace and quiet did not sit well with the appearance of passers-by, walkers, families, the curious, and groups of children brought there by a school or another organisation. By the end of summer the insane bet is nearly won, the alley is "cleaned up" and runs the entire length of the Chemin des Roses. But there is still work to do.
 about.section_2025_title: |-
-  2025 - ADEM, DOUBLEMENT ÉLU "BRUXELLOIS DE L'ANNÉE"
+  2025 - ADEM, TWICE NAMED "BRUSSELS RESIDENT OF THE YEAR"
 about.section_2025_text: |-
-  Il restait du travail. Alors on continue. Plus que jamais aidé par ses parents, Adem crée d'autres nichoirs. D'autres décos. Peaufine. Reçoit des journalistes. Et soudain, dans l'étonnement général, la sentence tombe. Adem est élu "Bruxellois de l'Année". À peine remis de ses émotions et du battage médiatique engendré par cette distinction que le média néerlandophone "BRUZZ" le déclare à son tour "Brusselaar van het jaar". Et, histoire que l'année médiatique se termine en conte de Noël, la VRT invite Adem à prendre part à l'émission "Vrede op Aarde" diffusée le jour de Noël. Il y reçoit le prix de l'émission.
+  There was still work to do. So it goes on. Helped more than ever by his parents, Adem creates more birdhouses. More decorations. He fine-tunes. He welcomes journalists. And suddenly, to everyone's astonishment, the verdict comes. Adem is named "Brussels Resident of the Year". Barely recovered from the emotion and media buzz this honour brings, the Dutch-speaking outlet "BRUZZ" in turn declares him "Brusselaar van het jaar". And, so the media year ends like a Christmas tale, the VRT invites Adem to take part in the "Vrede op Aarde" programme broadcast on Christmas Day. There he receives the show's prize.
 about.section_2026_title: "2026"
-about.section_2026_text1: "Adem expose les nouveaux nichoirs, cette fois très colorés, en compagnie de Yorgo et Elvis Pompilio (qu'il considère comme ses parrains artistiques) à la Fashion'Art (Dour-Mons)."
-about.section_2026_text2: "Le nouveau subside demandé à la commune est accordé, son montant est vite englouti dans l'achat de matériel, de pots, de plantes et surtout d'un relooking qui rendra la ruelle plus attrayante et verte en hiver."
+about.section_2026_text1: "Adem exhibits the new birdhouses, this time brightly coloured, alongside Yorgo and Elvis Pompilio (whom he considers his artistic mentors) at Fashion'Art (Dour-Mons)."
+about.section_2026_text2: "The new grant requested from the council is approved; its amount is quickly swallowed up buying materials, pots, plants and above all a makeover that will make the alley more attractive and green in winter."
 about.section_2026_text3: |-
-  Mais les passions d'Adem ont changé. Finis les Minions et les Pokémons. Maintenant ils ornent ses nichoirs, tout comme sa collection de Star Wars. Place à la Nintendo et à la PlayStation. Place à d'autres délires artistiques. Adem rêve plus grand, il imagine des ensembles sur un thème. "Les Rézaux Zoziaux", "Nature en ville", "Les nichoirs Royaux" (fabriqués au départ des breloques et de souvenirs de son défunt grand-père) et d'autres idées qu'il exposera cet été.
-about.section_cta_title: "À VOTRE BON CŒUR MESSIEURS, DAMES... FAIS UNE FLEUR À ADEM !"
-about.section_cta_text: "Adem doit maintenant acheter des fleurs. Beaucoup de fleurs. Des centaines de bégonias, des dizaines de géraniums et d'autres essences. Placer d'autres palettes. Arroser avec du matériel plus professionnel. Faire que la beauté de la ruelle perdure. Voire être à l'initiative d'autres ruelles à créer ailleurs. On peut rêver. Adem aime rêver. Il compte sur toi pour que ses rêves deviennent réalité. Fais une fleur à Adem."
+  But Adem's passions have changed. Gone are the Minions and the Pokémon. Now they decorate his birdhouses, just like his Star Wars collection. Make way for Nintendo and PlayStation. Make way for other artistic flights of fancy. Adem dreams bigger; he imagines themed sets. "Les Rézaux Zoziaux", "Nature in the City", "The Royal Birdhouses" (built from the trinkets and keepsakes of his late grandfather) and other ideas he will exhibit this summer.
+about.section_cta_title: "OUT OF THE GOODNESS OF YOUR HEART, LADIES AND GENTLEMEN... DO ADEM A FAVOUR!"
+about.section_cta_text: "Adem now has to buy flowers. Lots of flowers. Hundreds of begonias, dozens of geraniums and other varieties. Set up more pallets. Water with more professional equipment. Make sure the alley's beauty lasts. Perhaps even spark the creation of other alleys elsewhere. One can dream. Adem loves to dream. He is counting on you to make his dreams come true. Do Adem a favour."
 
 # FAQ
 faq.title: "FAQ - Frequently Asked Questions"
@@ -77,8 +83,8 @@ faq.q4.question: "Where do the flowers go?"
 faq.q4.answer: "Flowers and planters are installed directly in la Ruelle d'Adem. You can come see them in person — and show everyone what you offered!"
 faq.q5.question: "Is the project secure?"
 faq.q5.answer: "Yes, payments are secured via Stripe. We don't store any banking information and all transactions are encrypted."
-faq.q6.question: "POURQUOI DES BÉGONIAS ?"
-faq.q6.answer: "De toutes les fleurs qu'Adem a plantées, ce sont les bégonias qui ont le mieux résisté. Et surtout, ce sont les bégonias qui ont le mieux coloré sa ruelle. Un véritable régal pour les yeux où le(s) bégonia(s) que tu as offert(s) va ou vont trôner en bonne compagnie."
+faq.q6.question: "WHY BEGONIAS?"
+faq.q6.answer: "Of all the flowers Adem has planted, the begonias are the ones that held up best. And above all, the begonias are the ones that gave his alley the most colour. A real treat for the eyes, where the begonia(s) you have given will take pride of place in good company."
 
 # Cart
 cart.title: "Cart"
@@ -123,6 +129,7 @@ js.cart.cart: "View cart"
 js.cart.invalid_amount: "Please enter a valid amount."
 js.cart.add_error: "Error adding to cart"
 js.cart.technical_error: "Technical error."
+js.cart.donor_consent_required: "Please confirm your consent to display your name."
 js.confirm.default_title: "Confirmation"
 js.confirm.default_message: "Confirm this action?"
 js.confirm.confirm: "Confirm"
@@ -140,6 +147,8 @@ payment.processing: "Payment is being processed or has failed."
 payment.verification_error: "Unable to verify payment."
 payment.free_donation: "Free donation of "
 payment.donation_of: " - Donation of: "
+payment.amount_invalid: "Invalid amount. The amount must be between €1 and €100,000."
+payment.donor_name_invalid: "The donor name is too long (255 characters maximum)."
 
 # Admin
 admin.dashboard: "Dashboard"
@@ -218,8 +227,12 @@ admin.brightness: "Brightness"
 admin.actions_label: "Actions"
 admin.image_editor: "Image Editor"
 admin.view: "View"
+admin.pagination: "Pagination"
+admin.previous: "Previous"
+admin.next: "Next"
 admin.description: "Description"
 admin.edit: "Edit"
+admin.drag_to_reorder: "Drag to reorder"
 admin.delete: "Delete"
 admin.order: "Order"
 admin.rotate_left: "Rotate Left"
@@ -243,6 +256,9 @@ admin.order_label_plural: "Purchases"
 admin.roles: "Roles"
 admin.role_admin: "Admin"
 admin.role_user: "User"
+admin.lang_fr: "French"
+admin.lang_en: "English"
+admin.lang_nl: "Dutch"
 
 # Profile
 profile.title: "My Profile"
@@ -295,7 +311,10 @@ home.tier_free_price: "Free"
 home.add: "Add"
 home.displayed_name: "Displayed name"
 home.name_placeholder: "Your name or Anonymous"
+home.donor_consent: "I agree that the name I entered may be displayed publicly on the website and shared with our payment provider Stripe (outside the EU) to process my contribution."
 home.add_to_cart: "Add to cart"
+home.qty_minus: "Decrease quantity"
+home.qty_plus: "Increase quantity"
 home.amount: "Amount"
 home.amount_example: "Ex: 15"
 home.anonymous: "Anonymous"
@@ -311,6 +330,8 @@ contact.error: "Error sending the message. Please try again later."
 contact.validation_error: "Error validating the form."
 contact.rate_limited: "Too many messages sent. Try again in one hour."
 contact.email_subject: "Contact"
+contact.privacy_disclaimer: "The data you submit through this form (name, email, message) is used only to handle your request, on the basis of your consent (GDPR art. 6.1.a), and kept for a maximum of 12 months. You can exercise your rights of access, rectification and erasure at any time."
+contact.privacy_link: "Learn more about how we process your data"
 
 # Gallery
 gallery.meta_description: "Discover Adem's alley through photos and videos — a unique place in Uccle that became a tourist attraction thanks to a 7-year-old child."
@@ -323,13 +344,36 @@ registration.title: "Create an account"
 registration.intro: "Sign up to add formulas to your cart."
 registration.submit: "Sign up"
 registration.hint_prefix: "Already registered?"
+registration.form.first_name: "First name"
+registration.form.last_name: "Last name"
+registration.form.email: "Email"
+registration.form.newsletter: "Would you like to be kept informed about upcoming events?"
+registration.form.age_confirm: "I confirm that I am 16 years old or older."
+registration.form.age_required: "You must be 16 years old or older to register."
+registration.newsletter_double_optin: "A confirmation email has been sent to you: click the link to confirm your newsletter subscription."
+
+# Newsletter double opt-in
+newsletter.email_subject: "Confirm your subscription to the Ruelle d'Adem newsletter"
+newsletter.email_text: "Confirm your newsletter subscription by opening this link: %url%"
+newsletter.email_html_p1: "Thanks for your interest! To complete your subscription to the Ruelle d'Adem newsletter, please confirm your email address:"
+newsletter.email_confirm_link: "Confirm my subscription"
+newsletter.email_expires: "This link is valid for 7 days. If you did not request this, please ignore this email."
+newsletter.email_unsubscribe_hint: "Don't want to receive our emails anymore?"
+newsletter.email_unsubscribe_link: "Unsubscribe"
+newsletter.confirm_success: "Thank you! Your newsletter subscription is confirmed."
+newsletter.confirm_invalid: "This confirmation link is invalid or has expired."
+newsletter.unsubscribe_success: "You have been unsubscribed from the newsletter."
+newsletter.unsubscribe_invalid: "This unsubscribe link is invalid."
 
 # Security
 security.reset_sent: "If this email exists, a password reset link has been sent."
+security.reset_send_failed: "The email could not be sent at this time. Please try again later."
 security.reset_invalid: "The reset link is invalid or has expired."
 security.reset_success: "Your password has been successfully reset."
 security.login_intro: "Log in to manage your participation cart."
 security.login_submit: "Log in"
+security.email_label: "Email"
+security.password_label: "Password"
 security.forgot_password: "Forgot password?"
 security.register_hint: "Don't have an account yet?"
 security.email_subject: "Password Reset"
@@ -341,9 +385,15 @@ security.reset_title: "Reset Password"
 security.reset_intro: "Enter your email address to receive a reset link."
 security.reset_submit: "Send link"
 security.back_to_login: "Back to login"
+security.rate_limited: "Too many attempts. Please try again in a few minutes."
 security.new_password_title: "New Password"
 security.new_password_intro: "Choose your new password."
 security.new_password_submit: "Reset"
+
+# Cookie consent (GDPR)
+cookie.banner_text: "This site uses cookies to improve your experience and measure traffic."
+cookie.accept: "Accept"
+cookie.refuse: "Decline"
 
 # Stripe Webhook
 stripe.webhook_secret_not_configured: "Webhook secret not configured"
@@ -351,6 +401,7 @@ stripe.invalid_payload: "Invalid payload"
 stripe.invalid_signature: "Invalid signature"
 stripe.no_matching_order: "No matching order"
 stripe.already_paid: "Already paid"
+stripe.amount_mismatch: "The amount paid does not match the order."
 stripe.ok: "OK"
 
 # Press
@@ -361,3 +412,89 @@ press.category_video: "Video & TV Reports"
 press.category_written: "Written Press"
 press.category_official: "Official Publications"
 press.read_more: "Read more"
+
+# Navigation — legal pages
+nav.privacy: "Privacy Policy"
+nav.legal_mentions: "Legal Notice"
+nav.cookies_policy: "Cookie Policy"
+
+# Cookie consent (GDPR) — manage button
+cookie.manage: "Manage my cookies"
+
+# Legal pages (GDPR)
+legal.last_updated: "Last updated: June 2026"
+
+# Legal notice
+legal.mentions.title: "Legal Notice"
+legal.mentions.meta_description: "Legal notice for Adem's Alley: responsible publisher, hosting provider and contact details."
+legal.mentions.editor_title: "Responsible Publisher"
+legal.mentions.host_title: "Hosting Provider"
+legal.mentions.contact_title: "Contact"
+legal.mentions.contact_text: "For any question, you can reach us through our"
+legal.mentions.ip_title: "Intellectual Property"
+legal.mentions.ip_text: "All content on this website (text, photographs, illustrations, logo) is protected by copyright. Any reproduction without prior authorisation is prohibited."
+legal.mentions.editor_placeholder: "[TODO RGPD — ÉDITEUR RESPONSABLE : nom, statut (ASBL / personne physique), adresse, n° BCE à compléter]"
+legal.mentions.host_placeholder: "[TODO RGPD — HÉBERGEUR : raison sociale, adresse, pays à compléter]"
+legal.mentions.contact_placeholder: "[TODO RGPD — COORDONNÉES DE CONTACT : e-mail / téléphone à compléter]"
+
+# Privacy policy
+legal.privacy.title: "Privacy Policy"
+legal.privacy.meta_description: "Privacy policy for Adem's Alley: purposes, legal basis, retention periods, transfers and your GDPR rights."
+legal.privacy.intro: "This policy explains which personal data we collect, why, how long we keep it and what your rights are under the General Data Protection Regulation (GDPR)."
+legal.privacy.controller_title: "Data Controller"
+legal.privacy.purposes_title: "Purposes of Processing"
+legal.privacy.legal_basis_title: "Legal Basis"
+legal.privacy.retention_title: "Retention Periods"
+legal.privacy.recipients_title: "Recipients and Transfers Outside the EU"
+legal.privacy.rights_title: "Your Rights"
+legal.privacy.cookies_title: "Cookies"
+legal.privacy.cookies_text: "This website uses cookies. For details of the cookies used and how to manage your consent, see our"
+legal.privacy.controller_placeholder: "[TODO RGPD — RESPONSABLE DU TRAITEMENT : nom, adresse, n° BCE/ASBL à compléter]"
+legal.privacy.dpo_placeholder: "[TODO RGPD — CONTACT VIE PRIVÉE / DPO : adresse e-mail dédiée à compléter]"
+legal.privacy.purposes_intro: "We process personal data for the following purposes:"
+legal.privacy.purposes_account: "<strong>Account creation and management</strong> — enabling registration, authentication and access to your contribution history."
+legal.privacy.purposes_newsletter: "<strong>Newsletter / mailing list</strong> — sending you information about the alley and its events, only after you sign up voluntarily."
+legal.privacy.purposes_payment: "<strong>Payment and contributions</strong> — processing donations and purchases (begonias, planters, pallets) through our payment provider."
+legal.privacy.purposes_contact: "<strong>Contact form</strong> — answering your questions and requests."
+legal.privacy.purposes_gallery: "<strong>Photo gallery</strong> — displaying images of the alley; where applicable, VIP contributions show the name you provide us."
+legal.privacy.purposes_analytics: "<strong>Audience measurement</strong> — understanding how the site is used (only with your consent to analytics cookies)."
+legal.privacy.basis_contract: "<strong>Performance of a contract</strong> (GDPR art. 6.1.b) — account management, processing of payments and contributions."
+legal.privacy.basis_consent: "<strong>Consent</strong> (GDPR art. 6.1.a) — newsletter, audience-measurement cookies, displaying your name for VIP contributions. Withdrawable at any time."
+legal.privacy.basis_legal: "<strong>Legal obligation</strong> (GDPR art. 6.1.c) — retention of accounting records."
+legal.privacy.basis_interest: "<strong>Legitimate interest</strong> (GDPR art. 6.1.f) — website security and fraud prevention."
+legal.privacy.retention_invoicing: "<strong>Order / invoicing data</strong> — kept for <strong>7 years</strong> in accordance with the Belgian legal obligation to retain accounting records."
+legal.privacy.retention_newsletter: "<strong>Newsletter</strong> — until you unsubscribe (unsubscribe link in every email)."
+legal.privacy.retention_contact: "<strong>Contact form messages</strong> — <strong>30 days</strong> after your request has been handled."
+legal.privacy.retention_account: "<strong>User account</strong> — for as long as the account is active; deleted on request."
+legal.privacy.recipients_intro: "Your data is never sold. It may be shared with processors strictly necessary for the operation of the service:"
+legal.privacy.recipients_stripe: "<strong>Stripe</strong> — payment provider. Payment processing may involve a <strong>transfer of data to the United States (USA)</strong>. This transfer is governed by a <strong>data processing agreement (DPA)</strong> and by the European Commission's <strong>standard contractual clauses (SCC)</strong>, ensuring an adequate level of protection."
+legal.privacy.recipients_host_placeholder: "[TODO RGPD — HÉBERGEUR : nom et localisation des serveurs à compléter]"
+legal.privacy.recipients_analytics: "<strong>Google Analytics</strong> — anonymised audience measurement, only after consent (see the cookie policy)."
+legal.privacy.rights_intro: "Under the GDPR, you have the following rights over your data:"
+legal.privacy.rights_access: "<strong>Right of access</strong> — obtain a copy of the data we hold about you."
+legal.privacy.rights_rectification: "<strong>Right to rectification</strong> — correct inaccurate data."
+legal.privacy.rights_erasure: "<strong>Right to erasure</strong> (“right to be forgotten”) — subject to legal retention obligations."
+legal.privacy.rights_portability: "<strong>Right to portability</strong> — receive your data in a structured, readable format."
+legal.privacy.rights_objection: "<strong>Right to object</strong> — object to processing based on legitimate interest."
+legal.privacy.rights_withdraw: "<strong>Right to withdraw your consent</strong> — at any time, without affecting the lawfulness of prior processing."
+legal.privacy.rights_exercise: "To exercise these rights, contact us:"
+legal.privacy.rights_exercise_placeholder: "[TODO RGPD — CONTACT EXERCICE DES DROITS : adresse e-mail / postale à compléter]"
+legal.privacy.rights_complaint: "You also have the right to lodge a complaint with the <strong>Data Protection Authority (APD / Gegevensbeschermingsautoriteit)</strong>, Rue de la Presse 35, 1000 Brussels —"
+
+# Cookie policy
+legal.cookies.title: "Cookie Policy"
+legal.cookies.meta_description: "Cookie policy for Adem's Alley: cookie categories (essential, audience measurement, payment), durations and how to withdraw your consent."
+legal.cookies.intro: "A cookie is a small file stored on your device. We sort cookies by category; only essential cookies are stored without your consent."
+legal.cookies.essential_title: "Essential Cookies"
+legal.cookies.essential_text: "Indispensable for the operation of the site and your security. They cannot be disabled."
+legal.cookies.analytics_title: "Audience-Measurement Cookies"
+legal.cookies.analytics_text: "They help us understand how the site is used. They are only stored after your explicit consent."
+legal.cookies.payment_title: "Payment Cookies"
+legal.cookies.payment_text: "Stored by Stripe during a payment, to secure the transaction and prevent fraud."
+legal.cookies.revoke_title: "How to Withdraw Your Consent"
+legal.cookies.revoke_text: "You can change or withdraw your consent at any time via the button below, or by deleting cookies in your browser settings."
+legal.cookies.essential_session: "<strong>Session (PHPSESSID)</strong> — keeps your session (cart, authentication). Duration: session."
+legal.cookies.essential_csrf: "<strong>CSRF token</strong> — protects forms against cross-site request forgery. Duration: session."
+legal.cookies.essential_consent: "<strong>cookie_consent</strong> — remembers your cookie choice. Duration: 6 months."
+legal.cookies.analytics_ga: "<strong>Google Analytics (_ga, _ga_*)</strong> — anonymised audience measurement (anonymize_ip enabled). Duration: up to 13 months. Loaded only after your consent."
+legal.cookies.payment_stripe: "<strong>Stripe (__stripe_mid, __stripe_sid)</strong> — payment security and fraud prevention, set during a payment. Duration: up to 1 year."

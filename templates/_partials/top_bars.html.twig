@@ -1,3 +1,3 @@
 {# Construction banner + site header — shared across all layouts #}
-{{ component('ConstructionBanner', { message: '🚧 ' ~ 'site.construction'|trans ~ ' 🚧', visible: true }) }}
+{{ component('ConstructionBanner', { message: 'site.construction'|trans, visible: false }) }}
 {% include '_partials/street_header.html.twig' %}
