@@ -21,6 +21,24 @@ class ParticipationTierRepository extends ServiceEntityRepository
     }
 
     /**
+     * Finds all active participation tiers ordered by sort order then id.
+     *
+     * Single query used by ParticipationCatalog to build its per-request cache.
+     *
+     * @return list<ParticipationTier> List of all active tiers
+     */
+    public function findAllActiveOrdered(): array
+    {
+        /** @var list<ParticipationTier> */
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.active = true')
+            ->orderBy('t.sortOrder', 'ASC')
+            ->addOrderBy('t.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Finds active participation tiers by group ordered by sort order.
      *
      * @param string $group The tier group (e.g., 'standard', 'vip')

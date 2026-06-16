@@ -25,13 +25,13 @@ class ParticipationTier
     #[ORM\Column(type: Types::TEXT)]
     private string $detail;
 
-    #[ORM\Column(name: 'price_label', length: 16)]
+    #[ORM\Column(name: 'price_label', length: 64)]
     private string $priceLabel;
 
     #[ORM\Column(name: 'price_unit', length: 8)]
     private string $priceUnit = '€';
 
-    #[ORM\Column(name: 'price_suffix', length: 32, nullable: true)]
+    #[ORM\Column(name: 'price_suffix', length: 64, nullable: true)]
     private ?string $priceSuffix = null;
 
     #[ORM\Column(name: 'unit_price_eur', type: Types::DECIMAL, precision: 10, scale: 2)]

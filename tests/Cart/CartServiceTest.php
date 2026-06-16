@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Tests\Cart;
 
 use App\Cart\CartService;
+use App\Entity\ParticipationTier;
 use App\Participation\ParticipationCatalog;
+use App\Repository\ParticipationTierRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -16,8 +18,9 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
  * Pure unit tests for the cart domain logic. No database, no kernel.
  *
  * The session is backed by MockArraySessionStorage so cart state lives entirely
- * in memory; the real ParticipationCatalog reads config/tiers.yaml (no I/O cost
- * beyond a single file read, no DB).
+ * in memory. The catalog is built from a mocked ParticipationTierRepository that
+ * returns the same tier values the production seed loads, so the cart logic is
+ * exercised against the DB-backed catalog without touching a real database.
  */
 final class CartServiceTest extends TestCase
 {
@@ -35,7 +38,68 @@ final class CartServiceTest extends TestCase
 
     private function catalog(): ParticipationCatalog
     {
-        return new ParticipationCatalog();
+        $repository = $this->createStub(ParticipationTierRepository::class);
+        $repository->method('findAllActiveOrdered')->willReturn($this->seedTiers());
+
+        return new ParticipationCatalog($repository);
+    }
+
+    /**
+     * Builds the subset of tiers exercised by the cart tests, mirroring config/tiers.yaml.
+     *
+     * @return list<ParticipationTier>
+     */
+    private function seedTiers(): array
+    {
+        $begonia = (new ParticipationTier())
+            ->setId('begonia_unit')
+            ->setTitle('home.tier_begonia_title')
+            ->setDetail('home.tier_begonia_detail')
+            ->setPriceLabel('1')
+            ->setPriceUnit('€')
+            ->setPriceSuffix('home.tier_begonia_price_unit')
+            ->setUnitPriceEur('1.00')
+            ->setPricedPerUnit(true)
+            ->setMinQty(1)
+            ->setMaxQty(500)
+            ->setTierGroup('standard')
+            ->setDonorField(false)
+            ->setSortOrder(0)
+            ->setActive(true);
+
+        $vip20 = (new ParticipationTier())
+            ->setId('vip_20')
+            ->setTitle('home.tier_vip20_title')
+            ->setDetail('home.tier_vip20_detail')
+            ->setPriceLabel('20')
+            ->setPriceUnit('€')
+            ->setPriceSuffix(null)
+            ->setUnitPriceEur('20.00')
+            ->setPricedPerUnit(false)
+            ->setMinQty(1)
+            ->setMaxQty(500)
+            ->setTierGroup('vip')
+            ->setDonorField(true)
+            ->setSortOrder(2)
+            ->setActive(true);
+
+        $free = (new ParticipationTier())
+            ->setId('free_donation')
+            ->setTitle('home.tier_free_title')
+            ->setDetail('home.tier_free_detail')
+            ->setPriceLabel('home.tier_free_price')
+            ->setPriceUnit('€')
+            ->setPriceSuffix(null)
+            ->setUnitPriceEur('0.00')
+            ->setPricedPerUnit(false)
+            ->setMinQty(1)
+            ->setMaxQty(1)
+            ->setTierGroup('standard')
+            ->setDonorField(true)
+            ->setSortOrder(4)
+            ->setActive(true);
+
+        return [$begonia, $vip20, $free];
     }
 
     public function testTotalCentsWithFreeDonationUsesCustomPrice(): void

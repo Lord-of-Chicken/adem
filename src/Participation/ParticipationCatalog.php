@@ -4,11 +4,22 @@ declare(strict_types=1);
 
 namespace App\Participation;
 
-use Symfony\Component\Yaml\Yaml;
+use App\Repository\ParticipationTierRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Catalogue des formules (définitions dans config/tiers.yaml).
+ * Catalogue des formules.
+ *
+ * Source de vérité : la table `participation_tier` (entité {@see \App\Entity\ParticipationTier}),
+ * éditable par la famille via l'admin EasyAdmin (prix, ordre, min/max, groupe, flags).
+ *
+ * Le fichier config/tiers.yaml n'est PLUS lu à l'exécution : il sert uniquement de source
+ * de seed (cf. App\Command\SeedParticipationTiersCommand) pour peupler la table avec les
+ * valeurs historiques. Les titres / descriptions restent traduisibles via les clés *_key
+ * stockées dans les colonnes title/detail/price/price_suffix.
+ *
+ * L'accès est mis en cache en mémoire pour la durée de la requête : la table n'est lue
+ * qu'une seule fois (chargement paresseux au premier appel de all()/get()/require()).
  *
  * @phpstan-type Tier array{
  *     id: string,
@@ -27,22 +38,39 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class ParticipationCatalog
 {
-    private const TIERS_FILE = __DIR__ . '/../../config/tiers.yaml';
+    /**
+     * Per-request in-memory cache of the tiers, indexed by id.
+     * Null until the first DB read.
+     *
+     * @var array<string, Tier>|null
+     */
+    private ?array $tiers = null;
 
-    /** @var array<string, Tier> */
-    private array $tiers;
+    public function __construct(
+        private readonly ParticipationTierRepository $repository,
+    ) {
+    }
 
     /**
-     * Loads tiers from the YAML configuration file.
+     * Loads the active tiers from the database once and caches them in memory.
+     *
+     * Ordered by sort order then id, so the consumer-facing ordering is
+     * deterministic and driven by the admin-editable sort_order column.
+     *
+     * @return array<string, Tier> All tiers indexed by ID
      */
-    public function __construct()
+    private function load(): array
     {
-        $this->tiers = [];
-        /** @var array{tiers: array<int, Tier>} */
-        $tiersData = Yaml::parseFile(self::TIERS_FILE);
-        foreach ($tiersData['tiers'] as $def) {
-            $this->tiers[$def['id']] = $def;
+        if ($this->tiers !== null) {
+            return $this->tiers;
         }
+
+        $tiers = [];
+        foreach ($this->repository->findAllActiveOrdered() as $entity) {
+            $tiers[$entity->getId()] = $entity->toCatalogArray();
+        }
+
+        return $this->tiers = $tiers;
     }
 
     /**
@@ -52,7 +80,7 @@ final class ParticipationCatalog
      */
     public function all(): array
     {
-        return $this->tiers;
+        return $this->load();
     }
 
     /**
@@ -63,7 +91,7 @@ final class ParticipationCatalog
      */
     public function get(string $id): ?array
     {
-        return $this->tiers[$id] ?? null;
+        return $this->load()[$id] ?? null;
     }
 
     /**
@@ -87,29 +115,42 @@ final class ParticipationCatalog
      * Resolves a tier's translatable keys (title/detail/price/price_suffix)
      * into translated strings, in place.
      *
-     * Only keys actually present on the tier are translated, preserving the
-     * exact behaviour previously duplicated across the controllers.
+     * The DB stores the translation KEYS in the title/detail/price/price_suffix
+     * columns (e.g. "home.tier_begonia_title"). Only values that look like a
+     * translation key (the "home." catalog domain prefix) are translated; literal
+     * strings entered in the admin are left untouched. This preserves the previous
+     * YAML behaviour where only *_key entries were resolved.
      *
-     * @param Tier $tier The tier data (may carry *_key entries from YAML)
+     * @param Tier $tier The tier data (carries translation keys from DB)
      * @param TranslatorInterface $translator The translator service
      * @return Tier The tier with translated title/detail/price/price_suffix
      */
     public function translateTier(array $tier, TranslatorInterface $translator): array
     {
-        if (isset($tier['title_key'])) {
-            $tier['title'] = $translator->trans($tier['title_key']);
-        }
-        if (isset($tier['detail_key'])) {
-            $tier['detail'] = $translator->trans($tier['detail_key']);
-        }
-        if (isset($tier['price_key'])) {
-            $tier['price'] = $translator->trans($tier['price_key']);
-        }
-        if (isset($tier['price_suffix_key'])) {
-            $tier['price_suffix'] = $translator->trans($tier['price_suffix_key']);
+        $tier['title'] = $this->translateKey($tier['title'], $translator);
+        $tier['detail'] = $this->translateKey($tier['detail'], $translator);
+        $tier['price'] = $this->translateKey($tier['price'], $translator);
+        if ($tier['price_suffix'] !== null) {
+            $tier['price_suffix'] = $this->translateKey($tier['price_suffix'], $translator);
         }
 
         return $tier;
+    }
+
+    /**
+     * Translates a value if it looks like a translation key, otherwise returns it as-is.
+     *
+     * @param string $value The stored value (translation key or literal)
+     * @param TranslatorInterface $translator The translator service
+     * @return string The translated value or the literal value
+     */
+    private function translateKey(string $value, TranslatorInterface $translator): string
+    {
+        if (str_starts_with($value, 'home.')) {
+            return $translator->trans($value);
+        }
+
+        return $value;
     }
 
     /**
@@ -123,7 +164,7 @@ final class ParticipationCatalog
         $standard = [];
         $vip = [];
 
-        foreach ($this->tiers as $tier) {
+        foreach ($this->load() as $tier) {
             $translated = $this->translateTier($tier, $translator);
             if ($tier['group'] === 'vip') {
                 $vip[] = $translated;

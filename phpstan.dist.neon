@@ -18,7 +18,11 @@ parameters:
         # Signatures internes du framework Symfony non typées strictement (API tierce, irréductible).
         - '#Parameter .* of method Symfony\\Component\\.*#'
         - '#Parameter .* of method Symfony\\Bundle\\.*#'
-        - '#Parameter .* of method Symfony\\Contracts\\.*#'
+        # Plus de call-site mixed→trans() depuis que ParticipationCatalog lit la DB (valeurs typées) ;
+        # le garde-fou reste pour les futurs appels framework non typés.
+        -
+            message: '#Parameter .* of method Symfony\\Contracts\\.*#'
+            reportUnmatched: false
         # Accès/opérations sur des valeurs `mixed` issues de payloads externes (Stripe webhook, config YAML).
         - '#Cannot access offset.*on mixed\.#'
         - '#Binary operation.*between mixed.*#'

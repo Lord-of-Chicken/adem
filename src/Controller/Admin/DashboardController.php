@@ -61,6 +61,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToRoute($this->translator->trans('admin.carousel'), 'fa fa-image', 'admin_media_item_index');
         yield MenuItem::linkToRoute($this->translator->trans('admin.users'), 'fa fa-user', 'admin_user_index');
         yield MenuItem::linkToRoute($this->translator->trans('admin.purchases'), 'fa fa-shopping-cart', 'admin_order_index');
+        yield MenuItem::linkToRoute($this->translator->trans('admin.participation_tiers'), 'fa fa-seedling', 'admin_participation_tier_index');
         yield MenuItem::linkToRoute($this->translator->trans('admin.nav_translations'), 'fa fa-language', 'admin_translations', ['locale' => 'fr']);
     }
 
