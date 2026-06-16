@@ -64,7 +64,13 @@ git status --ignored | grep -E '\.env\.(local|production)'
 
 ## Statut
 
-- [ ] Migration secrets prod → Secrets Manager
+- [~] **Secrets Manager prod INITIALISÉ** (2026-06-16) : keypair sodium généré
+  (`config/secrets/prod/` — clé publique committée, clé privée gitignorée + perms 600).
+  Vault vide. **Reste à faire (humain, valeurs réelles)** :
+  - `php bin/console secrets:set APP_SECRET --env=prod` (puis DATABASE_URL, MAILER_DSN,
+    STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PUBLISHABLE_KEY) avec les vraies valeurs.
+  - Déployer `config/secrets/prod/prod.decrypt.private.php` hors-source (serveur/CI), JAMAIS dans git.
+    Idéalement la régénérer sur le serveur prod (la clé privée a été générée sur la machine de dev).
 - [ ] Roll des clés Stripe live (si fuite suspectée)
 - [ ] Audit historique Git pour fichiers d'env
 
