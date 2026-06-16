@@ -2,44 +2,34 @@
 
 ## Core rules
 
-- Forms bind to **DTOs**, never to Doctrine entities
-- Form submission → Command dispatched → Application handler does the work
-- `$form->getData()` returns the DTO, dispatch it as a Command
+- Forms bind to a **DTO / plain input object**, never directly to a Doctrine entity that carries invariants.
+- Form submission → thin controller validates → delegates work to a **Service**.
+- `$form->getData()` returns the input object; hand it to the relevant Service.
 
 ## Form Type pattern
 
 ```php
-final class ReportLostAnimalType extends AbstractType {
+final class ContactType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options): void {
         $builder
-            ->add('animalName', TextType::class, [
-                'label' => 'Nom de l\'animal',
-                'attr'  => ['placeholder' => 'Rex, Mimi...'],
+            ->add('name', TextType::class, [
+                'label' => 'Votre nom',
+                'attr'  => ['placeholder' => 'Prénom Nom'],
             ])
-            ->add('species', EnumType::class, [
-                'class'        => Species::class,
-                'label'        => 'Espèce',
-                'choice_label' => fn(Species $s) => $s->label(),
+            ->add('email', EmailType::class, [
+                'label' => 'Email',
             ])
-            ->add('description', TextareaType::class, [
-                'label'    => 'Description (couleur, signes distinctifs...)',
-                'required' => false,
-                'attr'     => ['rows' => 4, 'maxlength' => 1000],
-            ])
-            ->add('city', TextType::class, ['label' => 'Ville de disparition'])
-            ->add('photos', FileType::class, [
-                'label'    => 'Photos',
-                'multiple' => true,
-                'required' => false,
-                'mapped'   => false, // handled separately in controller
+            ->add('message', TextareaType::class, [
+                'label' => 'Message',
+                'attr'  => ['rows' => 5, 'maxlength' => 2000],
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void {
         $resolver->setDefaults([
-            'data_class'      => ReportLostAnimalInput::class,
+            'data_class'      => ContactInput::class,
             'csrf_protection' => true,
-            'csrf_token_id'   => 'report_lost_animal',
+            'csrf_token_id'   => 'contact',
         ]);
     }
 }
@@ -48,41 +38,37 @@ final class ReportLostAnimalType extends AbstractType {
 ## Input DTO (validated)
 
 ```php
-final class ReportLostAnimalInput {
+final class ContactInput {
     #[NotBlank]
     #[Length(min: 2, max: 100)]
-    public string $animalName = '';
-
-    #[NotNull]
-    public ?Species $species = null;
-
-    #[Length(max: 1000)]
-    public ?string $description = null;
+    public string $name = '';
 
     #[NotBlank]
-    #[Length(min: 2, max: 100)]
-    public string $city = '';
+    #[Email]
+    public string $email = '';
+
+    #[NotBlank]
+    #[Length(min: 10, max: 2000)]
+    public string $message = '';
 }
 ```
 
 ## Controller (thin)
 
 ```php
-#[Route('/reports/lost/new', name: 'report_lost_create', methods: ['GET', 'POST'])]
-#[IsGranted('ROLE_USER')]
-public function create(Request $request): Response {
-    $input = new ReportLostAnimalInput();
-    $form  = $this->createForm(ReportLostAnimalType::class, $input);
+#[Route('/{_locale}/contact', name: 'contact', requirements: ['_locale' => 'fr|en|nl'], methods: ['GET', 'POST'])]
+public function contact(Request $request, ContactMailer $mailer): Response {
+    $input = new ContactInput();
+    $form  = $this->createForm(ContactType::class, $input);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-        $photos = $form->get('photos')->getData();
-        $this->commandBus->dispatch(new ReportLostAnimal($input, $photos));
-        $this->addFlash('success', 'Votre signalement a été publié.');
-        return $this->redirectToRoute('reports_index');
+        $mailer->send($input); // logic lives in the Service, not here
+        $this->addFlash('success', 'Votre message a bien été envoyé.');
+        return $this->redirectToRoute('contact');
     }
 
-    return $this->render('animal_report/create.html.twig', ['form' => $form]);
+    return $this->render('contact/index.html.twig', ['form' => $form]);
 }
 ```
 
@@ -113,17 +99,18 @@ twig:
 {% endblock %}
 ```
 
-## Data Transformer (for Value Objects)
+## Data Transformer (value normalisation)
 
 ```php
-final class LocationTransformer implements DataTransformerInterface {
+// Normalise an amount entered in euros to integer cents (Order.totalCents)
+final class EurosToCentsTransformer implements DataTransformerInterface {
     public function transform(mixed $value): string {
-        return $value instanceof Location ? $value->city : '';
+        return $value === null ? '' : number_format($value / 100, 2, '.', '');
     }
 
-    public function reverseTransform(mixed $value): ?Location {
+    public function reverseTransform(mixed $value): ?int {
         if (empty($value)) return null;
-        return Location::fromCity($value);
+        return (int) round(((float) $value) * 100);
     }
 }
 ```
@@ -133,15 +120,16 @@ final class LocationTransformer implements DataTransformerInterface {
 ```php
 $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
     $data = $event->getData();
-    if ($data?->type === ReportType::LOST) {
-        $event->getForm()->add('lastSeenAt', DateType::class, [...]);
+    if ($data?->tierGroup === 'vip') {
+        // VIP tiers let the contributor display a custom name
+        $event->getForm()->add('displayName', TextType::class, ['label' => 'Nom à afficher']);
     }
 });
 ```
 
 ## Rules
 
-- `data_class` always points to a DTO, never an entity
+- `data_class` points to a DTO/input object, never an entity carrying invariants
 - CSRF always enabled on state-mutating forms
 - Validation constraints on the DTO, not inside the form type
 - `mapped: false` for file inputs — handle uploads separately in the controller

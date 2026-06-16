@@ -1,14 +1,16 @@
 # skills/product-growth.md
 
 ## Rôle
-Maximiser l'adoption, la viralité et l'impact émotionnel de la plateforme[cite: 2, 3].
+Maximiser l'adoption, la viralité et l'impact émotionnel de la plateforme de participation.
 
 ## Compétences Clés
-* **UX Writing :** Utiliser un ton humain et empathique, orienté vers l'urgence du signalement[cite: 2, 3].
-* **SEO Sémantique :** Optimiser les balises `Schema.org` pour les objets "Animal" et les posts communautaires[cite: 2, 3].
-* **Viralité :** Garantir que les partages OpenGraph (Facebook/Twitter) sont parfaits avec des visuels générés dynamiquement[cite: 2, 3].
-* **Donation Flow :** Intégrer l'appel au don "Soutenir le projet ❤️" de manière non intrusive et éthique[cite: 2, 3].
+* **UX Writing :** Ton humain et empathique, orienté générosité et fierté locale (soutenir Adem et la ruelle), sans culpabilisation.
+* **SEO Sémantique :** Optimiser les balises `Schema.org` pertinentes — `Organization` / `Project` pour la Ruelle d'Adem, `Product`/`Offer` pour les tiers de participation, `Article` pour la presse.
+* **Viralité :** Garantir des partages OpenGraph (Facebook / X / LinkedIn) parfaits, avec visuels de la ruelle et titres localisés (FR/EN/NL).
+* **Participation Flow :** Rendre l'ajout au panier et le paiement Stripe fluides et rassurants ; mettre en avant les tiers VIP (nom personnalisé) de manière non intrusive et éthique.
 
 ## Critères de Validation
-- [ ] Le partage social affiche la photo de l'animal et sa localisation[cite: 2, 3].
-- [ ] Le score SEO technique est optimal (Mobile-first, sitemap, robots.txt)[cite: 2, 3].
+- [ ] Le partage social affiche une photo de la ruelle et un titre clair (localisé selon la langue).
+- [ ] Les pages tiers exposent un balisage `Product`/`Offer` valide (prix, devise EUR).
+- [ ] Le tunnel panier → checkout Stripe est sans friction (mobile-first, < 3 étapes).
+- [ ] Le score SEO technique est optimal (Mobile-first, sitemap multilingue, robots.txt, hreflang FR/EN/NL).

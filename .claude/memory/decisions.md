@@ -13,5 +13,11 @@
 - Mise à jour CVE : symfony/security-http, http-foundation, routing, easyadmin, twig. `composer audit` propre.
 - `SecurityHeadersListener` : X-Frame-Options, X-Content-Type-Options, Referrer-Policy, HSTS (si HTTPS), CSP (Stripe/GA/Fonts autorisés, `'unsafe-inline'` assumé tant que les scripts inline existent).
 
+## 2026-06-16 — Skills projet adaptés au site
+- Les fiches `.claude/skills/*.md` étaient des vestiges « Animaux Perdu » (DDD/CQRS, AnimalReport, pgvector/CLIP).
+- Supprimées (features inexistantes) : `ai-vector.md`, `search.md`, `state-machine.md`.
+- `architecture.md` réécrit : MVC classique (PAS DDD/CQRS), domaine Order/Tier/Cart/Stripe.
+- 12 fiches adaptées (exemples AnimalReport→Order/ParticipationTier, PostgreSQL→MySQL, etc.). Plus aucun résidu de l'ancien projet.
+
 ## Note historique
 Ce dépôt a hébergé un projet antérieur (« Animaux Perdu ») jusqu'au commit du 2026-05-14, puis a été reconstruit en « Ruelle d'Adem ». Les anciennes décisions (API-First, modules feature-based, PostGIS/pgvector) ne s'appliquent plus.

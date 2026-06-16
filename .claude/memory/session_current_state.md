@@ -48,8 +48,11 @@ créer les docs si PHPStan/tests absents. **Commit à chaque grosse opération.*
 ## ✅ TOUS LES LOTS TERMINÉS (A→F)
 Gates finaux : phpunit 14/37 OK, PHPStan niveau 10 = 0 err, `composer audit` propre, lint:container OK.
 
-### Reste (actions HUMAINES / différées, non bloquantes pour le code)
-- **Git** : transformation Animaux Perdu→Ruelle d'Adem non commitée (447 suppressions src/) + tous les lots d'audit. À committer (jalon utilisateur). Rien n'a été commité par l'agent.
+### ✅ COMMITÉ
+Branche `audit/security-hardening`, commit `c80095a` (755 fichiers, snapshot app + audit complet). Working tree propre. `main` inchangé → à merger par l'utilisateur (`git checkout main && git merge audit/security-hardening`).
+Inclut le nettoyage du cache compilé `src/var/` (447 fichiers) + `/src/var/` ajouté au .gitignore. Schéma DB pleinement en sync (drift DC2Type corrigé). `nom_entite` droppée. Corps légal FR/EN/NL traduit.
+
+### Reste (actions HUMAINES, non bloquantes pour le code)
 - **Légal** : remplir placeholders TODO RGPD (éditeur/hébergeur/BCE/DPO) dans `templates/legal/*`, traduire corps légal EN/NL.
 - **DB** : table orpheline `nom_entite` (migration de drop à décider).
 - **Produit** : trancher source de vérité des tiers (YAML vs Entity).

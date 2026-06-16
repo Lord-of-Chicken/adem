@@ -4,22 +4,21 @@
 
 ```php
 // Voters for access control — never hard-code role checks in controllers
-#[IsGranted('VIEW', subject: 'report')]
-public function show(AnimalReport $report): Response {}
+#[IsGranted('VIEW', subject: 'order')]
+public function show(Order $order): Response {}
 
 // Voter implementation
-final class AnimalReportVoter extends Voter {
+final class OrderVoter extends Voter {
     protected function supports(string $attribute, mixed $subject): bool {
-        return in_array($attribute, ['VIEW', 'EDIT', 'DELETE'])
-            && $subject instanceof AnimalReport;
+        return in_array($attribute, ['VIEW', 'CANCEL'])
+            && $subject instanceof Order;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool {
         $user = $token->getUser();
         return match($attribute) {
-            'VIEW'   => true, // public reports are viewable
-            'EDIT', 'DELETE' => $subject->isOwnedBy($user),
-            default  => false,
+            'VIEW', 'CANCEL' => $subject->getUser() === $user, // only the buyer
+            default          => false,
         };
     }
 }
@@ -30,28 +29,28 @@ final class AnimalReportVoter extends Voter {
 ```php
 // Forms: automatic via Symfony Form component (already configured via csrf.yaml)
 // API endpoints that mutate state: use #[IsCsrfTokenValid]
-#[IsCsrfTokenValid('delete-report')]
-public function delete(AnimalReport $report): Response {}
+#[IsCsrfTokenValid('cancel-order')]
+public function cancel(Order $order): Response {}
 
 // Twig: always include CSRF token in custom forms
-{{ csrf_token('delete-report') }}
+{{ csrf_token('cancel-order') }}
 ```
 
-## Input validation — on DTOs, never on entities
+## Input validation — on the DTO / form-backed object, never trust raw input
 
 ```php
-final class ReportLostAnimalInput {
+final class ContactInput {
     #[NotBlank]
     #[Length(min: 2, max: 100)]
-    public string $animalName = '';
-
-    #[NotBlank]
-    #[Valid]
-    public LocationInput $location;
+    public string $name = '';
 
     #[NotBlank]
     #[Email]
-    public string $contactEmail = '';
+    public string $email = '';
+
+    #[NotBlank]
+    #[Length(min: 10, max: 2000)]
+    public string $message = '';
 }
 ```
 
@@ -59,20 +58,20 @@ final class ReportLostAnimalInput {
 
 ```php
 // Doctrine QueryBuilder is safe by default when using parameters
-->where('r.city = :city')
-->setParameter('city', $city); // SAFE
+->where('o.status = :status')
+->setParameter('status', $status); // SAFE
 
 // Raw SQL only when necessary — always use prepared statements
-$conn->executeQuery('SELECT * FROM report WHERE city = ?', [$city]); // SAFE
-$conn->executeQuery("SELECT * FROM report WHERE city = '$city'"); // NEVER
+$conn->executeQuery('SELECT * FROM `order` WHERE status = ?', [$status]); // SAFE
+$conn->executeQuery("SELECT * FROM `order` WHERE status = '$status'"); // NEVER
 ```
 
 ## XSS prevention
 
 ```twig
 {# Twig auto-escapes by default — never disable without reason #}
-{{ report.description }}           {# safe #}
-{{ report.description|raw }}       {# DANGEROUS — only for trusted HTML #}
+{{ mediaItem.caption }}           {# safe #}
+{{ mediaItem.caption|raw }}       {# DANGEROUS — only for trusted HTML #}
 ```
 
 ## Environment & secrets
@@ -90,8 +89,8 @@ symfony console secrets:set DATABASE_URL
 
 ```php
 // Use Symfony RateLimiter on sensitive endpoints
-#[RateLimiter('report_submission')]
-public function create(Request $request): Response {}
+#[RateLimiter('contact_submission')]
+public function contact(Request $request): Response {}
 
 // Configure in config/packages/rate_limiter.yaml
 ```

@@ -16,17 +16,17 @@ composer require --dev blackfire/php-sdk
 ## Doctrine N+1 — most common issue
 
 ```php
-// BAD — N+1: one query per report to load photos
-foreach ($reports as $report) {
-    echo $report->getPhotos()->count(); // lazy load per iteration
+// BAD — N+1: one query per order to load its line items
+foreach ($orders as $order) {
+    echo $order->getLines()->count(); // lazy load per iteration
 }
 
 // GOOD — single JOIN query
-$reports = $this->createQueryBuilder('r')
-    ->leftJoin('r.photos', 'p')
-    ->addSelect('p')
-    ->where('r.status = :status')
-    ->setParameter('status', ReportStatus::PUBLISHED)
+$orders = $this->createQueryBuilder('o')
+    ->leftJoin('o.lines', 'l')
+    ->addSelect('l')
+    ->where('o.status = :status')
+    ->setParameter('status', OrderStatus::Paid)
     ->getQuery()
     ->getResult();
 ```
@@ -34,9 +34,9 @@ $reports = $this->createQueryBuilder('r')
 ## HTTP cache
 
 ```php
-#[Route('/reports', name: 'reports_index')]
+#[Route('/galerie', name: 'gallery_index')]
 public function index(): Response {
-    $response = $this->render('reports/index.html.twig', [...]);
+    $response = $this->render('gallery/index.html.twig', [...]);
     $response->setPublic();
     $response->setMaxAge(300);         // 5 min browser
     $response->setSharedMaxAge(60);    // 1 min reverse proxy
@@ -54,10 +54,10 @@ framework:
         default_redis_provider: '%env(REDIS_URL)%'
 
 // Usage
-public function getPublishedCount(): int {
-    return $this->cache->get('reports.count', function (ItemInterface $item) {
+public function getPaidOrderCount(): int {
+    return $this->cache->get('orders.paid.count', function (ItemInterface $item) {
         $item->expiresAfter(300);
-        return $this->repository->countPublished();
+        return $this->repository->countPaid();
     });
 }
 ```
@@ -65,28 +65,26 @@ public function getPublishedCount(): int {
 ## Doctrine query cache
 
 ```php
-$result = $this->createQueryBuilder('r')
-    ->where('r.status = :status')
-    ->setParameter('status', ReportStatus::PUBLISHED)
+$result = $this->createQueryBuilder('o')
+    ->where('o.status = :status')
+    ->setParameter('status', OrderStatus::Paid)
     ->getQuery()
-    ->enableResultCache(300, 'reports_published')
+    ->enableResultCache(300, 'orders_paid')
     ->getResult();
 ```
 
 ## MySQL indexes
 
 ```sql
--- All pages
-CREATE INDEX idx_report_status         ON animal_report (status);
-CREATE INDEX idx_report_created_at     ON animal_report (created_at DESC);
+-- Order listing (profile history, admin)
+CREATE INDEX idx_order_status      ON `order` (status);
+CREATE INDEX idx_order_created_at  ON `order` (created_at DESC);
 
--- Search filters
-CREATE INDEX idx_report_species_status ON animal_report (species, status);
-CREATE INDEX idx_report_city           ON animal_report (city(50));
+-- Per-user history filter
+CREATE INDEX idx_order_user_status ON `order` (user_id, status);
 
--- Full-text
-ALTER TABLE animal_report
-    ADD FULLTEXT INDEX idx_report_fts (description, animal_name);
+-- Webhook idempotency lookup (also enforced by a UNIQUE constraint)
+CREATE UNIQUE INDEX uniq_stripe_event ON stripe_processed_event (stripe_event_id);
 ```
 
 ## Asset performance (Asset Mapper)
