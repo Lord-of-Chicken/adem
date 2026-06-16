@@ -102,13 +102,15 @@ git status --ignored | grep -E '\.env\.(local|production)'
   `ProfileController::toggleNewsletter`, futur formulaire dédié), les router vers
   `NewsletterSubscriptionService::startDoubleOptIn()` également. Le toggle profil active
   encore le flag directement (acceptable : utilisateur authentifié, mais à harmoniser).
-- [ ] **Purge des tokens newsletter expirés** : prévoir une commande/cron pour supprimer les
-  `NewsletterConfirmation` expirés non confirmés (minimisation).
+- [x] **Purge des tokens newsletter expirés** : commande `app:newsletter:purge-expired`
+  (`src/Command/PurgeNewsletterTokensCommand.php` + `NewsletterConfirmationRepository::deleteExpiredUnconfirmed()`,
+  tests `tests/Repository/NewsletterConfirmationRepositoryTest.php`). **Action ops restante** :
+  la planifier en cron (ex. quotidien : `php bin/console app:newsletter:purge-expired`).
 - [ ] **Anonymisation des metadata Stripe** : le `donor_name` envoyé en metadata Stripe lors
   d'une commande passée reste chez Stripe après anonymisation locale. Si exigé, prévoir un
   appel API Stripe pour purger/anonymiser la metadata des `PaymentIntent`/sessions liés.
-- [ ] **Schema validate** : `doctrine:schema:validate` signale un écart pré-existant
-  (table orpheline `nom_entite` issue d'anciennes migrations + commentaires DC2Type non
-  remontés par MySQL). Non lié au lot B2 — à nettoyer séparément via une migration de purge.
+- [x] **Schema validate** : corrigé. Table orpheline `nom_entite` droppée (migration
+  `Version20260616100000`) + commentaires DC2Type retirés des migrations B2. `doctrine:schema:validate`
+  est désormais pleinement en sync (mapping + DB).
 - [ ] **i18n** : relire les traductions NL/EN des nouvelles clés (`newsletter.*`,
   `contact.privacy_*`, `home.donor_consent`, `registration.form.age_*`) par un locuteur natif.

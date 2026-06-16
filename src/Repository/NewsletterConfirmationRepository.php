@@ -46,4 +46,24 @@ class NewsletterConfirmationRepository extends ServiceEntityRepository
             $em->flush();
         }
     }
+
+    /**
+     * Deletes expired, never-confirmed tokens (GDPR data minimisation).
+     *
+     * Confirmed tokens are kept as consent proof; only stale pending tokens
+     * past their expiry are removed.
+     *
+     * @param \DateTimeImmutable|null $now Reference time (defaults to current time)
+     * @return int Number of deleted rows
+     */
+    public function deleteExpiredUnconfirmed(?\DateTimeImmutable $now = null): int
+    {
+        return (int) $this->createQueryBuilder('nc')
+            ->delete()
+            ->where('nc.confirmedAt IS NULL')
+            ->andWhere('nc.expiresAt < :now')
+            ->setParameter('now', $now ?? new \DateTimeImmutable())
+            ->getQuery()
+            ->execute();
+    }
 }
