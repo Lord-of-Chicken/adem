@@ -333,7 +333,7 @@ contact.error: "Erreur lors de l'envoi du message. Veuillez réessayer plus tard
 contact.validation_error: "Erreur lors de la validation du formulaire."
 contact.rate_limited: "Trop de messages envoyés. Réessayez dans une heure."
 contact.email_subject: "Contact"
-contact.privacy_disclaimer: "Les données que tu transmets via ce formulaire (nom, e-mail, message) sont utilisées uniquement pour traiter ta demande, sur la base de ton consentement (RGPD art. 6.1.a), et conservées 12 mois maximum. Tu peux exercer tes droits d'accès, de rectification et d'effacement à tout moment."
+contact.privacy_disclaimer: "Les données que tu transmets via ce formulaire (nom, e-mail, message) sont utilisées uniquement pour traiter ta demande, sur la base de ton consentement (RGPD art. 6.1.a), et conservées 6 mois maximum. Tu peux exercer tes droits d'accès, de rectification et d'effacement à tout moment."
 contact.privacy_link: "En savoir plus sur le traitement de tes données"
 
 # Gallery
@@ -471,7 +471,7 @@ legal.privacy.basis_legal: "<strong>Obligation légale</strong> (art. 6.1.c RGPD
 legal.privacy.basis_interest: "<strong>Intérêt légitime</strong> (art. 6.1.f RGPD) — sécurité du site et prévention de la fraude."
 legal.privacy.retention_invoicing: "<strong>Données de commande / facturation</strong> — conservées <strong>7 ans</strong> conformément à l'obligation légale belge de conservation des pièces comptables."
 legal.privacy.retention_newsletter: "<strong>Newsletter</strong> — jusqu'à ta désinscription (lien de désabonnement dans chaque e-mail)."
-legal.privacy.retention_contact: "<strong>Messages du formulaire de contact</strong> — <strong>30 jours</strong> après traitement de ta demande."
+legal.privacy.retention_contact: "<strong>Messages du formulaire de contact</strong> — <strong>6 mois</strong> après traitement de ta demande."
 legal.privacy.retention_account: "<strong>Compte utilisateur</strong> — tant que le compte est actif ; supprimé sur demande."
 legal.privacy.recipients_intro: "Tes données ne sont jamais vendues. Elles peuvent être communiquées à des sous-traitants strictement nécessaires au fonctionnement du service :"
 legal.privacy.recipients_stripe: "<strong>Stripe</strong> — prestataire de paiement. Le traitement des paiements peut impliquer un <strong>transfert de données vers les États-Unis (USA)</strong>. Ce transfert est encadré par un <strong>accord de traitement des données (DPA)</strong> et par les <strong>clauses contractuelles types (CCT / SCC)</strong> de la Commission européenne, garantissant un niveau de protection adéquat."

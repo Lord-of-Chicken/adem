@@ -330,7 +330,7 @@ contact.error: "Error sending the message. Please try again later."
 contact.validation_error: "Error validating the form."
 contact.rate_limited: "Too many messages sent. Try again in one hour."
 contact.email_subject: "Contact"
-contact.privacy_disclaimer: "The data you submit through this form (name, email, message) is used only to handle your request, on the basis of your consent (GDPR art. 6.1.a), and kept for a maximum of 12 months. You can exercise your rights of access, rectification and erasure at any time."
+contact.privacy_disclaimer: "The data you submit through this form (name, email, message) is used only to handle your request, on the basis of your consent (GDPR art. 6.1.a), and kept for a maximum of 6 months. You can exercise your rights of access, rectification and erasure at any time."
 contact.privacy_link: "Learn more about how we process your data"
 
 # Gallery
@@ -464,7 +464,7 @@ legal.privacy.basis_legal: "<strong>Legal obligation</strong> (GDPR art. 6.1.c) 
 legal.privacy.basis_interest: "<strong>Legitimate interest</strong> (GDPR art. 6.1.f) — website security and fraud prevention."
 legal.privacy.retention_invoicing: "<strong>Order / invoicing data</strong> — kept for <strong>7 years</strong> in accordance with the Belgian legal obligation to retain accounting records."
 legal.privacy.retention_newsletter: "<strong>Newsletter</strong> — until you unsubscribe (unsubscribe link in every email)."
-legal.privacy.retention_contact: "<strong>Contact form messages</strong> — <strong>30 days</strong> after your request has been handled."
+legal.privacy.retention_contact: "<strong>Contact form messages</strong> — <strong>6 months</strong> after your request has been handled."
 legal.privacy.retention_account: "<strong>User account</strong> — for as long as the account is active; deleted on request."
 legal.privacy.recipients_intro: "Your data is never sold. It may be shared with processors strictly necessary for the operation of the service:"
 legal.privacy.recipients_stripe: "<strong>Stripe</strong> — payment provider. Payment processing may involve a <strong>transfer of data to the United States (USA)</strong>. This transfer is governed by a <strong>data processing agreement (DPA)</strong> and by the European Commission's <strong>standard contractual clauses (SCC)</strong>, ensuring an adequate level of protection."

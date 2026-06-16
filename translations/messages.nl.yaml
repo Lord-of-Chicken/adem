@@ -330,7 +330,7 @@ contact.error: "Fout bij het verzenden van het bericht. Probeer het later opnieu
 contact.validation_error: "Fout bij valideren van het formulier."
 contact.rate_limited: "Te veel berichten verzonden. Probeer het over een uur opnieuw."
 contact.email_subject: "Contact"
-contact.privacy_disclaimer: "De gegevens die je via dit formulier verstuurt (naam, e-mail, bericht) worden uitsluitend gebruikt om je vraag te behandelen, op basis van je toestemming (AVG art. 6.1.a), en maximaal 12 maanden bewaard. Je kunt op elk moment je recht op inzage, correctie en verwijdering uitoefenen."
+contact.privacy_disclaimer: "De gegevens die je via dit formulier verstuurt (naam, e-mail, bericht) worden uitsluitend gebruikt om je vraag te behandelen, op basis van je toestemming (AVG art. 6.1.a), en maximaal 6 maanden bewaard. Je kunt op elk moment je recht op inzage, correctie en verwijdering uitoefenen."
 contact.privacy_link: "Meer weten over de verwerking van je gegevens"
 
 # Gallery
@@ -464,7 +464,7 @@ legal.privacy.basis_legal: "<strong>Wettelijke verplichting</strong> (AVG art. 6
 legal.privacy.basis_interest: "<strong>Gerechtvaardigd belang</strong> (AVG art. 6.1.f) — beveiliging van de site en fraudepreventie."
 legal.privacy.retention_invoicing: "<strong>Bestel- / factuurgegevens</strong> — <strong>7 jaar</strong> bewaard, overeenkomstig de Belgische wettelijke verplichting om boekhoudkundige stukken te bewaren."
 legal.privacy.retention_newsletter: "<strong>Nieuwsbrief</strong> — tot je je uitschrijft (uitschrijflink in elke e-mail)."
-legal.privacy.retention_contact: "<strong>Berichten van het contactformulier</strong> — <strong>30 dagen</strong> nadat je verzoek is behandeld."
+legal.privacy.retention_contact: "<strong>Berichten van het contactformulier</strong> — <strong>6 maanden</strong> nadat je verzoek is behandeld."
 legal.privacy.retention_account: "<strong>Gebruikersaccount</strong> — zolang het account actief is; verwijderd op verzoek."
 legal.privacy.recipients_intro: "Je gegevens worden nooit verkocht. Ze kunnen worden gedeeld met verwerkers die strikt noodzakelijk zijn voor de werking van de dienst:"
 legal.privacy.recipients_stripe: "<strong>Stripe</strong> — betaaldienstverlener. De verwerking van betalingen kan een <strong>doorgifte van gegevens naar de Verenigde Staten (VS)</strong> met zich meebrengen. Deze doorgifte wordt geregeld door een <strong>gegevensverwerkingsovereenkomst (DPA)</strong> en door de <strong>standaardcontractbepalingen (SCC)</strong> van de Europese Commissie, die een passend beschermingsniveau waarborgen."

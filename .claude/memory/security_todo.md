@@ -94,9 +94,10 @@ git status --ignored | grep -E '\.env\.(local|production)'
 
 ## Reste à faire / à valider par un humain
 
-- [ ] **Contenus juridiques à confirmer** : durées de conservation réelles à inscrire dans
-  les clés de trad `contact.privacy_disclaimer` (actuellement « 12 mois », à valider avec le
-  DPO/responsable) et cohérence avec la page `/politique-confidentialite`.
+- [x] **Durée de conservation messages contact** : fixée à **6 mois** (consigne utilisateur 2026-06-16).
+  Harmonisé entre `contact.privacy_disclaimer` (était 12 mois) et `legal.privacy.retention_contact`
+  (était 30 jours) dans les 3 langues. NB : les messages de contact ne sont PAS stockés en DB
+  (envoi e-mail direct) → la rétention s'applique à la boîte mail (action ops). Commandes : 7 ans (inchangé).
 - [ ] **Newsletter hors inscription** : le double opt-in n'est branché que sur le formulaire
   d'inscription. Si d'autres points d'entrée newsletter existent (toggle profil
   `ProfileController::toggleNewsletter`, futur formulaire dédié), les router vers
