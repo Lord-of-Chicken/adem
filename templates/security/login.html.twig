@@ -16,7 +16,7 @@
 
             <form class="form form--stack" method="post" action="{{ path('app_login') }}">
                 <div class="form__field">
-                    <label class="form__label" for="inputEmail">E-mail</label>
+                    <label class="form__label" for="inputEmail">{{ 'security.email_label'|trans }}</label>
                     <input
                         type="email"
                         value="{{ last_username }}"
@@ -29,7 +29,7 @@
                     >
                 </div>
                 <div class="form__field">
-                    <label class="form__label" for="inputPassword">Mot de passe</label>
+                    <label class="form__label" for="inputPassword">{{ 'security.password_label'|trans }}</label>
                     <input
                         type="password"
                         name="_password"

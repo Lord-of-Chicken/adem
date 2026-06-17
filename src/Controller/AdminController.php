@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\MediaItem;
@@ -12,7 +14,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_ADMIN')]
@@ -76,24 +77,37 @@ final class AdminController extends AbstractController
         ]);
     }
 
+    /** @var int Number of users shown per page on the admin users list */
+    private const USERS_PER_PAGE = 50;
+
     #[Route('/admin/users', name: 'app_admin_users')]
     public function users(
         UserRepository $userRepository,
         Request $request
     ): Response {
         $newsletterFilter = $request->query->get('newsletter');
-        
-        if ($newsletterFilter === 'subscribed') {
-            $users = $userRepository->findByNewsletterSubscription(true);
-        } elseif ($newsletterFilter === 'not_subscribed') {
-            $users = $userRepository->findByNewsletterSubscription(false);
-        } else {
-            $users = $userRepository->findAll();
-        }
+
+        $newsletter = match ($newsletterFilter) {
+            'subscribed' => true,
+            'not_subscribed' => false,
+            default => null,
+        };
+
+        $page = max(1, $request->query->getInt('page', 1));
+        $total = $userRepository->countUsers($newsletter);
+        $lastPage = max(1, (int) ceil($total / self::USERS_PER_PAGE));
+        $page = min($page, $lastPage);
+
+        $users = $userRepository->findPaginated($page, self::USERS_PER_PAGE, $newsletter);
 
         return $this->render('admin/users.html.twig', [
             'users' => $users,
             'newsletter_filter' => $newsletterFilter,
+            'pagination' => [
+                'page' => $page,
+                'last_page' => $lastPage,
+                'total' => $total,
+            ],
         ]);
     }
 
@@ -202,7 +216,6 @@ final class AdminController extends AbstractController
     public function carouselReorder(
         Request $request,
         MediaItemRepository $mediaItemRepository,
-        EntityManagerInterface $entityManager,
         TranslatorInterface $translator
     ): JsonResponse {
         if (!$this->isCsrfTokenValid('carousel_reorder', (string) $request->headers->get('X-CSRF-TOKEN'))) {
@@ -211,22 +224,27 @@ final class AdminController extends AbstractController
 
         $data = json_decode($request->getContent(), true);
 
-        if (!isset($data['orders']) || !is_array($data['orders'])) {
+        if (!is_array($data) || !isset($data['orders']) || !is_array($data['orders'])) {
             return new JsonResponse(['success' => false, 'error' => $translator->trans('admin.invalid_data')], Response::HTTP_BAD_REQUEST);
         }
 
+        $idToPosition = [];
         foreach ($data['orders'] as $orderData) {
             if (!isset($orderData['id']) || !isset($orderData['sortOrder'])) {
                 continue;
             }
 
-            $mediaItem = $mediaItemRepository->find($orderData['id']);
-            if ($mediaItem) {
-                $mediaItem->setSortOrder($orderData['sortOrder']);
+            $id = (int) $orderData['id'];
+            $sortOrder = (int) $orderData['sortOrder'];
+
+            if ($id <= 0 || $sortOrder < 0) {
+                continue;
             }
+
+            $idToPosition[$id] = $sortOrder;
         }
 
-        $entityManager->flush();
+        $mediaItemRepository->updateSortOrders($idToPosition);
 
         return new JsonResponse(['success' => true]);
     }

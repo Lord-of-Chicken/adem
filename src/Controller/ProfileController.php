@@ -1,23 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\ChangePasswordFormType;
 use App\Form\ProfileFormType;
+use App\Service\AccountAnonymizer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[IsGranted('ROLE_USER')]
+/**
+ * Handles user profile management including viewing, editing, newsletter toggle, password change, and account deletion.
+ */
 final class ProfileController extends AbstractController
 {
+    /**
+     * Displays the user profile page.
+     *
+     * @param TranslatorInterface $translator The translator service
+     * @return Response The profile page response
+     */
     #[Route('/profil', name: 'app_profile')]
+    #[IsGranted('ROLE_USER')]
     public function index(TranslatorInterface $translator): Response
     {
         return $this->render('profile/index.html.twig', [
@@ -35,10 +48,22 @@ final class ProfileController extends AbstractController
         ]);
     }
 
+    /**
+     * Toggles the user's newsletter subscription.
+     *
+     * @param Request $request The HTTP request
+     * @param EntityManagerInterface $entityManager The entity manager
+     * @param TranslatorInterface $translator The translator service
+     * @return Response Redirect to profile page
+     */
     #[Route('/profil/newsletter', name: 'app_profile_toggle_newsletter', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function toggleNewsletter(Request $request, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
 
         if (!$this->isCsrfTokenValid('toggle_newsletter', (string) $request->request->get('_token'))) {
             $this->addFlash('danger', $translator->trans('profile.csrf_invalid'));
@@ -57,10 +82,22 @@ final class ProfileController extends AbstractController
         return $this->redirectToRoute('app_profile');
     }
 
+    /**
+     * Displays and processes the profile edit form.
+     *
+     * @param Request $request The HTTP request
+     * @param EntityManagerInterface $entityManager The entity manager
+     * @param TranslatorInterface $translator The translator service
+     * @return Response The profile edit form or redirect
+     */
     #[Route('/profil/modifier', name: 'app_profile_edit')]
+    #[IsGranted('ROLE_USER')]
     public function edit(Request $request, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
 
         $form = $this->createForm(ProfileFormType::class, $user);
         $form->handleRequest($request);
@@ -82,10 +119,23 @@ final class ProfileController extends AbstractController
         ]);
     }
 
+    /**
+     * Displays and processes the password change form.
+     *
+     * @param Request $request The HTTP request
+     * @param UserPasswordHasherInterface $passwordHasher The password hasher
+     * @param EntityManagerInterface $entityManager The entity manager
+     * @param TranslatorInterface $translator The translator service
+     * @return Response The password change form or redirect
+     */
     #[Route('/profil/changer-mot-de-passe', name: 'app_profile_change_password')]
+    #[IsGranted('ROLE_USER')]
     public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
 
         $form = $this->createForm(ChangePasswordFormType::class);
         $form->handleRequest($request);
@@ -120,22 +170,36 @@ final class ProfileController extends AbstractController
         ]);
     }
 
+    /**
+     * Handles the GDPR right to erasure: anonymises the account instead of a hard
+     * delete so that the related orders (7-year fiscal retention) are preserved.
+     *
+     * @param Request $request The HTTP request
+     * @param AccountAnonymizer $accountAnonymizer The account anonymisation service
+     * @param TranslatorInterface $translator The translator service
+     * @param TokenStorageInterface $tokenStorage The security token storage
+     * @return Response Redirect to home page
+     */
     #[Route('/profil/supprimer', name: 'app_profile_delete', methods: ['POST'])]
-    public function delete(Request $request, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
+    #[IsGranted('ROLE_USER')]
+    public function delete(Request $request, AccountAnonymizer $accountAnonymizer, TranslatorInterface $translator, TokenStorageInterface $tokenStorage): Response
     {
         $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
 
         if (!$this->isCsrfTokenValid('delete_profile', (string) $request->request->get('_token'))) {
             $this->addFlash('danger', $translator->trans('profile.csrf_invalid'));
             return $this->redirectToRoute('app_profile');
         }
 
-        // Supprimer l'utilisateur (cascade delete supprimera les données liées),
-        // puis invalider la session pour éviter qu'une session active reste liée à un user purgé.
-        $entityManager->remove($user);
-        $entityManager->flush();
+        // GDPR erasure: anonymise the personal data but keep the orders (legal
+        // obligation), then invalidate the session so no active session stays
+        // bound to the (now inactive) account.
+        $accountAnonymizer->anonymize($user);
 
-        $this->container->get('security.token_storage')->setToken(null);
+        $tokenStorage->setToken(null);
         $request->getSession()->invalidate();
 
         $this->addFlash('success', $translator->trans('profile.account_deleted'));

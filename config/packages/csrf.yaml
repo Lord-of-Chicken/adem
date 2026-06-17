@@ -9,3 +9,7 @@ framework:
             - submit
             - authenticate
             - logout
+            - cart_add
+            - cart_remove
+            - cart_quantity
+            - cart_clear

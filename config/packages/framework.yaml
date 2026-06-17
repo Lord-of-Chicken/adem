@@ -9,13 +9,29 @@ framework:
         cookie_httponly: true
         gc_maxlifetime: 1440
 
-    # NOTE: Le rate limiter (anonymous_form / password_reset_request / contact_form)
-    # est désactivé tant que `composer require symfony/rate-limiter` n'a pas été lancé.
-    # Voir ContactController et SecurityController : la limitation IP est en place côté code
-    # mais nécessite ce composant pour être active. À installer avant la mise en prod.
+    # Rate limiting — actif après `composer require symfony/rate-limiter`
+    rate_limiter:
+        # Login : 5 tentatives par minute par IP
+        login_throttle:
+            policy: sliding_window
+            limit: 5
+            interval: '1 minute'
+        # Reset password : 3 tentatives par 30 min par IP
+        password_reset:
+            policy: fixed_window
+            limit: 3
+            interval: '30 minutes'
+        # Contact form : 5 messages par heure par IP
+        contact_form:
+            policy: fixed_window
+            limit: 5
+            interval: '1 hour'
 
     #esi: true
     #fragments: true
+
+    # Désactiver le blocage des robots (Google, Facebook, etc.)
+    disallow_search_engine_index: false
 
 when@test:
     framework:

@@ -2,7 +2,8 @@
 
 ## Context
 
-Animal photos are core UX. Every signalement must support multiple photos.
+The media gallery is core UX: photos of the ruelle (before/after, blooming garden) are
+uploaded via the EasyAdmin backoffice and stored as `MediaItem` entities.
 
 ## Stack
 
@@ -20,47 +21,54 @@ composer require liip/imagine-bundle
 ## Upload flow
 
 ```
-User submits form
-  → Controller receives UploadedFile[]
-  → UploadAnimalPhotosHandler (Application layer)
-      → validate MIME + size (domain rules)
+Admin submits form (EasyAdmin / MediaItem form)
+  → Controller receives UploadedFile
+  → MediaUploadService
+      → validate MIME + size
       → generate unique filename (Uuid::v7())
-      → store via FileStorageInterface (port)
-      → persist Photo entity (Doctrine)
+      → store via FileStorageInterface
+      → persist MediaItem entity (Doctrine)
   → redirect
 ```
 
-## Domain model
+## Entity + constraints
 
 ```php
-// src/AnimalReport/Domain/ValueObject/AnimalPhoto.php
-readonly class AnimalPhoto {
-    public function __construct(
-        public Uuid $id,
-        public string $storagePath,
-        public string $mimeType,
-        public int $sizeBytes,
-    ) {}
+// src/Entity/MediaItem.php
+#[ORM\Entity(repositoryClass: MediaItemRepository::class)]
+class MediaItem {
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 255)]
+    private string $storagePath;
+
+    #[ORM\Column(length: 100)]
+    private string $mimeType;
+
+    #[ORM\Column]
+    private int $sizeBytes;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $caption = null;
 }
 
-final class AnimalPhotoConstraints {
+final class MediaItemConstraints {
     public const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
     public const ALLOWED_MIMES  = ['image/jpeg', 'image/png', 'image/webp'];
-    public const MAX_PER_REPORT = 5;
 }
 ```
 
-## Storage port (Infrastructure)
+## Storage service
 
 ```php
-// Domain port
 interface FileStorageInterface {
     public function store(UploadedFile $file, string $directory): string;
     public function delete(string $path): void;
     public function url(string $path): string;
 }
 
-// Flysystem adapter
+// Flysystem implementation (src/Service/)
 final class FlysystemFileStorage implements FileStorageInterface {
     public function __construct(
         private readonly FilesystemOperator $storage,
@@ -82,20 +90,16 @@ final class FlysystemFileStorage implements FileStorageInterface {
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints as Assert;
 
-$builder->add('photos', FileType::class, [
-    'label'      => 'Photos de l\'animal',
-    'multiple'   => true,
+$builder->add('image', FileType::class, [
+    'label'      => 'Photo de la ruelle',
     'required'   => false,
     'mapped'     => false,
     'constraints' => [
-        new Assert\All([
-            new Assert\File(
-                maxSize: '10M',
-                mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
-                mimeTypesMessage: 'Format accepté : JPEG, PNG, WebP',
-            ),
-        ]),
-        new Assert\Count(max: 5),
+        new Assert\File(
+            maxSize: '10M',
+            mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+            mimeTypesMessage: 'Format accepté : JPEG, PNG, WebP',
+        ),
     ],
 ]);
 ```
@@ -103,9 +107,9 @@ $builder->add('photos', FileType::class, [
 ## Twig display
 
 ```twig
-{% for photo in report.photos %}
-    <img src="{{ storage_url(photo.storagePath) }}"
-         alt="Photo de {{ report.animalName }}"
+{% for item in mediaItems %}
+    <img src="{{ storage_url(item.storagePath) }}"
+         alt="{{ item.caption ?? 'Photo de la ruelle' }}"
          loading="lazy"
          class="w-full object-cover rounded">
 {% endfor %}
@@ -117,10 +121,10 @@ $builder->add('photos', FileType::class, [
 # config/packages/flysystem.yaml
 flysystem:
     storages:
-        animal.photos.storage:
+        media.gallery.storage:
             adapter: local
             options:
-                directory: '%kernel.project_dir%/var/storage/photos'
+                directory: '%kernel.project_dir%/var/storage/media'
         # Production S3 — swap adapter in .env.prod
 ```
 
@@ -135,5 +139,5 @@ flysystem:
 ## Production
 
 - S3 or compatible (Scaleway, OVH Object Storage)
-- Generate signed URLs for private photos
+- Generate signed URLs for private assets
 - Compress/resize server-side before storage

@@ -1,4 +1,3 @@
-services:
 parameters:
     # On récupère les valeurs depuis le fichier .env
     stripe_publishable_key: '%env(STRIPE_PUBLISHABLE_KEY)%'

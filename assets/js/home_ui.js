@@ -114,40 +114,79 @@ export function addToCart(tierId, btn = null) {
 
     if (btn) btn.classList.add('btn--loading');
 
-    fetch('/csrf-token?intent=cart_add')
-        .then(res => res.json())
-        .then(({ token }) => {
-            const formData = new FormData();
-            formData.append('_token', token);
-            formData.append('tier_id', tierId);
+    const cartUrl = btn?.dataset?.cartUrl || translations.cart_add_url || '';
+    const token = translations.csrf_cart_add || '';
+    const formData = new FormData();
+    formData.append('_token', token);
+    formData.append('tier_id', tierId);
 
-            if (tierId === 'free_donation') {
-                formData.append('amount', document.getElementById('free-amount').value);
-                formData.append('quantity', 1);
-            } else {
-                formData.append('quantity', document.getElementById('qty-' + tierId).value);
+    if (tierId === 'free_donation') {
+        formData.append('amount', document.getElementById('free-amount').value);
+        formData.append('quantity', 1);
+    } else {
+        formData.append('quantity', document.getElementById('qty-' + tierId).value);
+    }
+
+    const donor = document.getElementById('donor-' + tierId);
+    const donorConsent = document.getElementById('donor-consent-' + tierId);
+    const donorName = donor ? donor.value.trim() : '';
+    if (donorName !== '') {
+        // GDPR: an explicit, non-pre-checked consent is required before the name
+        // is transmitted (Stripe metadata, public display).
+        if (!donorConsent || !donorConsent.checked) {
+            if (btn) btn.classList.remove('btn--loading');
+            showToast(translations.donor_consent_required || 'Please confirm consent to display your name.', 'error');
+            return;
+        }
+        formData.append('donor_name', donorName);
+        formData.append('donor_consent', '1');
+    }
+
+    fetch(cartUrl, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+        .then(res => {
+            if (!res.ok) {
+                console.error('Cart add failed with status:', res.status);
+                throw new Error(`HTTP ${res.status}`);
             }
-
-            const donor = document.getElementById('donor-' + tierId);
-            if (donor) formData.append('donor_name', donor.value);
-
-            return fetch('/panier/ajouter', {
-                method: 'POST',
-                body: formData,
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            });
+            return res.json();
         })
-        .then(res => res.json())
         .then(data => {
             if (data.success) {
                 updateCartBadges(data.cartCount);
                 showCartSuccessPopup();
-                if (tierId === 'free_donation') document.getElementById('free-amount').value = '';
+
+                // Remettre à zéro les champs du produit
+                if (tierId === 'free_donation') {
+                    document.getElementById('free-amount').value = '';
+                } else {
+                    const qtyInput = document.getElementById('qty-' + tierId);
+                    const qtyDisplay = document.getElementById('num-' + tierId);
+                    const label = document.getElementById('label-' + tierId);
+                    const btnMinus = document.getElementById('minus-' + tierId);
+                    const btnPlus = document.getElementById('plus-' + tierId);
+                    if (qtyInput) qtyInput.value = 1;
+                    if (qtyDisplay) qtyDisplay.textContent = '1';
+                    if (label) label.textContent = label.getAttribute('data-piece-singular') || 'pièce';
+                    if (btnMinus) btnMinus.disabled = true;
+                    if (btnPlus) btnPlus.disabled = false;
+                }
+                const donor = document.getElementById('donor-' + tierId);
+                if (donor) donor.value = '';
+                const donorConsent = document.getElementById('donor-consent-' + tierId);
+                if (donorConsent) donorConsent.checked = false;
             } else {
+                console.error('Cart add error:', data);
                 showToast(data.message || (translations.add_error || 'Error adding to cart'), 'error');
             }
         })
-        .catch(() => showToast(translations.technical_error || 'Technical error.', 'error'))
+        .catch(err => {
+            console.error('Cart add technical error:', err);
+            showToast(translations.technical_error || 'Technical error.', 'error');
+        })
         .finally(() => { if (btn) btn.classList.remove('btn--loading'); });
 }
 

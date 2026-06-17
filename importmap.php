@@ -46,4 +46,7 @@ return [
     'swiper' => [
         'version' => '12.1.4',
     ],
+    'swiper/modules' => [
+        'version' => '12.1.4',
+    ],
 ];

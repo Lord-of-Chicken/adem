@@ -5,66 +5,29 @@
 {% block meta_description %}{{ 'faq.meta_description'|trans }}{% endblock %}
 {% block og_title %}{{ 'faq.title'|trans }} | {{ site_brand.title }}{% endblock %}
 {% block og_description %}{{ 'faq.meta_description'|trans }}{% endblock %}
-{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.png')) }}{% endblock %}
+{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.jpg')) }}{% endblock %}
 
 {% block head %}
     {{ parent() }}
+    {%- set _faq_qa = [] %}
+    {%- for i in 1..6 %}
+        {%- set _faq_qa = _faq_qa|merge([{
+            '@type': 'Question',
+            'name': ('faq.q' ~ i ~ '.question')|trans,
+            'acceptedAnswer': { '@type': 'Answer', 'text': ('faq.q' ~ i ~ '.answer')|trans }
+        }]) %}
+    {%- endfor %}
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-            {
-                "@type": "Question",
-                "name": "{{ 'faq.q1.question'|trans }}",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "{{ 'faq.q1.answer'|trans }}"
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "{{ 'faq.q2.question'|trans }}",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "{{ 'faq.q2.answer'|trans }}"
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "{{ 'faq.q3.question'|trans }}",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "{{ 'faq.q3.answer'|trans }}"
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "{{ 'faq.q4.question'|trans }}",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "{{ 'faq.q4.answer'|trans }}"
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "{{ 'faq.q5.question'|trans }}",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "{{ 'faq.q5.answer'|trans }}"
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "{{ 'faq.q6.question'|trans }}",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "{{ 'faq.q6.answer'|trans }}"
-                }
-            }
-        ]
-    }
+    {{ {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': _faq_qa
+    }|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_UNESCAPED_UNICODE'))|raw }}
     </script>
+    {% include '_partials/breadcrumb_jsonld.html.twig' with { items: [
+        { name: 'nav.home'|trans, url: url('app_home') },
+        { name: page.title, url: url('app_faq') }
+    ] } %}
 {% endblock %}
 
 {% block street_main %}

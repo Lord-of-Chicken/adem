@@ -7,17 +7,26 @@ export default class extends Controller {
         csrfToken: String,
     };
 
+    sortable = null;
+
     connect() {
         const tbody = this.element.querySelector('tbody');
         if (!tbody) return;
 
-        new Sortable(tbody, {
+        this.sortable = new Sortable(tbody, {
             animation: 150,
             handle: '.drag-handle',
             onEnd: (evt) => {
                 this.updateOrder();
             }
         });
+    }
+
+    disconnect() {
+        if (this.sortable) {
+            this.sortable.destroy();
+            this.sortable = null;
+        }
     }
 
     updateOrder() {

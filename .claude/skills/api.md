@@ -11,8 +11,8 @@ composer require api-platform/symfony
 ## When to build an API
 
 - Mobile app needs data
-- Third-party integrations (partner shelters, municipalities)
-- Public data access (open data for lost animals)
+- Third-party integrations (partner associations, municipality of Uccle)
+- Public data access (open data on the project's progress / participations)
 
 ## API Platform approach (when installed)
 
@@ -20,27 +20,26 @@ composer require api-platform/symfony
 // State providers/processors over legacy DataProviders
 #[ApiResource(
     operations: [
-        new GetCollection(provider: AnimalReportCollectionProvider::class),
-        new Get(provider: AnimalReportItemProvider::class),
-        new Post(processor: CreateAnimalReportProcessor::class),
+        new GetCollection(provider: ParticipationTierCollectionProvider::class),
+        new Get(provider: ParticipationTierItemProvider::class),
+        new Post(processor: CreateOrderProcessor::class),
     ]
 )]
-final class AnimalReportResource {
-    public ?Uuid $id = null;
-    public string $animalName = '';
-    public string $species = '';
-    public string $status = '';
-    public LocationResource $location;
+final class ParticipationTierResource {
+    public ?int $id = null;
+    public string $name = '';
+    public string $group = '';      // standard | vip
+    public int $priceCents = 0;
 }
 ```
 
 ## Without API Platform (manual JSON endpoints)
 
 ```php
-#[Route('/api/reports', name: 'api_reports_list', methods: ['GET'])]
-public function list(QueryBusInterface $bus): JsonResponse {
-    $reports = $bus->ask(new GetPublicAnimalReports(page: 1));
-    return $this->json($reports, context: ['groups' => ['report:read']]);
+#[Route('/api/tiers', name: 'api_tiers_list', methods: ['GET'])]
+public function list(ParticipationCatalog $catalog): JsonResponse {
+    $tiers = $catalog->allTiers();
+    return $this->json($tiers, context: ['groups' => ['tier:read']]);
 }
 ```
 
@@ -67,7 +66,7 @@ public function list(QueryBusInterface $bus): JsonResponse {
     "type": "https://tools.ietf.org/html/rfc9110#section-15.5.5",
     "title": "Not Found",
     "status": 404,
-    "detail": "Animal report not found"
+    "detail": "Participation tier not found"
 }
 ```
 

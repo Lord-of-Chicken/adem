@@ -1,11 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\MediaItem;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
+/**
+ * Service for seeding the database with media items from the ruelle folder.
+ */
 final class RuelleDatabaseSeeder
 {
     public function __construct(
@@ -14,12 +19,24 @@ final class RuelleDatabaseSeeder
     ) {
     }
 
+    /**
+     * Seeds the database with media items.
+     *
+     * @param EntityManagerInterface $em The entity manager
+     * @return void
+     */
     public function seed(EntityManagerInterface $em): void
     {
         $this->seedMediaFromRuelleFolder($em);
         $em->flush();
     }
 
+    /**
+     * Seeds media items from the ruelle folder.
+     *
+     * @param EntityManagerInterface $em The entity manager
+     * @return void
+     */
     private function seedMediaFromRuelleFolder(EntityManagerInterface $em): void
     {
         $dir = $this->projectDir.'/assets/img/ruelle';

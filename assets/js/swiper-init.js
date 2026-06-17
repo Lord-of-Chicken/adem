@@ -1,7 +1,15 @@
+import Swiper from 'swiper';
+import { Navigation, Pagination, EffectCoverflow, Keyboard, A11y, Autoplay } from 'swiper/modules';
+
 (() => {
     let swiperInstance = null;
+    let keydownHandler = null;
 
     const cleanup = () => {
+        if (keydownHandler) {
+            document.removeEventListener('keydown', keydownHandler);
+            keydownHandler = null;
+        }
         if (swiperInstance) {
             swiperInstance.destroy(true, true);
             swiperInstance = null;
@@ -12,20 +20,22 @@
     const initSwiper = () => {
         cleanup();
 
-        if (typeof Swiper === 'undefined') return;
-
         const swiperElement = document.querySelector('.media-swiper');
         if (!swiperElement) return;
 
+        const slides = swiperElement.querySelectorAll('.swiper-slide:not(.swiper-slide-duplicate)');
+        const slideCount = slides.length;
+
         swiperInstance = new Swiper('.media-swiper', {
+            modules: [Navigation, Pagination, EffectCoverflow, Keyboard, A11y, Autoplay],
+            autoplay: { delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true },
             effect: 'coverflow',
             grabCursor: true,
             centeredSlides: true,
-            loop: true,
+            loop: slideCount >= 6,
             speed: 500,
-            slidesPerView: 2,
-            coverflowEffect: { rotate: 30, stretch: 10, depth: 150, modifier: 1, slideShadows: true },
-            autoplay: { delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true },
+            slidesPerView: 'auto',
+            coverflowEffect: { rotate: 25, stretch: 0, depth: 120, modifier: 1, slideShadows: true },
             pagination: { el: '.swiper-pagination', clickable: true, dynamicBullets: true },
             navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
             keyboard: { enabled: true },
@@ -64,13 +74,13 @@
             counter.textContent = `${currentIndex + 1} / ${images.length}`;
             lightbox.classList.add('lightbox--open');
             document.body.classList.add('mobile-menu-open');
-            swiper.autoplay.stop();
+            swiper.autoplay?.stop();
         };
 
         const hide = () => {
             lightbox.classList.remove('lightbox--open');
             document.body.classList.remove('mobile-menu-open');
-            swiper.autoplay.start();
+            swiper.autoplay?.start();
         };
 
         swiperEl.addEventListener('click', (e) => {
@@ -86,18 +96,17 @@
 
         lightbox.addEventListener('click', (e) => { if (e.target === lightbox) hide(); });
 
-        document.addEventListener('keydown', (e) => {
+        keydownHandler = (e) => {
             if (!lightbox.classList.contains('lightbox--open')) return;
             if (e.key === 'Escape') hide();
             if (e.key === 'ArrowLeft') show(currentIndex - 1);
             if (e.key === 'ArrowRight') show(currentIndex + 1);
-        });
+        };
+        document.addEventListener('keydown', keydownHandler);
     };
 
-    // Turbo navigation
     document.addEventListener('turbo:load', initSwiper);
 
-    // Fallback sans Turbo
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initSwiper);
     } else {

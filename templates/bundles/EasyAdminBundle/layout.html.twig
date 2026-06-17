@@ -1,17 +1,21 @@
 {% extends '@!EasyAdmin/layout.html.twig' %}
 
-{% block head %}
+{% block head_stylesheets %}
     {{ parent() }}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Permanent+Marker&family=Rubik:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    {% block importmap %}{{ importmap('app') }}{% endblock %}
-    {% include '_partials/critical_css.html.twig' %}
+    <link rel="stylesheet" href="{{ asset('styles/ruelle.css') }}">
 {% endblock %}
 
 {% block body_attr %}data-turbo="false"{% endblock %}
 
-{% block body %}
+{% block wrapper_wrapper %}
     {% include '_partials/top_bars.html.twig' %}
     {{ parent() }}
+{% endblock %}
+
+{% block body_javascript %}
+    {{ parent() }}
+    <script type="module" src="{{ asset('js/layout.js') }}"></script>
 {% endblock %}

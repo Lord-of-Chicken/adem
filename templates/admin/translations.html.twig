@@ -12,9 +12,10 @@
     <div class="content-panel mb-3">
         <div class="content-panel-body">
             <label for="locale" class="form-label">{{ 'admin.translation_locale'|trans }}</label>
-            <select id="locale" class="form-select" style="max-width: 240px;" onchange="window.location.href=this.value">
-                <option value="{{ path('admin_translations', { locale: 'fr' }) }}" {{ selected_locale == 'fr' ? 'selected' : '' }}>Français</option>
-                <option value="{{ path('admin_translations', { locale: 'en' }) }}" {{ selected_locale == 'en' ? 'selected' : '' }}>English</option>
+            <select id="locale" class="form-select admin-locale-select" data-controller="nav-select" data-action="change->nav-select#navigate">
+                <option value="{{ path('admin_translations', { locale: 'fr' }) }}" {{ selected_locale == 'fr' ? 'selected' : '' }}>{{ 'admin.lang_fr'|trans }}</option>
+                <option value="{{ path('admin_translations', { locale: 'en' }) }}" {{ selected_locale == 'en' ? 'selected' : '' }}>{{ 'admin.lang_en'|trans }}</option>
+                <option value="{{ path('admin_translations', { locale: 'nl' }) }}" {{ selected_locale == 'nl' ? 'selected' : '' }}>{{ 'admin.lang_nl'|trans }}</option>
             </select>
         </div>
     </div>

@@ -42,20 +42,20 @@ bun run build
 {# BAD #}
 {% set total = items|length * price %}
 
-{# GOOD — compute in controller/DTO, pass to template #}
-{{ report.totalCount }}
+{# GOOD — compute in controller/Service/DTO, pass to template #}
+{{ cart.totalFormatted }}
 
 {# Use named blocks for extensibility #}
 {% block content %}{% endblock %}
 
 {# Prefer includes/components over repeating markup #}
-{% include 'components/_animal_card.html.twig' with { report: report } %}
+{% include 'components/_tier_card.html.twig' with { tier: tier } %}
 ```
 
 ## Stimulus — behavior only
 
 ```js
-// assets/controllers/modal_controller.js
+// assets/controllers/cart_controller.js
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
@@ -68,9 +68,9 @@ export default class extends Controller {
 
 ```twig
 {# Use data-controller in Twig #}
-<div data-controller="modal">
-    <button data-action="modal#open">Open</button>
-    <dialog data-modal-target="dialog">...</dialog>
+<div data-controller="cart">
+    <button data-action="cart#open">Voir le panier</button>
+    <dialog data-cart-target="dialog">...</dialog>
 </div>
 ```
 
@@ -78,9 +78,9 @@ export default class extends Controller {
 
 ```twig
 {# Wrap independently updatable sections #}
-<turbo-frame id="animal-report-list">
-    {% for report in reports %}
-        {{ include('animal_report/_card.html.twig') }}
+<turbo-frame id="cart-summary">
+    {% for line in cart.lines %}
+        {{ include('cart/_line.html.twig') }}
     {% endfor %}
 </turbo-frame>
 
@@ -88,19 +88,13 @@ export default class extends Controller {
 {# Return the full page — Turbo extracts the matching frame #}
 ```
 
-## Turbo Streams — real-time DOM updates
+## Turbo Streams — multi-target DOM updates
 
 ```php
-// In controller (after form submit, Messenger handler, etc.)
-return $this->renderBlock('animal_report/index.html.twig', 'report_list', [
-    'reports' => $reports,
+// In controller (after add-to-cart, form submit, etc.)
+return $this->renderBlock('cart/index.html.twig', 'cart_summary', [
+    'cart' => $cart,
 ]);
-
-// Or via Mercure for push
-$this->hub->publish(new Update(
-    topics: ['/reports'],
-    data: $this->renderView('streams/report_added.stream.html.twig', ['report' => $report]),
-));
 ```
 
 ## Symfony UX — not yet installed, install when needed

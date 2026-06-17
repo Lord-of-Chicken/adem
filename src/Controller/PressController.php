@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -7,8 +9,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * Handles the press/media coverage page.
+ */
 final class PressController extends AbstractController
 {
+    /**
+     * Displays the press coverage page with categorized media items.
+     *
+     * @param TranslatorInterface $translator The translator service
+     * @return Response The press page response
+     */
     #[Route('/presse', name: 'app_press')]
     public function index(TranslatorInterface $translator): Response
     {

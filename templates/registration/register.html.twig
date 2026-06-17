@@ -19,6 +19,11 @@
                     {{ form_widget(registrationForm.newsletter) }}
                     {{ form_label(registrationForm.newsletter) }}
                 </div>
+                <div class="form__field">
+                    {{ form_widget(registrationForm.ageConfirmed) }}
+                    {{ form_label(registrationForm.ageConfirmed) }}
+                    {{ form_errors(registrationForm.ageConfirmed) }}
+                </div>
                 <button type="submit" class="btn btn--primary">{{ page.submit }}</button>
             {{ form_end(registrationForm) }}
             </div>

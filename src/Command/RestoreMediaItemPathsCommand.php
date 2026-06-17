@@ -11,6 +11,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Command to restore media item paths by adding 'img/ruelle/' prefix.
+ */
 #[AsCommand(name: 'app:restore-media-paths')]
 final class RestoreMediaItemPathsCommand extends Command
 {
@@ -21,6 +24,13 @@ final class RestoreMediaItemPathsCommand extends Command
         parent::__construct();
     }
 
+    /**
+     * Executes the command to restore media item paths.
+     *
+     * @param InputInterface $input The input interface
+     * @param OutputInterface $output The output interface
+     * @return int Command::SUCCESS or Command::FAILURE
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $mediaItems = $this->mediaItemRepository->findAll();

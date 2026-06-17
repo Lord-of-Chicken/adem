@@ -11,9 +11,9 @@
 ## Branch naming
 
 ```
-feature/report-lost-animal
-fix/geolocation-timeout
-refactor/animal-report-repository
+feature/vip-participation-tier
+fix/stripe-webhook-idempotency
+refactor/cart-service-totals
 chore/upgrade-symfony-8-0-1
 docs/add-setup-guide
 ```
@@ -40,10 +40,10 @@ Types:
 
 Examples:
 ```
-feat(animal-report): add photo upload to lost animal form
-fix(geolocation): handle browser permission denial gracefully
-refactor(domain): extract Location into a Value Object
-test(controller): add functional test for report creation flow
+feat(participation): add VIP tier with custom name
+fix(stripe): verify amount_total before marking order paid
+refactor(cart): extract total computation into CartService
+test(controller): add functional test for checkout flow
 chore(deps): upgrade symfony/ux-turbo to 3.1
 ```
 

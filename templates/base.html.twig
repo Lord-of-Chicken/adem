@@ -7,14 +7,22 @@
     <title>{% block title %}{{ site_brand.title }}{% endblock %}</title>
     <meta name="description" content="{% block meta_description %}{{ 'site.default_description'|trans }}{% endblock %}">
     <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
-    <link rel="canonical" href="{{ app.request.schemeAndHttpHost ~ app.request.pathInfo }}">
+    {# Canonical URL: rebuilt from the matched route + its params (no query string),
+       so paginated/filtered pages still point to a single clean canonical. #}
+    {%- set _canonical_params = app.request.attributes.get('_route_params')|default({}) %}
+    {%- if app.current_route %}
+        {%- set _canonical_url = url(app.current_route, _canonical_params) %}
+    {%- else %}
+        {%- set _canonical_url = app.request.schemeAndHttpHost ~ app.request.pathInfo %}
+    {%- endif %}
+    <link rel="canonical" href="{{ _canonical_url }}">
     {%- set _og_locale_map = {'fr': 'fr_FR', 'en': 'en_US', 'nl': 'nl_NL'} %}
     {%- set _current_locale = app.request.locale %}
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="{{ site_brand.title }}">
     <meta property="og:title" content="{% block og_title %}{{ site_brand.title }}{% endblock %}">
     <meta property="og:description" content="{% block og_description %}{{ 'site.default_description'|trans }}{% endblock %}">
-    <meta property="og:url" content="{{ app.request.schemeAndHttpHost ~ app.request.pathInfo }}">
+    <meta property="og:url" content="{{ _canonical_url }}">
     <meta property="og:image" content="{% block og_image %}{{ absolute_url(asset(site_brand.og_image_asset)) }}{% endblock %}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -26,6 +34,8 @@
     <meta name="twitter:title" content="{% block twitter_title %}{{ site_brand.title }}{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}{{ 'site.default_description'|trans }}{% endblock %}">
     <meta name="twitter:image" content="{{ block('og_image') }}">
+    <meta name="twitter:site" content="@ruelledadem">
+    <meta name="twitter:creator" content="@ruelledadem">
     {%- set _route_params = app.request.attributes.get('_route_params')|default({}) %}
     {% if '_locale' in (_route_params|keys) %}
     <link rel="alternate" hreflang="fr" href="{{ url(app.current_route, _route_params|merge({'_locale': 'fr'})) }}">
@@ -37,17 +47,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Permanent+Marker&family=Rubik:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12.1.4/swiper-bundle.min.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
-    {% if app.environment == 'prod' and not app.request.pathInfo starts with '/admin' %}
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J6786ESFNX"></script>
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/swiper@12.1.4/swiper-bundle.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12.1.4/swiper-bundle.min.css"></noscript>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    {% if not app.request.pathInfo starts with '/admin' %}
+    {# Google Consent Mode v2 — défauts DENIED avant tout chargement (RGPD).
+       GA n'est chargé/activé ('granted') que par le contrôleur Stimulus
+       cookie-consent après consentement analytics explicite. anonymize_ip reste actif. #}
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-J6786ESFNX');
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        functionality_storage: 'denied',
+        personalization_storage: 'denied',
+        security_storage: 'granted',
+        wait_for_update: 500
+      });
     </script>
     {% endif %}
     {% include '_partials/critical_css.html.twig' %}
@@ -61,9 +80,10 @@
     {% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}"{% if app.current_route starts with 'app_checkout' or app.current_route starts with 'app_payment' or app.current_route starts with 'app_cart' %} data-stripe-enabled="1" data-stripe-publishable-key="{{ stripe_publishable_key }}"{% endif %}>
+    <a href="#main-content" class="visually-hidden">Aller au contenu</a>
     {% include '_partials/language_selector.html.twig' %}
 
-    {# JavaScript translations for dynamic content #}
+    {# JavaScript translations + CSRF tokens for dynamic content #}
     <script type="application/json" id="cart-translations">
         {
             "title": {{ 'js.cart.title'|trans|json_encode()|raw }},
@@ -73,12 +93,16 @@
             "invalid_amount": {{ 'js.cart.invalid_amount'|trans|json_encode()|raw }},
             "add_error": {{ 'js.cart.add_error'|trans|json_encode()|raw }},
             "technical_error": {{ 'js.cart.technical_error'|trans|json_encode()|raw }},
+            "donor_consent_required": {{ 'js.cart.donor_consent_required'|trans|json_encode()|raw }},
             "image_upload_success": {{ 'js.image.upload_success'|trans|json_encode()|raw }},
             "image_upload_error": {{ 'js.image.upload_error'|trans|json_encode()|raw }},
             "confirm_title": {{ 'js.confirm.default_title'|trans|json_encode()|raw }},
             "confirm_message": {{ 'js.confirm.default_message'|trans|json_encode()|raw }},
             "confirm": {{ 'js.confirm.confirm'|trans|json_encode()|raw }},
-            "cancel": {{ 'js.confirm.cancel'|trans|json_encode()|raw }}
+            "cancel": {{ 'js.confirm.cancel'|trans|json_encode()|raw }},
+            "csrf_cart_add": {{ csrf_token('cart_add')|json_encode()|raw }},
+            "cart_url": {{ path('app_cart_index')|json_encode()|raw }},
+            "cart_add_url": {{ path('app_cart_add')|json_encode()|raw }}
         }
     </script>
 
@@ -88,5 +112,61 @@
     {% endblock %}
 
     {% block body %}{% endblock %}
+
+    {# Bandeau consentement cookies (RGPD) — Google Consent Mode v2 piloté par Stimulus.
+       Refuser est aussi simple qu'accepter ; le toggle analytics n'est pas pré-coché. #}
+    <div
+        data-controller="cookie-consent"
+        data-cookie-consent-ga-id-value="G-J6786ESFNX"
+    >
+        <div
+            class="cookie-banner"
+            data-cookie-consent-target="banner"
+            role="dialog"
+            aria-live="polite"
+            aria-label="{{ 'cookie.aria_label'|trans }}"
+            hidden
+        >
+            <p class="cookie-banner__text">{{ 'cookie.banner_text'|trans }}</p>
+
+            <div class="cookie-banner__actions">
+                <button type="button" data-action="cookie-consent#acceptAll" class="cookie-banner__btn cookie-banner__btn--accept">{{ 'cookie.accept'|trans }}</button>
+                <button type="button" data-action="cookie-consent#refuseAll" class="cookie-banner__btn cookie-banner__btn--refuse">{{ 'cookie.refuse'|trans }}</button>
+                <button type="button" data-action="cookie-consent#openPreferences" class="cookie-banner__btn cookie-banner__btn--refuse">{{ 'cookie.customize'|trans }}</button>
+            </div>
+
+            {# Panneau de granularité par catégorie #}
+            <div class="cookie-panel" data-cookie-consent-target="panel" hidden>
+                <ul class="cookie-panel__list">
+                    <li class="cookie-panel__row">
+                        <div class="cookie-panel__info">
+                            <strong>{{ 'cookie.cat.essential'|trans }}</strong>
+                            <span class="cookie-panel__desc">{{ 'cookie.cat.essential_desc'|trans }}</span>
+                        </div>
+                        <label class="cookie-panel__toggle">
+                            <input type="checkbox" checked disabled>
+                            <span class="cookie-panel__always">{{ 'cookie.always_on'|trans }}</span>
+                        </label>
+                    </li>
+                    <li class="cookie-panel__row">
+                        <div class="cookie-panel__info">
+                            <strong>{{ 'cookie.cat.analytics'|trans }}</strong>
+                            <span class="cookie-panel__desc">{{ 'cookie.cat.analytics_desc'|trans }}</span>
+                        </div>
+                        <label class="cookie-panel__toggle">
+                            <input type="checkbox" data-cookie-consent-target="analyticsToggle">
+                            <span>{{ 'cookie.cat.analytics'|trans }}</span>
+                        </label>
+                    </li>
+                </ul>
+                <div class="cookie-panel__actions">
+                    <button type="button" data-action="cookie-consent#savePreferences" class="cookie-banner__btn cookie-banner__btn--accept">{{ 'cookie.save'|trans }}</button>
+                </div>
+                <p class="cookie-panel__link">
+                    <a href="{{ path('app_cookies_policy') }}">{{ 'cookie.more_info'|trans }}</a>
+                </p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Participation\ParticipationCatalog;
@@ -9,44 +11,28 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * Handles the home page display with participation tiers and media items.
+ */
 final class HomeController extends AbstractController
 {
+    /**
+     * Displays the home page with participation tiers and media gallery.
+     *
+     * @param ParticipationCatalog $catalog The participation catalog
+     * @param MediaItemRepository $mediaItemRepository The media item repository
+     * @param TranslatorInterface $translator The translator service
+     * @return Response The home page response
+     */
     #[Route('/', name: 'app_home')]
     public function index(
         ParticipationCatalog $catalog,
         MediaItemRepository $mediaItemRepository,
         TranslatorInterface $translator,
     ): Response {
-        $allTiers = $catalog->all();
-        $tiersStandard = array_values(array_filter($allTiers, fn ($t) => $t['group'] === 'standard'));
-        $tiersVip = array_values(array_filter($allTiers, fn ($t) => $t['group'] === 'vip'));
-
-        // Translate tier titles and details using keys from YAML
-        foreach ($tiersStandard as &$tier) {
-            if (isset($tier['title_key'])) {
-                $tier['title'] = $translator->trans($tier['title_key']);
-            }
-            if (isset($tier['detail_key'])) {
-                $tier['detail'] = $translator->trans($tier['detail_key']);
-            }
-            if (isset($tier['price_key'])) {
-                $tier['price'] = $translator->trans($tier['price_key']);
-            }
-            if (isset($tier['price_suffix_key'])) {
-                $tier['price_suffix'] = $translator->trans($tier['price_suffix_key']);
-            }
-        }
-        unset($tier);
-
-        foreach ($tiersVip as &$tier) {
-            if (isset($tier['title_key'])) {
-                $tier['title'] = $translator->trans($tier['title_key']);
-            }
-            if (isset($tier['detail_key'])) {
-                $tier['detail'] = $translator->trans($tier['detail_key']);
-            }
-        }
-        unset($tier);
+        $translatedTiers = $catalog->getTranslatedTiers($translator);
+        $tiersStandard = $translatedTiers['standard'];
+        $tiersVip = $translatedTiers['vip'];
 
         return $this->render('home/index.html.twig', [
             'hero' => [

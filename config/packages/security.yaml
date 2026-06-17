@@ -26,24 +26,22 @@ security:
                 enable_csrf: true
                 default_target_path: app_home
             logout:
-                path: /deconnexion
+                path: app_logout
                 target: app_home
-                csrf_token_id: logout
-            # TODO: activer login_throttling (5 tentatives / 1 minute) après
-            # `composer require symfony/rate-limiter`.
+            login_throttling:
+                max_attempts: 5
+                interval: '1 minute'
 
-    # Note: Only the *first* matching rule is applied
+    # Note: Only the *first* matching rule is applied.
+    # All routes are locale-prefixed (/fr, /en, /nl) except sitemap, root, and EasyAdmin.
     access_control:
-        - { path: ^/$,              roles: PUBLIC_ACCESS }
-        - { path: ^/connexion,      roles: PUBLIC_ACCESS }
-        - { path: ^/inscription,    roles: PUBLIC_ACCESS }
-        - { path: ^/reset-password, roles: PUBLIC_ACCESS }
-        - { path: ^/payment/,       roles: PUBLIC_ACCESS }
-        - { path: ^/stripe/webhook, roles: PUBLIC_ACCESS }
-        - { path: ^/panier,         roles: PUBLIC_ACCESS }
-        - { path: ^/img,            roles: PUBLIC_ACCESS }
-        - { path: ^/assets,         roles: PUBLIC_ACCESS }
-        - { path: ^/admin/,         roles: ROLE_ADMIN }
+        # ── Protected routes (most specific first) ──
+        - { path: ^/admin,                roles: ROLE_ADMIN }
+        - { path: '^/(fr|en|nl)/admin/',  roles: ROLE_ADMIN }
+        - { path: '^/(fr|en|nl)/profil',  roles: ROLE_USER }
+
+        # ── Everything else is public (controller annotations add defence-in-depth) ──
+        - { path: ^/, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

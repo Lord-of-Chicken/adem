@@ -1,21 +1,19 @@
 (() => {
     const initStripe = () => {
         const body = document.body;
-        if (!body || body.dataset.stripeEnabled !== '1') {
-            return;
-        }
+        if (!body || body.dataset.stripeEnabled !== '1') return;
+        if (window.stripe) return;
 
         const key = body.dataset.stripePublishableKey || '';
         if (typeof Stripe !== 'undefined' && key !== '') {
             try {
                 window.stripe = Stripe(key);
-            } catch (error) {
-                setTimeout(initStripe, 100);
+            } catch {
+                // Stripe SDK failed to initialize — will retry on next turbo:load
             }
-        } else {
-            setTimeout(initStripe, 100);
         }
     };
 
     document.addEventListener('DOMContentLoaded', initStripe);
+    document.addEventListener('turbo:load', initStripe);
 })();

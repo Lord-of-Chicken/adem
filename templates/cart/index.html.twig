@@ -14,7 +14,13 @@
 
             {% if lines is empty %}
                 <div class="cart-empty">
-                    <span class="cart-empty__icon">🛒</span>
+                    <span class="cart-empty__icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                    </span>
                     <p class="cart-empty__text">{{ 'cart.empty'|trans }}</p>
                     <a href="{{ path('app_home') }}#offres" class="btn btn--primary">{{ page.empty_link }}</a>
                 </div>
@@ -42,12 +48,13 @@
                             </div>
 
                             <div class="cart-line__actions">
-                                <div class="qty-controls">
-                                    <button type="button" class="qty-btn" 
+                                <div class="qty-controls" data-controller="cart-line" data-cart-line-line-id-value="{{ line.line_id }}" data-cart-line-min-qty-value="{{ tier.min_qty|default(1) }}" data-cart-line-max-qty-value="{{ tier.max_qty|default(500) }}">
+                                    <button type="button" class="qty-btn"
                                             id="btn-minus-{{ line.line_id }}"
-                                            onclick="updateCartQty('{{ line.line_id }}', -1, {{ tier.min_qty|default(1) }}, {{ tier.max_qty|default(500) }})"
+                                            data-action="cart-line#decrement"
+                                            aria-label="{{ 'home.qty_minus'|trans }}"
                                             {% if line.quantity <= tier.min_qty|default(1) %}disabled{% endif %}>
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/></svg>
                                     </button>
 
                                     <div class="qty-display">
@@ -55,11 +62,12 @@
                                         <span class="qty-label" id="label-{{ line.line_id }}" data-piece-singular="{{ 'cart.piece'|trans }}" data-piece-plural="{{ 'cart.pieces'|trans }}"></span>
                                     </div>
 
-                                    <button type="button" class="qty-btn" 
+                                    <button type="button" class="qty-btn"
                                             id="btn-plus-{{ line.line_id }}"
-                                            onclick="updateCartQty('{{ line.line_id }}', 1, {{ tier.min_qty|default(1) }}, {{ tier.max_qty|default(500) }})"
+                                            data-action="cart-line#increment"
+                                            aria-label="{{ 'home.qty_plus'|trans }}"
                                             {% if line.quantity >= tier.max_qty|default(500) %}disabled{% endif %}>
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
                                     </button>
                                 </div>
 

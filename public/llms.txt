@@ -1,0 +1,25 @@
+# Ruelle d'Adem
+
+> Campagne citoyenne belge pour soutenir Adem, jeune Bruxellois d'Uccle doublement élu « Bruxellois de l'Année », qui transforme sa ruelle en jardin fleuri. Les visiteurs participent financièrement (bégonias à 1 €, jardinières, palettes) via des tiers de participation Standard ou VIP, avec paiement sécurisé par Stripe.
+
+Ruelle d'Adem est un projet à but non lucratif basé à Uccle (Région de Bruxelles-Capitale, Belgique). Le site permet de découvrir l'histoire d'Adem, de consulter la galerie de la ruelle, de lire la couverture presse et de contribuer à la végétalisation de la ruelle. Site trilingue : français (par défaut), anglais et néerlandais.
+
+## Pages clés
+
+- [Accueil — Participer](https://www.ruelledadem.com/fr/): Présentation de la campagne et catalogue des tiers de participation (bégonias, jardinières, palettes ; formules Standard et VIP personnalisables avec le nom du donateur). Don libre possible. Paiement Stripe.
+- [Qui est Adem ?](https://www.ruelledadem.com/fr/qui-est-adem): Histoire d'Adem, jeune Bruxellois d'Uccle, et chronologie du projet de ruelle fleurie (2022 → 2026), expositions et distinctions « Bruxellois de l'Année ».
+- [Galerie](https://www.ruelledadem.com/fr/galerie): Photos de la ruelle d'Adem et de son évolution au fil des saisons.
+- [Presse](https://www.ruelledadem.com/fr/presse): Articles, reportages vidéo et couvertures médias consacrés à Adem et à sa ruelle.
+- [FAQ](https://www.ruelledadem.com/fr/faq): Questions fréquentes sur le projet, les contributions, les formules VIP et le fonctionnement des paiements.
+- [Contact](https://www.ruelledadem.com/fr/contact): Formulaire de contact pour toute question relative au projet.
+
+## Versions linguistiques
+
+- [English homepage](https://www.ruelledadem.com/en/)
+- [Nederlandse startpagina](https://www.ruelledadem.com/nl/)
+
+## Notes
+
+- Projet citoyen, sans dimension commerciale : les contributions financent la végétalisation de la ruelle.
+- Localisation : Uccle, Bruxelles, Belgique.
+- Les espaces d'administration, le panier et le tunnel de paiement ne sont pas destinés à l'indexation.

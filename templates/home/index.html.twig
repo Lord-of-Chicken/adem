@@ -4,7 +4,9 @@
 
 {% block meta_description %}{{ 'home.meta_description'|trans }}{% endblock %}
 {% block og_description %}{{ 'home.og_description'|trans }}{% endblock %}
-{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.png')) }}{% endblock %}
+{% block og_image %}{{ absolute_url(asset('img/Social/og-home-preview.jpg')) }}{% endblock %}
+
+{% block og_title %}Fais une fleur à Adem | {{ site_brand.title }}{% endblock %}
 
 {% block head %}
     {{ parent() }}
@@ -15,12 +17,7 @@
         "name": "{{ site_brand.title }}",
         "url": "{{ app.request.schemeAndHttpHost }}",
         "description": "{{ 'home.subtitle'|trans }}",
-        "inLanguage": "{{ app.request.locale }}",
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "{{ app.request.schemeAndHttpHost }}/?q={search_term_string}",
-            "query-input": "required name=search_term_string"
-        }
+        "inLanguage": "{{ app.request.locale }}"
     }
     </script>
     <script type="application/ld+json">
@@ -30,10 +27,46 @@
         "name": "{{ site_brand.title }}",
         "url": "{{ app.request.schemeAndHttpHost }}",
         "description": "{{ 'home.subtitle'|trans }}",
-        "logo": "{{ app.request.schemeAndHttpHost ~ asset(site_brand.logo_asset) }}",
-        "sameAs": []
+        "logo": "{{ absolute_url(asset(site_brand.logo_asset)) }}",
+        "sameAs": [
+            "https://www.facebook.com/ruelledadem",
+            "https://twitter.com/ruelledadem",
+            "https://www.instagram.com/ruelledadem"
+        ],
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Bruxelles",
+            "addressCountry": "BE"
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer service",
+            "email": "info@ruelledadem.com"
+        }
     }
     </script>
+    {%- set _all_tiers = (tiers_standard|default([]))|merge(tiers_vip|default([])) %}
+    {%- for tier in _all_tiers %}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": {{ tier.title|json_encode()|raw }},
+        "description": {{ (tier.detail|default(tier.title))|json_encode()|raw }},
+        "brand": {
+            "@type": "Brand",
+            "name": {{ site_brand.title|json_encode()|raw }}
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": "{{ app.request.schemeAndHttpHost ~ path('app_home') }}",
+            "price": "{{ tier.unit_price_eur|number_format(2, '.', '') }}",
+            "priceCurrency": "EUR",
+            "availability": "https://schema.org/InStock"
+        }
+    }
+    </script>
+    {%- endfor %}
 {% endblock %}
 
 {% block street_main %}
@@ -50,9 +83,8 @@
 
 
     {# SECTION MÉDIAS (GALERIE) #}
-    <section class="section" id="medias">
+    <section class="section section--gallery" id="medias">
         <div class="section__inner">
-
             {% if media_items is not empty %}
                 <div class="swiper media-swiper">
                     <div class="swiper-wrapper">
@@ -63,8 +95,8 @@
                         {% endfor %}
                     </div>
                     <div class="swiper-pagination"></div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next" aria-label="Photo suivante"></div>
+                    <div class="swiper-button-prev" aria-label="Photo précédente"></div>
                 </div>
             {% endif %}
         </div>
@@ -99,17 +131,17 @@
                         <h3 class="card__title">{{ tier.title }}</h3>
                         <p class="card__price">{{ tier.price }}&nbsp;{{ tier.price_unit }}</p>
                         <p class="card__detail">{{ tier.detail }}</p>
-                        <div class="card__cart-controls">
+                        <div class="card__cart-controls" data-controller="product" data-product-tier-id-value="{{ tier.id }}" data-product-min-qty-value="{{ tier.min_qty }}" data-product-max-qty-value="{{ tier.max_qty }}">
                             <div class="qty-controls qty-controls--compact">
-                                <button type="button" class="qty-btn" id="minus-{{ tier.id }}" onclick="updateQty('{{ tier.id }}', -1, {{ tier.min_qty }}, {{ tier.max_qty }})">-</button>
+                                <button type="button" class="qty-btn" id="minus-{{ tier.id }}" data-action="product#decrement" aria-label="{{ 'home.qty_minus'|trans }}">-</button>
                                 <div class="qty-display">
                                     <span class="qty-number" id="num-{{ tier.id }}">{{ tier.min_qty }}</span>
-                                    <span class="qty-label" id="label-{{ tier.id }}" data-piece-singular="{{ 'home.piece'|trans }}" data-piece-plural="{{ 'home.piece'|trans }}s"></span>
+                                    <span class="qty-label" id="label-{{ tier.id }}" data-piece-singular="{{ 'home.piece'|trans }}" data-piece-plural="{{ 'home.piece_plural'|trans }}"></span>
                                 </div>
-                                <button type="button" class="qty-btn" id="plus-{{ tier.id }}" onclick="updateQty('{{ tier.id }}', 1, {{ tier.min_qty }}, {{ tier.max_qty }})">+</button>
+                                <button type="button" class="qty-btn" id="plus-{{ tier.id }}" data-action="product#increment" aria-label="{{ 'home.qty_plus'|trans }}">+</button>
                             </div>
                             <input type="hidden" id="qty-{{ tier.id }}" value="{{ tier.min_qty }}">
-                            <button type="button" class="btn btn--primary btn--small" onclick="addToCart('{{ tier.id }}', this)">{{ 'home.add_to_cart'|trans }}</button>
+                            <button type="button" class="btn btn--primary btn--small" data-cart-url="{{ path('app_cart_add') }}" data-action="product#add">{{ 'home.add_to_cart'|trans }}</button>
                         </div>
                     </article>
                     {% endif %}
@@ -129,22 +161,26 @@
                         <h3 class="card__title">{{ tier.title }}</h3>
                         <p class="card__price">{{ tier.price }}&nbsp;{{ tier.price_unit }}</p>
                         <p class="card__detail">{{ tier.detail }}</p>
-                        <div class="card__cart-controls">
+                        <div class="card__cart-controls" data-controller="product" data-product-tier-id-value="{{ tier.id }}" data-product-min-qty-value="{{ tier.min_qty }}" data-product-max-qty-value="{{ tier.max_qty }}">
                             <div class="qty-controls qty-controls--compact">
-                                <button type="button" class="qty-btn" id="minus-{{ tier.id }}" onclick="updateQty('{{ tier.id }}', -1, {{ tier.min_qty }}, {{ tier.max_qty }})">-</button>
+                                <button type="button" class="qty-btn" id="minus-{{ tier.id }}" data-action="product#decrement" aria-label="{{ 'home.qty_minus'|trans }}">-</button>
                                 <div class="qty-display">
                                     <span class="qty-number" id="num-{{ tier.id }}">{{ tier.min_qty }}</span>
-                                    <span class="qty-label" id="label-{{ tier.id }}" data-piece-singular="{{ 'home.piece'|trans }}" data-piece-plural="{{ 'home.piece'|trans }}s"></span>
+                                    <span class="qty-label" id="label-{{ tier.id }}" data-piece-singular="{{ 'home.piece'|trans }}" data-piece-plural="{{ 'home.piece_plural'|trans }}"></span>
                                 </div>
-                                <button type="button" class="qty-btn" id="plus-{{ tier.id }}" onclick="updateQty('{{ tier.id }}', 1, {{ tier.min_qty }}, {{ tier.max_qty }})">+</button>
+                                <button type="button" class="qty-btn" id="plus-{{ tier.id }}" data-action="product#increment" aria-label="{{ 'home.qty_plus'|trans }}">+</button>
                             </div>
                             <input type="hidden" id="qty-{{ tier.id }}" value="{{ tier.min_qty }}">
 
                             <div class="form-group mt-1">
                                 <label class="form__label">{{ 'home.displayed_name'|trans }} :</label>
                                 <input type="text" id="donor-{{ tier.id }}" class="form__input form__input--don-libre" placeholder="{{ 'home.name_placeholder'|trans }}">
+                                <label class="form__consent" for="donor-consent-{{ tier.id }}">
+                                    <input type="checkbox" id="donor-consent-{{ tier.id }}" class="form__checkbox">
+                                    <span>{{ 'home.donor_consent'|trans }}</span>
+                                </label>
                             </div>
-                            <button type="button" class="btn btn--primary btn--small mt-1" onclick="addToCart('{{ tier.id }}', this)">
+                            <button type="button" class="btn btn--primary btn--small mt-1" data-cart-url="{{ path('app_cart_add') }}" data-action="product#add">
                                 {{ 'home.add_to_cart'|trans }}
                             </button>
                         </div>
@@ -159,15 +195,19 @@
         <div class="section__inner">
             <h2 class="section__title section__title--tag">{{ sections.don_libre.title }}</h2>
             <p class="section__intro section__intro--muted">{{ sections.don_libre.intro }}</p>
-            <article class="card card--tier card--featured card--sticker card--center">
+            <article class="card card--tier card--featured card--sticker card--center" data-controller="product" data-product-tier-id-value="free_donation">
                 <div class="form">
                     <label class="form__label">{{ 'home.amount'|trans }} ({{ 'cart.currency_symbol'|trans }}) :</label>
                     <input type="number" id="free-amount" class="form__input form__input--don-libre" placeholder="{{ 'home.amount_example'|trans }}" min="1">
 
                     <label class="form__label mt-1">{{ 'home.displayed_name'|trans }} :</label>
                     <input type="text" id="donor-free_donation" class="form__input form__input--don-libre" placeholder="{{ 'home.anonymous'|trans }}">
+                    <label class="form__consent" for="donor-consent-free_donation">
+                        <input type="checkbox" id="donor-consent-free_donation" class="form__checkbox">
+                        <span>{{ 'home.donor_consent'|trans }}</span>
+                    </label>
 
-                    <button type="button" class="btn btn--primary btn--small mt-1" onclick="addToCart('free_donation', this)">
+                    <button type="button" class="btn btn--primary btn--small mt-1" data-cart-url="{{ path('app_cart_add') }}" data-action="product#add">
                         {{ 'home.add_to_cart'|trans }}
                     </button>
                 </div>
@@ -194,9 +234,4 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="module">
-        import { updateQty, addToCart } from 'home';
-        window.updateQty = updateQty;
-        window.addToCart = addToCart;
-    </script>
 {% endblock %}

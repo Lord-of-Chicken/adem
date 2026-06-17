@@ -18,6 +18,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * @extends AbstractCrudController<MediaItem>
+ */
 class MediaItemCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

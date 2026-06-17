@@ -1,75 +1,100 @@
 # Architecture Skill
 
-## Default model: Hexagonal + DDD-lite + CQRS
+> Source de vérité de la structure du projet **Ruelle d'Adem**. À lire avant toute intervention multi-couches.
 
-Each feature = one module. Modules are isolated and communicate only via Domain Events or Application Services.
+## Modèle : MVC Symfony classique (PAS de DDD / CQRS / Hexagonal)
 
-## Folder structure per module
+Pas de couches Domain/Application/Infrastructure, pas de Command/Query Bus, pas de ports/adapters.
+Convention Symfony standard : contrôleurs fins, logique métier dans des Services, entités Doctrine avec attributs.
+
+## Structure des dossiers
 
 ```
 src/
-  {Module}/
-    Domain/
-      Entity/           # Aggregate roots and entities
-      ValueObject/      # Immutable domain primitives
-      Event/            # Domain events (past tense: AnimalReportCreated)
-      Repository/       # Interfaces only (ports)
-      Exception/        # Domain exceptions
-      Service/          # Pure domain services (no I/O)
-    Application/
-      Command/          # Write-side: command + handler pairs
-      Query/            # Read-side: query + handler + result DTO
-      DTO/              # Input DTOs (validated) + Output DTOs
-      EventListener/    # Reacts to domain events
-    Infrastructure/
-      Doctrine/         # Repository implementations, Doctrine mappings
-      Messenger/        # Async message handlers
-      External/         # Third-party adapters (APIs, storage...)
-    UI/
-      Controller/       # HTTP layer only
-      Form/             # Symfony Forms
-      Twig/             # Twig/Live Components
+  Controller/        # HTTP uniquement — fins, délèguent aux Services
+  Entity/            # Entités Doctrine (attributs ORM directement dessus)
+  Repository/        # ServiceEntityRepository + méthodes de requête
+  Form/              # FormType Symfony
+  Service/           # Logique métier (StripePaymentService, ...)
+  Cart/              # Module métier panier — CartService (panier en session)
+  Participation/     # Module métier tiers — ParticipationCatalog (catalogue tiers)
+  Enum/              # Enums PHP (OrderStatus, ...)
+templates/           # Twig (server-rendered)
+config/              # Config Symfony, routes par attributs
+migrations/          # VersionYYYYMMDDHHMMSS.php
+translations/        # FR / EN / NL
 ```
 
-## CQRS pattern
+## Conventions obligatoires
+
+- `declare(strict_types=1);` en tête de **chaque** fichier PHP.
+- Routes via attribut `#[Route]` sur les contrôleurs (pas de YAML pour le code métier), préfixe locale `#[Route('/{_locale}', requirements: ['_locale' => 'fr|en|nl'])]` — sauf sitemap et root.
+- Entités Doctrine : attributs `#[ORM\Entity]`, `#[ORM\Column]`, `#[ORM\ManyToOne]` directement sur l'entité (standard Symfony — pas de mapping XML séparé).
+- Migrations nommées `Version{YYYYMMDDHHMMSS}.php` (timestamp continu, sans séparateur), toujours générées via `doctrine:migrations:diff`.
+- Stack : PHP ≥8.4, Symfony 8.0, **MySQL 8.4** (Doctrine ORM), AssetMapper + Stimulus + Turbo, Stripe v20, EasyAdmin 5.
+
+## Contrôleur fin → Service
 
 ```php
-// Command = intent to change state (no return value)
-final readonly class CreateAnimalReport { ... }
-final class CreateAnimalReportHandler { public function __invoke(...): void }
+// src/Controller/CheckoutController.php
+#[Route('/{_locale}', requirements: ['_locale' => 'fr|en|nl'])]
+final class CheckoutController extends AbstractController
+{
+    #[Route('/checkout', name: 'checkout', methods: ['POST'])]
+    public function checkout(CartService $cart, StripePaymentService $stripe): Response
+    {
+        $order   = $stripe->createOrderFromCart($cart->getCart());
+        $session = $stripe->createCheckoutSession($order);
 
-// Query = read without side effects (returns DTO)
-final readonly class GetAnimalReportById { public function __construct(public Uuid $id) {} }
-final class GetAnimalReportByIdHandler { public function __invoke(...): AnimalReportDTO }
+        return $this->redirect($session->url);
+    }
+}
 ```
 
-## DDD-lite rules
+La logique (création de l'`Order`, mapping panier → line_items Stripe) vit dans le Service, jamais dans le contrôleur.
 
-- **Aggregate root**: controls invariants for its cluster of entities
-- **Value Object**: immutable, equality by value, not identity
-- **Domain Event**: named in past tense (`AnimalReportCreated`, `AnimalFound`)
-- **Repository interface** in Domain layer, **implementation** in Infrastructure
-- No Doctrine annotations/attributes on Domain entities — use XML or separate mapping files if purity matters
+## Modules métier
 
-## Dependency rules
+### `src/Participation/` — ParticipationCatalog
+Source de vérité des tiers de participation (chargés YAML → PHP), deux groupes `standard` et `vip`.
+Expose les `ParticipationTier` disponibles ; pas d'accès direct au YAML ailleurs dans le code.
 
+### `src/Cart/` — CartService
+Panier stocké en session : ajout/retrait de tiers, calcul des totaux (en centimes), validation des quantités.
+Aucune persistance DB du panier — il devient un `Order` au checkout.
+
+## Domaine Stripe (paiement)
+
+- `StripePaymentService` : crée l'`Order` depuis le panier, construit la Checkout Session, mappe cart → `line_items`.
+- `StripeWebhookController` : écoute `checkout.session.completed`. Vérifie dans l'ordre : signature webhook, **idempotence** (table `stripe_processed_event` via `StripeProcessedEvent.stripeEventId` unique), puis que `session.amount_total === Order.totalCents`. Si OK → `Order` passe `paid` + `paidAt`. Gère `payment_intent.payment_failed` / `checkout.session.expired` → `failed`.
+
+## Entités réelles
+
+| Entité | Rôle |
+|---|---|
+| `Order` | Commande, liée à `User` (nullable), statut via `enum OrderStatus` (`pending`/`paid`/`failed`), `stripePaymentIntentId`, `totalCents`, `paidAt` |
+| `User` | Compte utilisateur (auth session, historique commandes) |
+| `ParticipationTier` | Tier de participation (Standard / VIP) |
+| `MediaItem` | Élément de la galerie média (photos de la ruelle) |
+| `StripeProcessedEvent` | Garde-fou d'idempotence webhook (`stripeEventId` unique) |
+| `NewsletterConfirmation` | Double opt-in newsletter |
+
+## OrderStatus (enum)
+
+```php
+enum OrderStatus: string
+{
+    case Pending = 'pending';
+    case Paid    = 'paid';
+    case Failed  = 'failed';
+}
 ```
-UI → Application → Domain
-Infrastructure → Domain (implements ports)
-Infrastructure → Application (implements interfaces)
-Domain has ZERO external dependencies
-```
 
-## Goals
+## Règles
 
-- Isolation of business logic (testable without Symfony or Doctrine)
-- Replaceable adapters (swap Doctrine for another ORM without touching Domain)
-- Scalability (modules independently deployable in the future)
-
-## Never
-
-- Tight coupling between modules (use events or shared kernel only)
-- Circular dependencies between layers
-- God services (one service = one responsibility)
-- Anemic domain model (behavior belongs on entities, not only in services)
-- Infrastructure concerns (Doctrine, HTTP) in Domain layer
+- Contrôleurs fins : pas de logique métier, pas de requête Doctrine complexe dedans — déléguer aux Services / Repositories.
+- Un Service = une responsabilité. Pas de god service.
+- Entités riches mais sans I/O : pas de persistance ni d'appel externe dans une entité.
+- Pas de couplage entre modules `Cart` et `Participation` autre que `CartService` consommant `ParticipationCatalog`.
+- Toujours générer une migration quand le schéma change — jamais de modification directe en prod.
+- Webhook Stripe : signature + idempotence + cohérence montant **avant** tout changement d'état d'`Order`.

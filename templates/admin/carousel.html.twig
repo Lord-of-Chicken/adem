@@ -23,7 +23,9 @@
             <tbody>
                 {% for media_item in media_items %}
                     <tr data-id="{{ media_item.id }}">
-                        <td class="drag-handle" style="cursor: move;">☰</td>
+                        <td class="drag-handle" aria-label="{{ 'admin.drag_to_reorder'|trans }}">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="16" x2="21" y2="16"/></svg>
+                        </td>
                         <td>
                             {% if media_item.assetPath %}
                                 <img src="{{ asset(media_item.assetPath) }}" alt="{{ media_item.alt|default('') }}" class="admin-thumbnail" loading="lazy" decoding="async" width="100" height="100">

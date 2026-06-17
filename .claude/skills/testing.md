@@ -10,33 +10,42 @@
 ## Test types and when to use them
 
 ```
-Unit tests       → Domain layer (entities, value objects, domain services)
-                   No Symfony, no Doctrine, no I/O
-                   Fast, pure PHP
+Unit tests        → Pure business logic (entities, enums, Services with no I/O)
+                    e.g. CartService totals, ParticipationCatalog, OrderStatus
+                    No Doctrine, no HTTP — fast, pure PHP
 
-Integration tests → Application layer (command/query handlers)
-                   Uses KernelTestCase, real Doctrine with test DB
-                   Real Messenger handlers
+Integration tests → Services that touch Doctrine / external boundaries
+                    Uses KernelTestCase, real Doctrine with a test DB
+                    e.g. StripeWebhook idempotency, repositories
 
-Functional tests  → UI layer (HTTP controllers)
-                   Uses WebTestCase + BrowserKit
-                   Full stack, real DB, real responses
+Functional tests  → HTTP controllers
+                    Uses WebTestCase + BrowserKit
+                    Full stack, real DB, real responses
 ```
 
-## Unit test example (Domain)
+## Unit test example (Service / domain logic)
 
 ```php
-// tests/AnimalReport/Domain/AnimalReportTest.php
-final class AnimalReportTest extends TestCase {
-    public function testItCanBeCreated(): void {
-        $report = AnimalReport::create(
-            name: 'Milo',
-            species: Species::CAT,
-            location: new Location(48.8566, 2.3522, 'Paris'),
-        );
+// tests/Cart/CartServiceTest.php
+final class CartServiceTest extends TestCase {
+    public function testItComputesTotalInCents(): void {
+        $cart = new CartService(/* in-memory session stub */);
+        $cart->add(tierId: 'vip-begonia', quantity: 2);   // 2 × 1500c
 
-        self::assertSame('Milo', $report->name);
-        self::assertTrue($report->status->isLost());
+        self::assertSame(3000, $cart->totalCents());
+    }
+}
+```
+
+## Integration test example (webhook idempotency)
+
+```php
+// tests/Service/StripeWebhookIdempotencyTest.php
+final class StripeWebhookIdempotencyTest extends KernelTestCase {
+    public function testItProcessesEachStripeEventOnce(): void {
+        // First processing marks the order paid and records the event
+        // Replaying the same event id must be a no-op (StripeProcessedEvent unique)
+        self::assertTrue($this->handler->isAlreadyProcessed('evt_123'));
     }
 }
 ```
@@ -44,34 +53,32 @@ final class AnimalReportTest extends TestCase {
 ## Functional test example (Controller)
 
 ```php
-// tests/AnimalReport/UI/ReportLostAnimalControllerTest.php
-final class ReportLostAnimalControllerTest extends WebTestCase {
-    public function testFormSubmitCreatesReport(): void {
+// tests/Controller/CheckoutControllerTest.php
+final class CheckoutControllerTest extends WebTestCase {
+    public function testCheckoutRedirectsToStripe(): void {
         $client = static::createClient();
         $client->loginUser($this->createUser());
 
-        $client->request('GET', '/reports/new');
-        $client->submitForm('Signaler', [
-            'report[name]' => 'Milo',
-            'report[species]' => 'cat',
+        $client->request('GET', '/fr/panier');
+        $client->submitForm('Payer', [
+            'cart[tier]' => 'standard-jardiniere',
+            'cart[quantity]' => '1',
         ]);
 
-        self::assertResponseRedirects('/reports');
-        $client->followRedirect();
-        self::assertSelectorTextContains('h1', 'Milo');
+        self::assertResponseRedirects();
     }
 }
 ```
 
 ## Test DB setup
 
-```yaml
+```bash
 # .env.test
-DATABASE_URL="postgresql://app:!ChangeMe!@127.0.0.1:5432/app_test"
+DATABASE_URL="mysql://app:!ChangeMe!@127.0.0.1:3306/app_test?serverVersion=8.4"
 ```
 
 ```php
-// tests/bootstrap.php — reset DB before suite
+// tests/bootstrap.php — boot env before suite
 use Symfony\Component\Dotenv\Dotenv;
 (new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
 // Use doctrine:database:create + migrations:migrate in CI
@@ -79,13 +86,12 @@ use Symfony\Component\Dotenv\Dotenv;
 
 ## Rules
 
-- Every domain aggregate and value object must have unit tests
+- Cover business logic first (CartService, ParticipationCatalog, Stripe amount/idempotency checks), infrastructure second
 - Every controller (happy path + main error cases) must have functional tests
 - No merge without tests for new business logic
-- Cover business logic first, infrastructure second
 - Use data providers for multiple input scenarios
 - Fixtures via `DoctrineFixturesBundle` or factory objects — never raw SQL in tests
-- Test names describe behavior: `testItRefusesReportWithoutLocation()` not `testCreate()`
+- Test names describe behavior: `testItRefusesOrderWithEmptyCart()` not `testCreate()`
 
 ## Optional additions (install when needed)
 
@@ -95,7 +101,4 @@ composer require --dev symfony/panther
 
 # Rich fixture factories
 composer require --dev zenstruck/foundry
-
-# Better test assertions
-composer require --dev phpunit/phpunit  # already installed
 ```

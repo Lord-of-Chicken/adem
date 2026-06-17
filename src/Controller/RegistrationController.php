@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Service\NewsletterSubscriptionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +23,7 @@ final class RegistrationController extends AbstractController
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
         TranslatorInterface $translator,
+        NewsletterSubscriptionService $newsletterSubscription,
     ): Response {
         // Sécurité : on empêche un utilisateur déjà connecté de se ré-inscrire
         if ($this->getUser()) {
@@ -34,21 +36,31 @@ final class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Génération d'un mot de passe aléatoire (l'utilisateur le définira via « mot de passe oublié »)
-            $user->setPassword($passwordHasher->hashPassword($user, bin2hex(random_bytes(16))));
-            
+            /** @var string */
+            $plainPassword = bin2hex(random_bytes(16));
+            $user->setPassword($passwordHasher->hashPassword($user, $plainPassword));
+
             // On s'assure que l'utilisateur a au moins le rôle de base
             $user->setRoles(['ROLE_USER']);
+
+            // RGPD double opt-in : la case newsletter n'exprime qu'une intention.
+            // Le flag n'est activé qu'après confirmation via le lien envoyé par e-mail.
+            $wantsNewsletter = $user->isNewsletter();
+            $user->setNewsletter(false);
 
             $entityManager->persist($user);
             $entityManager->flush();
 
             $message = $translator->trans('registration.success');
-            if ($user->isNewsletter()) {
-                $message .= ' ' . $translator->trans('registration.newsletter_confirmation');
+            if ($wantsNewsletter) {
+                /** @var string $userEmail */
+                $userEmail = $user->getEmail();
+                $newsletterSubscription->startDoubleOptIn($userEmail);
+                $message .= ' ' . $translator->trans('registration.newsletter_double_optin');
             }
             $this->addFlash('success', $message);
 
-            return $this->redirectToRoute('app_register');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('registration/register.html.twig', [

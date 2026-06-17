@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\EventSubscriber;
 
 use App\Cart\CartService;
@@ -23,12 +25,23 @@ final class TwigGlobalsSubscriber implements EventSubscriberInterface
     ) {
     }
 
+    /**
+     * Gets the subscribed events.
+     *
+     * @return array<string, string|array> The subscribed events
+     */
     public static function getSubscribedEvents(): array
     {
         // Après SessionListener (priorité 128) pour que le panier puisse lire la session.
         return [KernelEvents::REQUEST => ['onKernelRequest', -100]];
     }
 
+    /**
+     * Adds global variables to Twig on kernel request.
+     *
+     * @param RequestEvent $event The request event
+     * @return void
+     */
     public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->isMainRequest()) {
@@ -37,8 +50,8 @@ final class TwigGlobalsSubscriber implements EventSubscriberInterface
 
         $title = 'La Ruelle d\'Adem';
         $tagline = $this->translator->trans('site.tagline');
-        $logoAsset = 'img/Panneau/IMG_0197.png';
-        $ogImageAsset = 'img/Social/og-home-preview.png';
+        $logoAsset = '/img/Panneau/IMG_0197.png';
+        $ogImageAsset = '/img/Social/og-home-preview.jpg';
         $cartCount = $this->cartService->countLines();
 
         $this->twig->addGlobal('site_brand', [
