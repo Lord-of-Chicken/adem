@@ -4,6 +4,7 @@ twig:
     form_themes: ['form/street_form.html.twig']
     globals:
         stripe_publishable_key: '%env(STRIPE_PUBLISHABLE_KEY)%'
+        ga_measurement_id: '%env(GA_MEASUREMENT_ID)%'
 
 when@test:
     twig:
