@@ -395,6 +395,7 @@ security.new_password_intro: "Choisis ton nouveau mot de passe."
 security.new_password_submit: "Réinitialiser"
 
 # Cookie consent (RGPD)
+cookie.title: "Cookies & vie privée"
 cookie.banner_text: "Ce site utilise des cookies pour améliorer ton expérience et mesurer l'audience. Tu peux accepter, refuser ou personnaliser tes choix."
 cookie.accept: "Tout accepter"
 cookie.refuse: "Tout refuser"

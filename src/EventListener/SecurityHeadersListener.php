@@ -25,10 +25,13 @@ final class SecurityHeadersListener
      *
      * Compromis : 'unsafe-inline' conservé sur script-src et style-src à cause
      * des scripts/styles inline existants (GA, cookie consent, critical CSS,
-     * EasyAdmin). Les domaines tiers nécessaires sont explicitement autorisés.
+     * EasyAdmin). `data:` est nécessaire sur script-src pour la détection de
+     * fonctionnalité d'es-module-shims (AssetMapper) — sans lui, AUCUN module
+     * JS / contrôleur Stimulus ne se charge. Risque négligeable vu que
+     * 'unsafe-inline' est déjà présent. Les domaines tiers sont explicitement autorisés.
      */
     private const CONTENT_SECURITY_POLICY = "default-src 'self'; "
-        . "script-src 'self' 'unsafe-inline' https://js.stripe.com https://*.googletagmanager.com https://www.googletagmanager.com https://*.google-analytics.com https://cdn.jsdelivr.net; "
+        . "script-src 'self' 'unsafe-inline' data: https://js.stripe.com https://*.googletagmanager.com https://www.googletagmanager.com https://*.google-analytics.com https://cdn.jsdelivr.net; "
         . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; "
         . "font-src 'self' https://fonts.gstatic.com data:; "
         . "img-src 'self' data: https: blob:; "

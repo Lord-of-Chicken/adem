@@ -127,12 +127,15 @@
             aria-label="{{ 'cookie.aria_label'|trans }}"
             hidden
         >
-            <p class="cookie-banner__text">{{ 'cookie.banner_text'|trans }}</p>
+            <div class="cookie-banner__content">
+                <p class="cookie-banner__title">{{ 'cookie.title'|trans }}</p>
+                <p class="cookie-banner__text">{{ 'cookie.banner_text'|trans }}</p>
+            </div>
 
             <div class="cookie-banner__actions">
                 <button type="button" data-action="cookie-consent#acceptAll" class="cookie-banner__btn cookie-banner__btn--accept">{{ 'cookie.accept'|trans }}</button>
                 <button type="button" data-action="cookie-consent#refuseAll" class="cookie-banner__btn cookie-banner__btn--refuse">{{ 'cookie.refuse'|trans }}</button>
-                <button type="button" data-action="cookie-consent#openPreferences" class="cookie-banner__btn cookie-banner__btn--refuse">{{ 'cookie.customize'|trans }}</button>
+                <button type="button" data-action="cookie-consent#openPreferences" class="cookie-banner__btn cookie-banner__btn--link">{{ 'cookie.customize'|trans }}</button>
             </div>
 
             {# Panneau de granularité par catégorie #}
@@ -155,7 +158,7 @@
                         </div>
                         <label class="cookie-panel__toggle">
                             <input type="checkbox" data-cookie-consent-target="analyticsToggle">
-                            <span>{{ 'cookie.cat.analytics'|trans }}</span>
+                            <span class="cookie-sr-only">{{ 'cookie.cat.analytics'|trans }}</span>
                         </label>
                     </li>
                 </ul>

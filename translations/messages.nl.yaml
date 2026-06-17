@@ -392,6 +392,7 @@ security.new_password_intro: "Kies je nieuwe wachtwoord."
 security.new_password_submit: "Herstellen"
 
 # Cookie consent (AVG)
+cookie.title: "Cookies & privacy"
 cookie.banner_text: "Deze site gebruikt cookies om je ervaring te verbeteren en het verkeer te meten."
 cookie.accept: "Accepteren"
 cookie.refuse: "Weigeren"
