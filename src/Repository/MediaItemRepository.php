@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use SortDirection;
 use App\Entity\MediaItem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -41,8 +42,8 @@ class MediaItemRepository extends ServiceEntityRepository
         /** @var list<MediaItem> */
         return $this->createQueryBuilder('m')
             ->andWhere('m.published = true')
-            ->orderBy('m.sortOrder', 'ASC')
-            ->addOrderBy('m.id', 'ASC')
+            ->orderBy('m.sortOrder', SortDirection::Ascending)
+            ->addOrderBy('m.id', SortDirection::Ascending)
             ->getQuery()
             ->enableResultCache(self::PUBLISHED_CACHE_TTL, self::PUBLISHED_CACHE_ID)
             ->getResult();

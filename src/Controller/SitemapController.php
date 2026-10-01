@@ -66,12 +66,17 @@ final class SitemapController extends AbstractController
                     UrlGeneratorInterface::ABSOLUTE_URL,
                 );
             }
+            $localeUrls = $alternates;
             // x-default points to the French (default) locale.
-            $alternates['x-default'] = $alternates['fr'];
+            $alternates['x-default'] = $this->urlGenerator->generate(
+                $route,
+                ['_locale' => 'fr'],
+                UrlGeneratorInterface::ABSOLUTE_URL,
+            );
 
-            foreach (self::LOCALES as $locale) {
+            foreach ($localeUrls as $loc) {
                 $urls[] = [
-                    'loc'        => $alternates[$locale],
+                    'loc'        => $loc,
                     'priority'   => $meta['priority'],
                     'changefreq' => $meta['changefreq'],
                     'lastmod'    => $today,
