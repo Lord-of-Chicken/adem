@@ -14,16 +14,18 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Form type for editing user profile.
  */
+/** @extends AbstractType<User> */
 final class ProfileFormType extends AbstractType
 {
     /**
      * Builds the form.
      *
-     * @param FormBuilderInterface $builder The form builder
+     * @param FormBuilderInterface<User|null> $builder The form builder
      * @param array<string, mixed> $options The options
      * @return void
      */
@@ -55,7 +57,9 @@ final class ProfileFormType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'E-mail',
                 'constraints' => [
+                    new NotBlank(),
                     new Email(),
+                    new Length(max: 180),
                 ],
             ])
             ->add('newsletter', CheckboxType::class, [

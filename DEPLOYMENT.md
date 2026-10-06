@@ -1,281 +1,36 @@
-# Guide de déploiement - La Ruelle d'Adem
+# Déploiement et exploitation — Ruelle d’Adem
 
-## Prérequis
+Ce document décrit une procédure à valider sur staging. Aucun déploiement de production n’est autorisé par l’audit. Une configuration présente ne prouve pas son fonctionnement.
 
-- Serveur web (Apache ou Nginx)
-- PHP 8.2+
-- MariaDB 11.8.6+
-- Composer
-- Accès SSH au serveur
+## Installation reproductible
+PHP >=8.4 pour l’application ; PHP 8.5 pour PHPUnit 13 et la CI. MySQL 8.4, Composer 2. Extensions : ctype, iconv, intl, mbstring, PDO MySQL, GD (validation image), sodium, XML/DOM. Les fichiers composer.lock et bun.lock restent versionnés. `composer install --prefer-dist --no-interaction --no-scripts`, puis commandes Symfony explicites. Ne jamais faire `composer update` en production.
 
-## 1. Préparation du projet
+## Environnements et secrets
+`.env` ne contient que des valeurs de référence publiques. Fournir APP_ENV=prod, APP_DEBUG=0, APP_SECRET, DATABASE_URL, MAILER_DSN, STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET, DEFAULT_URI et TRUSTED_HOSTS depuis l’environnement sécurisé du serveur ou `shared/.env.local` (600, lisible par le compte de service). TRUSTED_HOSTS est une expression régulière ancrée ; l’adapter au domaine réellement déployé. Configurer les trusted proxies uniquement pour les adresses du reverse proxy connu.
+Le vault Symfony est initialisé mais sa présence ne prouve pas que les secrets y sont renseignés. Ne pas archiver ou versionner les clés privées `*.decrypt.private.php`. Si un vault chiffré est utilisé, fournir sa clé de déchiffrement séparément. L’archive produite exclut les secrets locaux et la clé privée.
 
-### Nettoyage du cache
-```bash
-# Supprimer tous les fichiers de cache
-rm -rf var/cache/*
-rm -rf var/log/*
-```
+## CI et vérification locale
+La CI `.github/workflows/backend.yml` ne déploie rien. Elle construit une base MySQL éphémère dédiée, crée le schéma depuis les mappings, charge les formules puis exécute PHPUnit sans skips, PHPStan niveau 10 sans ignorances, lint configuration/conteneur, validation schéma, Composer et couverture. Les migrations historiques incluent l’ancien projet et des drops : ne pas les exécuter aveuglément pour initialiser une installation neuve.
+En local, choisir un TEST_TOKEN distinct, créer cette base isolée et lancer `bash scripts/quality.sh`. Aucun test ne doit utiliser la base de production. SMTP est forcé à null en environnement test ; Stripe est doublé dans les tests.
 
-### Exportation du code
-```bash
-# Créer une archive sans les fichiers inutiles
-tar --exclude='.git' \
-    --exclude='var/cache/*' \
-    --exclude='var/log/*' \
-    --exclude='node_modules' \
-    --exclude='.DS_Store' \
-    -czf ruelle-dadem-prod.tar.gz .
-```
+## Release
+1. Autorisation de déploiement distincte, sauvegarde cohérente DB + médias + configuration sécurisée, restauration de cette sauvegarde vérifiée isolément.
+2. Préparer `/var/www/adem/{releases,shared}` ; secrets dans `shared/.env.local`, médias dans `shared/media`, journaux dans `shared/log`. Le compte de service peut écrire cache/log/médias, pas le code. Aucun chmod 777.
+3. `bash scripts/package.sh /tmp/adem-release.tar.gz` crée un artefact sans secrets incluant bin/console, public/index.php et translations. Contrôler son contenu avant transfert.
+4. Examiner `doctrine:migrations:status` et les SQL attendus sur staging. Sauvegarder avant toute évolution de schéma. Toute migration destructive exige une autorisation explicite. Ne jamais générer/appliquer un diff automatiquement en production.
+5. Après approbation uniquement : `bash scripts/deploy.sh --apply HOST USER /var/www/adem https://HOST/health`. Le script prépare un nouveau dossier, installe le lockfile, vérifie schéma/conteneur, compile les assets et bascule le lien `current`. Il n’applique aucune migration.
+6. `/health` contrôle la connexion DB et retourne 200 ou 503 sans détails internes ; il ne prouve ni les emails, ni les paiements, ni les workers. Tester connexion, panier, paiement Stripe sandbox et livraison webhook sur staging, puis vérifier les journaux et alertes.
+7. Configurer le serveur HTTP avec racine `current/public`, PHP-FPM >=8.4 et HTTPS. Seul index.php est exécutable ; refuser les autres PHP, dotfiles et répertoires de secrets. Les médias sont des images publiques validées ; tout besoin de médias privés implique un autre flux autorisé.
+Le script de déploiement partiel historique est désactivé : il mélangeait versions/configuration et pouvait annoncer un succès après échec.
 
-## 2. Configuration pour la production
+## Stripe et tâches
+Endpoint canonique : POST `/stripe/webhook`, sans redirection de locale. Événements gérés : checkout.session.completed, checkout.session.expired, payment_intent.payment_failed. Signature obligatoire, montant exact et devise EUR, idempotence atomique avec commande verrouillée. Une commande absente ou un traitement interrompu répond 503 et reste retryable. Les nouveaux checkouts persistent un draft avant l’appel et transmettent order_id à la Session et au PaymentIntent avec une clé d’idempotence par commande ; les webhooks peuvent récupérer la référence après perte de réponse. Un draft pending ne prouve pas un paiement ; rapprocher les tentatives interrompues et les anciens événements sans métadonnée en staging puis exploitation. Paiements carte uniquement ; ajouter d’autres moyens requiert les événements asynchrones correspondants.
+Mailer est synchrone dans ce dépôt. Les transports Chat/Sms async sont configurés mais aucun traitement métier custom Messenger n’existe. `ops/messenger.service.example` est un exemple à installer uniquement si utilisé, avec contrôle `messenger:failed:show` et procédure de reprise. `ops/newsletter.cron.example` doit être adapté puis installé par l’opérateur ; vérifier une exécution réelle et l’absence de chevauchement.
 
-### Variables d'environnement (.env.local)
-```bash
-# Copier le template
-cp .env .env.local
+## Sauvegarde et restauration
+MySQL utilise mysqldump, jamais pg_dump. Fournir MYSQL_CNF vers un fichier protégé de client MySQL, puis `MYSQL_CNF=/chemin/protege.cnf bash scripts/backup.sh BASE /chemin/nouveau-backup.sql`. Snapshot transactionnel InnoDB ; aucun changement de schéma simultané. Chiffrer, contrôler l’intégrité, conserver hors serveur avec rétention et accès limités ; inclure shared/media et secrets séparément.
+`restore-check.sh NOUVELLE_BASE_restorecheck /chemin/backup.sql` refuse toute base existante et importe dans un nouveau schéma. Le compte doit avoir les droits appropriés. Vérifier tables, comptes/commandes/montants/statuts, accès applicatif et médias dans un environnement isolé. Une importation réussie ne prouve pas à elle seule la restauration métier complète. RPO/RTO/rétention restent à décider selon hébergement et budget ; aucun service payant créé.
 
-# Configurer pour la production
-APP_ENV=prod
-APP_SECRET=votre_secret_key_unique_ici
-APP_SHARE_DIR=var/share
-
-# Database
-DATABASE_URL="postgresql://user:password@host:5432/db_name?serverVersion=16&charset=utf8"
-
-# Stripe (clés de production)
-STRIPE_SECRET_KEY=sk_live_votre_cle_secrete
-STRIPE_PUBLISHABLE_KEY=pk_live_votre_cle_publique
-STRIPE_WEBHOOK_SECRET=whsec_votre_webhook_secret
-
-# Mailer
-MAILER_DSN=smtp://user:password@smtp.example.com:587?encryption=tls
-```
-
-### Configuration Apache (.htaccess)
-```apache
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ index.php [QSA,L]
-</IfModule>
-
-<IfModule mod_headers.c>
-    Header always set X-Content-Type-Options nosniff
-    Header always set X-Frame-Options DENY
-    Header always set X-XSS-Protection "1; mode=block"
-    Header always set Referrer-Policy "strict-origin-when-cross-origin"
-</IfModule>
-```
-
-### Configuration Nginx
-```nginx
-server {
-    listen 80;
-    server_name votre-domaine.com;
-    root /var/www/ruelle-dadem/public;
-    index index.php;
-
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-
-    location ~ ^/index\.php(/|$) {
-        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
-        fastcgi_split_path_info ^(.+\.php)(/.*)$;
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-        fastcgi_param PATH_INFO $fastcgi_path_info;
-        fastcgi_param HTTPS off;
-    }
-
-    # Cache des assets
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-
-    # Sécurité
-    location ~ /\. {
-        deny all;
-    }
-}
-```
-
-## 3. Déploiement
-
-### Transfert des fichiers
-```bash
-# Via SCP
-scp ruelle-dadem-prod.tar.gz user@serveur:/tmp/
-
-# Décompresser sur le serveur
-ssh user@serveur
-cd /var/www/
-tar -xzf /tmp/ruelle-dadem-prod.tar.gz
-rm /tmp/ruelle-dadem-prod.tar.gz
-```
-
-### Installation des dépendances
-```bash
-cd /var/www/ruelle-dadem
-composer install --no-dev --optimize-autoloader
-```
-
-### Permissions
-```bash
-# Permissions des fichiers
-chown -R www-data:www-data /var/www/ruelle-dadem
-chmod -R 755 /var/www/ruelle-dadem
-chmod -R 777 /var/www/ruelle-dalem/var/cache
-chmod -R 777 /var/www/ruelle-dalem/var/log
-```
-
-### Base de données MariaDB
-```bash
-# Créer la base de données MariaDB
-mysql -u root -p -e "CREATE DATABASE ruelle_dadem CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-
-# Créer l'utilisateur et donner les droits
-mysql -u root -p -e "CREATE USER 'app'@'localhost' IDENTIFIED BY 'votre_mot_de_passe';"
-mysql -u root -p -e "GRANT ALL PRIVILEGES ON ruelle_dadem.* TO 'app'@'localhost';"
-mysql -u root -p -e "FLUSH PRIVILEGES;"
-
-# Exécuter les migrations
-php bin/console doctrine:migrations:migrate --no-interaction
-
-# Charger les données de base
-php bin/console app:seed-ruelle
-```
-
-### Optimisation
-```bash
-# Vider et réchauffer le cache
-php bin/console cache:clear --env=prod
-php bin/console cache:warmup --env=prod
-
-# Optimiser les assets
-php bin/console asset:install --symlink --relative public
-```
-
-## 4. Configuration Stripe
-
-### Webhook Stripe
-1. Aller dans le dashboard Stripe
-2. Créer un endpoint webhook : `https://lordofchicken.com/stripe/webhook`
-3. Configurer les événements :
-   - `checkout.session.completed`
-   - `payment_intent.succeeded`
-
-### Mettre à jour les URLs de redirection
-Dans `src/Controller/PaymentController.php`, modifier les URLs :
-```php
-'success_url' => 'https://lordofchicken.com/payment/success?session_id={CHECKOUT_SESSION_ID}',
-'cancel_url' => 'https://lordofchicken.com/payment/cancel',
-```
-
-## 5. Tests de déploiement
-
-### Vérifications
-```bash
-# Vérifier la santé de l'application
-php bin/console debug:router --env=prod
-php bin/console debug:config --env=prod
-php bin/console doctrine:database:create --if-not-exists --env=prod
-```
-
-### Tests manuels
-- Accès à la homepage
-- Connexion/inscription
-- Ajout au panier
-- Processus de paiement (avec clés de test)
-
-## 6. Maintenance
-
-### Mises à jour
-```bash
-# Mettre à jour les dépendances
-composer update --no-dev
-
-# Exécuter les nouvelles migrations
-php bin/console doctrine:migrations:migrate --no-interaction
-
-# Vider le cache
-php bin/console cache:clear --env=prod
-```
-
-### Sauvegarde
-```bash
-# Base de données
-pg_dump ruelle_dadem > backup_$(date +%Y%m%d).sql
-
-# Fichiers
-tar -czf backup_files_$(date +%Y%m%d).tar.gz /var/www/ruelle-dalem
-```
-
-## 7. Monitoring
-
-### Logs
-```bash
-# Logs Symfony
-tail -f var/log/prod.log
-
-# Logs Apache/Nginx
-tail -f /var/log/apache2/error.log
-tail -f /var/log/nginx/error.log
-```
-
-### Performance
-```bash
-# Vérifier l'utilisation mémoire
-php bin/console debug:container --env=prod
-
-# Optimiser le cache
-php bin/console cache:pool:clear --env=prod
-```
-
-## 8. Sécurité
-
-### HTTPS
-Configurer SSL/TLS avec Let's Encrypt :
-```bash
-certbot --apache -d votre-domaine.com
-```
-
-### Firewall
-```bash
-# Autoriser seulement les ports nécessaires
-ufw allow 22/tcp
-ufw allow 80/tcp
-ufw allow 443/tcp
-ufw enable
-```
-
-### Mises à jour régulières
-```bash
-# Mises à jour système
-apt update && apt upgrade
-
-# Mises à jour PHP
-apt update php8.2-fpm
-```
-
-## Checklist finale
-
-- [ ] Variables d'environnement configurées
-- [ ] Base de données créée et migrations exécutées
-- [ ] Permissions correctes
-- [ ] Cache vidé et réchauffé
-- [ ] Stripe configuré avec clés de production
-- [ ] Webhook Stripe configuré
-- [ ] HTTPS activé
-- [ ] Backup automatique configuré
-- [ ] Monitoring mis en place
-
-## Support
-
-En cas de problème :
-1. Vérifier les logs : `var/log/prod.log`
-2. Vider le cache : `php bin/console cache:clear --env=prod`
-3. Vérifier les permissions
-4. Contacter l'hébergeur si problème serveur
+## Retour arrière et observabilité
+Noter la cible `readlink current` avant release. Sur staging puis après autorisation, recréer `current.next` vers cette ancienne release et remplacer atomiquement current ; recharger PHP-FPM si nécessaire et tester `/health` et parcours métier. Ne pas exécuter automatiquement les migrations down : le code ancien doit être compatible avec le schéma actuel, sinon restauration DB approuvée séparément. Garder les anciennes releases et sauvegardes tant que la release n’est pas validée.
+Prod écrit les logs JSON sur stderr : le superviseur doit les collecter avec rotation/rétention. Surveiller HTTP 5xx, erreurs Stripe/retries/écarts de montant, échecs SMTP, profondeur des queues et heartbeat cron. Définir les destinataires et tester une alerte volontaire sur staging. Les tokens/liens et corps de messages ne doivent pas être conservés dans les logs. Les durées et preuves d’exploitation sont à documenter par l’opérateur.

@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Form\ChangePasswordFormType;
 use App\Form\ProfileFormType;
 use App\Service\AccountAnonymizer;
+use App\Repository\NewsletterConfirmationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,7 +59,7 @@ final class ProfileController extends AbstractController
      */
     #[Route('/profil/newsletter', name: 'app_profile_toggle_newsletter', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function toggleNewsletter(Request $request, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
+    public function toggleNewsletter(Request $request, EntityManagerInterface $entityManager, TranslatorInterface $translator, NewsletterConfirmationRepository $confirmations): Response
     {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -71,6 +72,9 @@ final class ProfileController extends AbstractController
         }
 
         $user->setNewsletter(!$user->isNewsletter());
+        if (!$user->isNewsletter()) {
+            $confirmations->revokePendingForEmail($user->getUserIdentifier());
+        }
         $entityManager->flush();
 
         $message = $user->isNewsletter()
@@ -143,6 +147,10 @@ final class ProfileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $currentPassword = $form->get('currentPassword')->getData();
             $newPassword = $form->get('newPassword')->getData();
+
+            if (!is_string($currentPassword) || !is_string($newPassword)) {
+                throw new \UnexpectedValueException('Invalid password form data.');
+            }
 
             // Vérifier que le mot de passe actuel est correct
             if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {

@@ -15,12 +15,13 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 /**
  * Form type for resetting password.
  */
+/** @extends AbstractType<array<string, mixed>> */
 final class ResetPasswordFormType extends AbstractType
 {
     /**
      * Builds the form.
      *
-     * @param FormBuilderInterface $builder The form builder
+     * @param FormBuilderInterface<array<string, mixed>|null> $builder The form builder
      * @param array<string, mixed> $options The options
      * @return void
      */

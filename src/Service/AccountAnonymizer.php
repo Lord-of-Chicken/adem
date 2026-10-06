@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Order;
+use App\Entity\NewsletterConfirmation;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -37,8 +38,15 @@ final readonly class AccountAnonymizer
         }
 
         $id = $user->getId();
+        $email = $user->getEmail();
+        $anonymousEmail = sprintf('deleted_%s@deleted.local', $id ?? bin2hex(random_bytes(8)));
+        if ($email !== null) {
+            foreach ($this->entityManager->getRepository(NewsletterConfirmation::class)->findBy(['email' => $email]) as $confirmation) {
+                $confirmation->anonymize($anonymousEmail);
+            }
+        }
 
-        $user->setEmail(sprintf('deleted_%s@deleted.local', $id ?? bin2hex(random_bytes(8))));
+        $user->setEmail($anonymousEmail);
         $user->setFirstName('Supprimé');
         $user->setLastName('Supprimé');
         $user->setAddress(null);
@@ -70,7 +78,8 @@ final readonly class AccountAnonymizer
 
         foreach ($cartData as $key => $line) {
             if (is_array($line) && array_key_exists('donor_name', $line) && $line['donor_name'] !== null) {
-                $cartData[$key]['donor_name'] = null;
+                $line['donor_name'] = null;
+                $cartData[$key] = $line;
                 $changed = true;
             }
         }

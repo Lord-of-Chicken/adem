@@ -1,3 +1,18 @@
+# Reprise audit backend — 2026-10-06
+
+Demande active : audit/corrections backend seulement, PHPUnit manquant, PHPStan complet, DevOps, puis commit/push autorisés après validation. Production interdite. Le texte joint remplace les anciens ordres de commit.
+Dépôt /Users/gaellayeux/Dev/RuelleDAdem, main, origin public https://github.com/Lord-of-Chicken/adem.git.
+Préexistant à préserver/exclure : suppressions .claude/skills et header templates/components/SiteHeader.html.twig.
+Plan/preuves : docs/AUDIT-BACKEND-2026-10-06.md. Skills sécurité, revue PHP, qualité Symfony et DevOps lus. Dépendances ajoutées seulement phpstan-doctrine/phpstan-symfony.
+Corrections déjà écrites : transaction webhook/lock/rollback, routes webhook/upload racine, validation upload partagée, prix forfaitaire, retour paiement lié session/snapshot/statut, contraintes formulaires, reset public uniforme/logs sans PII, désinscription révoque pending sans inventer consentement, cache invalidé après flush, MySQL bind localhost, hosts prod configurables.
+DevOps écrit : CI sans déploiement, scripts qualité/package/deploy explicite/backup/restore isolé, health, exemples cron/worker et DEPLOYMENT.md réécrit.
+Validation initiale 20 tests/63 assertions ; dernier contrôle complet 128 tests/567 assertions, zéro skip. PHPStan niveau 10 sans ignorances ni erreurs. Composer strict/audit et schéma dédiés verts. Couverture finale 89,27 % lignes / 73,08 % méthodes. Sauvegarde/restauration locale et refus overwrite vérifiés (voir audit).
+Base dédiée ruellenadem_test_audit_20261006, TEST_TOKEN=_audit_20261006, schéma mapping créé sans migrations historiques, 5 tiers seed. Pas de données dev/prod modifiées. SMTP nul en test.
+Contrôles locaux terminés (voir audit). Suite à faire : revue staged/secret scan, branche audit/backend-2026-10-06 pour commit/push afin de ne pas publier main. Vérifier workflow/hooks distants et résultats CI. Corrélation PI précoce et perte réponse Stripe corrigées ensuite : draft persistant + metadata order_id + clé idempotence API ; contrôles finaux relancés et réussis (2 tests supplémentaires). Risques anciens événements sans metadata/drafts interrompus/migrations historiques/ops réelles décrits dans audit.
+Pourcentage contexte inaccessible ; état sauvegardé régulièrement. Commit local à créer. Push refusé par auto-review : destination GitHub publique requiert accord explicite ; aucun export effectué.
+
+--- Historique juin (conservé, peut être périmé) ---
+
 # État de session — Audit & correction global
 
 _Dernière mise à jour : 2026-06-15_

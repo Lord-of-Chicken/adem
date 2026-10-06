@@ -7,6 +7,7 @@ namespace App\Service;
 use Psr\Log\LoggerInterface;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Stripe;
+use Stripe\HttpClient\CurlClient;
 use Stripe\Checkout\Session;
 use Stripe\PaymentIntent;
 
@@ -20,6 +21,12 @@ class StripePaymentService
         private readonly LoggerInterface $logger,
     ) {
         Stripe::setApiKey($this->stripeSecretKey);
+        $http = CurlClient::instance();
+        if (!$http instanceof CurlClient) {
+            throw new \LogicException('Unexpected Stripe HTTP client.');
+        }
+        $http->setConnectTimeout(5);
+        $http->setTimeout(15);
     }
 
     /**
@@ -47,7 +54,12 @@ class StripePaymentService
             $sessionData['cancel_url'] = $cancelUrl;
         }
 
-        return Session::create($sessionData);
+        $options = [];
+        if (isset($metadata['order_id'])) {
+            $sessionData['payment_intent_data'] = ['metadata' => ['order_id' => $metadata['order_id']]];
+            $options['idempotency_key'] = 'adem-order-'.$metadata['order_id'];
+        }
+        return Session::create($sessionData, $options);
     }
 
     /**
@@ -84,7 +96,7 @@ class StripePaymentService
             $session = $this->getSession($sessionId);
             return ($session->payment_status ?? null) === 'paid';
         } catch (ApiErrorException $e) {
-            $this->logger->error('Stripe session retrieval failed', ['sessionId' => $sessionId, 'exception' => $e]);
+            $this->logger->error('Stripe session retrieval failed', ['sessionId' => $sessionId, 'error_class' => $e::class]);
             return false;
         }
     }

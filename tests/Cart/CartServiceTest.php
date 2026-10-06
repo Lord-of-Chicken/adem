@@ -187,4 +187,94 @@ final class CartServiceTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $cart->addLine('does_not_exist', 1, null, $catalog);
     }
+
+    public function testFlatPriceNeverMultipliesByQuantity(): void
+    {
+        $cart = $this->makeService();
+        $catalog = $this->catalog();
+        $cart->addLine('vip_20', 5, 'Alice', $catalog);
+        self::assertSame(2000, $cart->totalCents($catalog));
+        self::assertSame(2000, $cart->getLineTotal($cart->getLines()[0]['line_id'], $catalog));
+    }
+
+    public function testMergeClampsQuantityAndNormalizesNames(): void
+    {
+        $cart = $this->makeService();
+        $catalog = $this->catalog();
+        $cart->addLine('begonia_unit', 499, 'Ignored', $catalog);
+        $cart->addLine('begonia_unit', 10, null, $catalog);
+        self::assertCount(1, $cart->getLines());
+        self::assertSame(500, $cart->getLines()[0]['quantity']);
+        self::assertNull($cart->getLines()[0]['donor_name']);
+        $cart->addLine('vip_20', 1, ' Alice ', $catalog);
+        $cart->addLine('vip_20', 1, 'Alice', $catalog);
+        self::assertCount(2, $cart->getLines());
+        self::assertSame('Alice', $cart->getLines()[1]['donor_name']);
+    }
+
+    public function testUpdateRemoveAndClearPreserveOtherLines(): void
+    {
+        $cart = $this->makeService();
+        $catalog = $this->catalog();
+        $cart->addLine('begonia_unit', 2, null, $catalog);
+        $cart->addLine('vip_20', 1, 'Bob', $catalog);
+        $id = $cart->getLines()[0]['line_id'];
+        $cart->updateQuantity($id, -10, $catalog);
+        self::assertSame(1, $cart->getLines()[0]['quantity']);
+        $cart->updateQuantity($id, 9999, $catalog);
+        self::assertSame(500, $cart->getLines()[0]['quantity']);
+        $cart->updateQuantity('unknown', 3, $catalog);
+        self::assertSame(500, $cart->getLines()[0]['quantity']);
+        $cart->removeLine($id);
+        self::assertSame('vip_20', $cart->getLines()[0]['tier_id']);
+        self::assertSame(0, $cart->getLineTotal($id, $catalog));
+        $cart->clear();
+        self::assertSame(0, $cart->countLines());
+        self::assertSame(0, $cart->totalCents($catalog));
+    }
+
+    public function testDifferentCustomAmountsRemainSeparate(): void
+    {
+        $cart = $this->makeService();
+        $catalog = $this->catalog();
+        $cart->addLine('free_donation', 1, null, $catalog, 100);
+        $cart->addLine('free_donation', 1, null, $catalog, CartService::MAX_CUSTOM_PRICE_CENTS);
+        self::assertSame(10_000_100, $cart->totalCents($catalog));
+        self::assertSame(2, $cart->countLines());
+    }
+
+    public function testFixedTierRejectsCustomPriceOverride(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->makeService()->addLine('vip_20', 1, null, $this->catalog(), 100);
+    }
+
+    public function testFreeDonationRequiresExplicitAmount(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->makeService()->addLine('free_donation', 1, null, $this->catalog());
+    }
+
+    public function testMissingRequestOrSessionIsSafe(): void
+    {
+        $stack = new RequestStack();
+        $cart = new CartService($stack);
+        self::assertSame([], $cart->getLines());
+        $stack->push(new Request());
+        $cart->addLine('begonia_unit', 1, null, $this->catalog());
+        $cart->clear();
+        self::assertSame(0, $cart->countLines());
+    }
+
+    public function testCorruptSessionIsRejected(): void
+    {
+        $request = new Request();
+        $session = new Session(new MockArraySessionStorage());
+        $session->set('participation_cart_v1', [['quantity' => 'untrusted']]);
+        $request->setSession($session);
+        $stack = new RequestStack();
+        $stack->push($request);
+        $this->expectException(\UnexpectedValueException::class);
+        (new CartService($stack))->getLines();
+    }
 }

@@ -230,18 +230,13 @@ final class AdminController extends AbstractController
 
         $idToPosition = [];
         foreach ($data['orders'] as $orderData) {
-            if (!isset($orderData['id']) || !isset($orderData['sortOrder'])) {
-                continue;
+            if (!is_array($orderData) || !isset($orderData['id'], $orderData['sortOrder'])
+                || !is_int($orderData['id']) || !is_int($orderData['sortOrder'])
+                || $orderData['id'] <= 0 || $orderData['sortOrder'] < 0
+                || $orderData['sortOrder'] > 2147483647 || isset($idToPosition[$orderData['id']])) {
+                return new JsonResponse(['success' => false, 'error' => $translator->trans('admin.invalid_data')], Response::HTTP_BAD_REQUEST);
             }
-
-            $id = (int) $orderData['id'];
-            $sortOrder = (int) $orderData['sortOrder'];
-
-            if ($id <= 0 || $sortOrder < 0) {
-                continue;
-            }
-
-            $idToPosition[$id] = $sortOrder;
+            $idToPosition[$orderData['id']] = $orderData['sortOrder'];
         }
 
         $mediaItemRepository->updateSortOrders($idToPosition);

@@ -51,6 +51,9 @@ final class SecurityHeadersListener
         $response = $event->getResponse();
         $contentType = (string) $response->headers->get('Content-Type', '');
 
+        $response->headers->set('X-Content-Type-Options', 'nosniff');
+        $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
+
         // Apply HTML-oriented headers only to HTML responses.
         $isHtml = $contentType === '' || str_contains($contentType, 'text/html');
 

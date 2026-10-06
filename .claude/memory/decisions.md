@@ -21,3 +21,7 @@
 
 ## Note historique
 Ce dépôt a hébergé un projet antérieur (« Animaux Perdu ») jusqu'au commit du 2026-05-14, puis a été reconstruit en « Ruelle d'Adem ». Les anciennes décisions (API-First, modules feature-based, PostGIS/pgvector) ne s'appliquent plus.
+
+
+## Décisions audit backend 2026-10-06
+Frontend et modifications préexistantes exclus. Deux extensions PHPStan dev, niveau 10 sans ignorances. GD requis pour les uploads. Tests sur MySQL neuf isolé, mappings plutôt que migrations historiques destructives. CI sans déploiement ; publication prévue sur audit/backend-2026-10-06 avec autorisation explicite du texte joint. Aucun service prod modifié.

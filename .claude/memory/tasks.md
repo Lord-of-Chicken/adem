@@ -14,3 +14,9 @@ Voir `action_plan.md` : Lot D (archi) en cours, puis B (RGPD/légal), C (tests),
 
 ## État dépôt
 Working tree = transformation « Animaux Perdu » → « Ruelle d'Adem » non commitée (447 suppressions src/ + reconstruction) depuis le commit 2026-05-14. À committer comme jalon séparé des correctifs d'audit.
+
+
+## Audit backend 2026-10-06
+Corrections implémentées et suites étendues : paiements/atomicité, images, prix, session de retour, validation, newsletter/anonymisation/logs, configuration/DevOps. Preuves et limites dans docs/AUDIT-BACKEND-2026-10-06.md. Vérification finale, couverture et commit/push en cours.
+
+Validation finale locale : 126 tests/550 assertions, PHPStan 10 sans ignorances, Composer strict/audit, schéma/configuration, couverture 89,19 % lignes ; publication/CI distantes à vérifier.

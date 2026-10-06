@@ -25,7 +25,7 @@ class Order
     private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $stripeCheckoutSessionId = null;
+    private string $stripeCheckoutSessionId;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $stripePaymentIntentId = null;
@@ -34,14 +34,14 @@ class Order
     private OrderStatus $status = OrderStatus::Pending;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $totalCents = null;
+    private int $totalCents;
 
-    /** @var array<string, mixed> */
+    /** @var array<array-key, mixed> */
     #[ORM\Column(type: Types::JSON)]
     private array $cartData = [];
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $createdAt = null;
+    private \DateTimeImmutable $createdAt;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $paidAt = null;
@@ -72,7 +72,7 @@ class Order
      */
     public function getStripeCheckoutSessionId(): ?string
     {
-        return $this->stripeCheckoutSessionId;
+        return $this->stripeCheckoutSessionId ?? null;
     }
 
     /**
@@ -141,7 +141,7 @@ class Order
      */
     public function getTotalCents(): ?int
     {
-        return $this->totalCents;
+        return $this->totalCents ?? null;
     }
 
     /**
@@ -160,7 +160,7 @@ class Order
     /**
      * Gets the cart data.
      *
-     * @return array<string, mixed> The cart data
+     * @return array<array-key, mixed> The cart data
      */
     public function getCartData(): array
     {
@@ -170,7 +170,7 @@ class Order
     /**
      * Sets the cart data.
      *
-     * @param array<string, mixed> $cartData The cart data
+     * @param array<array-key, mixed> $cartData The cart data
      * @return static The entity for method chaining
      */
     public function setCartData(array $cartData): static

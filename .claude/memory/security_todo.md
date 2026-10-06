@@ -121,3 +121,7 @@ git status --ignored | grep -E '\.env\.(local|production)'
   est désormais pleinement en sync (mapping + DB).
 - [ ] **i18n** : relire les traductions NL/EN des nouvelles clés (`newsletter.*`,
   `contact.privacy_*`, `home.donor_consent`, `registration.form.age_*`) par un locuteur natif.
+
+
+## État confirmé audit backend 2026-10-06
+Webhooks atomiques et retryables, uploads validés, prix forfaitaires cohérents, retour payé lié à session, tokens pending révoqués, newsletter anonymisée à effacement, reset anti-énumération, logs production masqués et hosts configurables. Configurations présentes ne prouvent pas les secrets/services actifs ; anciens TODO conservés comme actions opérateur à vérifier, pas résultats acquis.

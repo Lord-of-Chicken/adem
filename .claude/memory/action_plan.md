@@ -65,3 +65,9 @@ SEO IA (visibilité/citabilité par moteurs IA — le projet n'a PAS de feature 
 
 ## Ordre recommandé (utilisateur : commencer par l'architecture)
 A(commit) → **D(archi)** → B(RGPD) → C(tests) → E(perf) → F(polish)
+
+
+## Plan audit backend 2026-10-06
+Plan priorisé avec preuves/fichiers/risques validé et exécuté dans docs/AUDIT-BACKEND-2026-10-06.md. Prochaines étapes : résultats finaux, revue du diff et secrets, commit/push branche dédiée, observer CI. SMTP/Stripe sandbox/ops de production nécessitent environnement et autorisation distincts.
+
+Validation finale locale : 126 tests/550 assertions, PHPStan 10 sans ignorances, Composer strict/audit, schéma/configuration, couverture 89,19 % lignes ; publication/CI distantes à vérifier.
