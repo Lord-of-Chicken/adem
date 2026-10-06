@@ -70,4 +70,6 @@ A(commit) → **D(archi)** → B(RGPD) → C(tests) → E(perf) → F(polish)
 ## Plan audit backend 2026-10-06
 Plan priorisé avec preuves/fichiers/risques validé et exécuté dans docs/AUDIT-BACKEND-2026-10-06.md. Prochaines étapes : résultats finaux, revue du diff et secrets, commit/push branche dédiée, observer CI. SMTP/Stripe sandbox/ops de production nécessitent environnement et autorisation distincts.
 
-Validation finale locale : 126 tests/550 assertions, PHPStan 10 sans ignorances, Composer strict/audit, schéma/configuration, couverture 89,19 % lignes ; publication/CI distantes à vérifier.
+Validation finale locale : 128 tests/567 assertions, PHPStan 10 sans ignorances, Composer strict/audit, schéma/configuration, couverture 89,27 % lignes ; publication/CI distantes à vérifier.
+
+Publication code fb7178b confirmée après accord explicite dépôt public ; CI GitHub 37501405009 réussie. Aucune publication du site OVH ni modification de production.

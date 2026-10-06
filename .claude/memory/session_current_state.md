@@ -8,8 +8,8 @@ Corrections déjà écrites : transaction webhook/lock/rollback, routes webhook/
 DevOps écrit : CI sans déploiement, scripts qualité/package/deploy explicite/backup/restore isolé, health, exemples cron/worker et DEPLOYMENT.md réécrit.
 Validation initiale 20 tests/63 assertions ; dernier contrôle complet 128 tests/567 assertions, zéro skip. PHPStan niveau 10 sans ignorances ni erreurs. Composer strict/audit et schéma dédiés verts. Couverture finale 89,27 % lignes / 73,08 % méthodes. Sauvegarde/restauration locale et refus overwrite vérifiés (voir audit).
 Base dédiée ruellenadem_test_audit_20261006, TEST_TOKEN=_audit_20261006, schéma mapping créé sans migrations historiques, 5 tiers seed. Pas de données dev/prod modifiées. SMTP nul en test.
-Contrôles locaux terminés (voir audit). Suite à faire : revue staged/secret scan, branche audit/backend-2026-10-06 pour commit/push afin de ne pas publier main. Vérifier workflow/hooks distants et résultats CI. Corrélation PI précoce et perte réponse Stripe corrigées ensuite : draft persistant + metadata order_id + clé idempotence API ; contrôles finaux relancés et réussis (2 tests supplémentaires). Risques anciens événements sans metadata/drafts interrompus/migrations historiques/ops réelles décrits dans audit.
-Pourcentage contexte inaccessible ; état sauvegardé régulièrement. Commit local à créer. Push refusé par auto-review : destination GitHub publique requiert accord explicite ; aucun export effectué.
+Contrôles locaux terminés (voir audit). Publication code fb7178b vérifiée sur audit/backend-2026-10-06 ; CI GitHub 37501405009 réussie. Complément documentation à publier, puis vérifier son SHA distant. main inchangée. Corrélation PI précoce et perte réponse Stripe corrigées ensuite : draft persistant + metadata order_id + clé idempotence API ; contrôles finaux relancés et réussis (2 tests supplémentaires). Risques anciens événements sans metadata/drafts interrompus/migrations historiques/ops réelles décrits dans audit.
+Pourcentage contexte inaccessible ; état sauvegardé régulièrement. Commit local fb7178b8e21e9196646a675a42228e159273ad88 créé. Après refus auto-review, accord explicite reçu (« site dev :oui ») pour destination publique ; push normal effectué et SHA distant vérifié. CI 37501405009 réussie (installation propre, tests, PHPStan, Composer, couverture, packaging). Aucun merge/déploiement.
 
 --- Historique juin (conservé, peut être périmé) ---
 
@@ -75,3 +75,5 @@ Inclut le nettoyage du cache compilé `src/var/` (447 fichiers) + `/src/var/` aj
 - Voir `security_todo.md` (secrets manager, purge cron tokens newsletter, durées de conservation à valider DPO).
 TODO transverse : table orpheline `nom_entite` (migration de drop à décider), traductions natives EN/NL du corps légal, placeholders légaux utilisateur. Voir `security_todo.md`.
 Commits : transformation Animaux Perdu→Ruelle d'Adem non commitée — jalon utilisateur séparé.
+
+Question suivante utilisateur : comment faire la CI avec OVH. CI actuelle exécutée sur GitHub, publication OVH séparée. Type d’hébergement demandé (VPS/serveur ou mutualisé), pas encore répondu. Aucun déploiement OVH autorisé/exécuté.

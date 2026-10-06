@@ -69,3 +69,6 @@ P2 : PaymentIntent inconnu avant la complétion et commande perdue si Stripe ré
 Base Git locale d7f488eba1ab3d15fecf4f6a85de724a352d10ca : mise à jour de dépendances déjà committée avant cette mission, conservée comme ancêtre de la branche audit. Aucun fichier frontend ajouté au commit de cette mission. Suppressions de skills et header non committés exclus.
 
 Le contrôle automatique a refusé le push vers le dépôt public origin, demandant une autorisation explicite pour cette destination publique. Aucun push ou déploiement effectué ; commit local autorisé, publication en attente de décision utilisateur. Scan de secrets et diff validés.
+
+## Publication — accord confirmé
+L’utilisateur a répondu « site dev :oui » à la question explicite sur le dépôt public. Push normal effectué sur audit/backend-2026-10-06, commit fb7178b8e21e9196646a675a42228e159273ad88 ; ls-remote confirme exactement ce SHA. Aucun merge ou déploiement. CI backend 37501405009 terminée avec succès : https://github.com/Lord-of-Chicken/adem/actions/runs/37501405009 . Installation propre, schéma MySQL dédié, qualité, couverture et packaging réussis. Cette exécution valide le commit code fb7178b ; le présent complément de documentation n’altère pas le code.

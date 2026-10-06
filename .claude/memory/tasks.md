@@ -19,4 +19,6 @@ Working tree = transformation « Animaux Perdu » → « Ruelle d'Adem » non co
 ## Audit backend 2026-10-06
 Corrections implémentées et suites étendues : paiements/atomicité, images, prix, session de retour, validation, newsletter/anonymisation/logs, configuration/DevOps. Preuves et limites dans docs/AUDIT-BACKEND-2026-10-06.md. Vérification finale, couverture et commit/push en cours.
 
-Validation finale locale : 126 tests/550 assertions, PHPStan 10 sans ignorances, Composer strict/audit, schéma/configuration, couverture 89,19 % lignes ; publication/CI distantes à vérifier.
+Validation finale locale : 128 tests/567 assertions, PHPStan 10 sans ignorances, Composer strict/audit, schéma/configuration, couverture 89,27 % lignes ; publication/CI distantes à vérifier.
+
+Publication code fb7178b confirmée après accord explicite dépôt public ; CI GitHub 37501405009 réussie. Aucune publication du site OVH ni modification de production.
