@@ -84,6 +84,32 @@ class StripePaymentService
         return PaymentIntent::retrieve($paymentIntentId);
     }
 
+    /** Fetch every paid line item, including its product label, rather than the first API page. */
+    public function getPaymentReceiptSession(string $sessionId): Session
+    {
+        $session = $this->getSession($sessionId);
+        $params = ['limit' => 100, 'expand' => ['data.price.product']];
+        $collection = Session::allLineItems($sessionId, $params);
+        // The static SDK helper does not preserve filters for subsequent pages.
+        $collection->setFilters($params);
+        $items = [];
+        foreach ($collection->autoPagingIterator() as $item) { $items[] = $item; }
+        $collection->data = $items;
+        $collection->has_more = false;
+        $session->line_items = $collection;
+        return $session;
+    }
+
+    /** Retrieves the real Stripe receipt without changing the customer's receipt destination. */
+    public function getPaymentReceiptCharge(string $paymentIntentId): \Stripe\Charge
+    {
+        $intent = PaymentIntent::retrieve(['id' => $paymentIntentId, 'expand' => ['latest_charge']]);
+        if (!$intent->latest_charge instanceof \Stripe\Charge) {
+            throw new \UnexpectedValueException('Stripe receipt charge is not available yet.');
+        }
+        return $intent->latest_charge;
+    }
+
     /**
      * Checks if a Stripe checkout session is paid.
      *

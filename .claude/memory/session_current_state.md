@@ -1,3 +1,15 @@
+# Reprise dev — 2026-10-07
+
+Priorité actuelle : exclusivement dev ; seuls les quatre visuels de slides ont été repris en lecture seule de production. Commit et push explicitement autorisés ensuite par l’utilisateur (« commit et push ») le 7 octobre ; publication en cours sur audit/backend-2026-10-06, aucun déploiement. Les modifications préexistantes du header et les suppressions de skills restent préservées.
+
+Slides corrigés et vérifiés : dev auparavant sans média ; maintenant 4/4 publiés, mêmes fichiers et ordre que la production. Après demande explicite de suppression puis continuation, 15 anciens fichiers et 11 anciennes entrées retirés avec sauvegarde vérifiée dans var/recovery/dev-slides-2026-10-07 (ignorée Git). Quatre nouvelles sources remplacent celles du seeder ; son exécution conserve 4/4.
+
+Nouvelle exigence : reçu de chaque paiement confirmé à info@ruelledadem.com. Implémenté : notification durable unique, transaction avec paiement, envoi après commit, reprise app:send-payment-receipts, détails Stripe vérifiés et lien officiel. Migration additive appliquée exclusivement dev/test isolé. SMTP effectif OVH ssl0.ovh.net:465 vérifié en TLS/authentification sans email ; Stripe local en mode test ; .env.dev active les notifications pour les futurs paiements de test. Livraison générale/prod et tests isolés désactivés par défaut ; réception email et API/paiement Stripe réels non vérifiés. Risque résiduel de doublon SMTP en cas de crash après acceptation documenté.
+
+Contrôles globaux exécutés : 172 tests/718 assertions, PHPStan10 sans erreur, Composer strict/audit et schémas dev/test synchronisés. Détails/preuves/activation : docs/DEV-SLIDES-RECEIPTS-2026-10-07.md. P1 confirmé : ancien secret SMTP commenté identique au compte actif (auth réussie) ; commentaire retiré mais historique public inchangé. Renouvellement urgent OVH par propriétaire et mise à jour configuration privée, sans divulgation du secret. SSH OVH jamais connecté (clé d'hôte inconnue), aucune production modifiée.
+
+--- État précédent conservé ---
+
 # Reprise audit backend — 2026-10-06
 
 Demande active : audit/corrections backend seulement, PHPUnit manquant, PHPStan complet, DevOps, puis commit/push autorisés après validation. Production interdite. Le texte joint remplace les anciens ordres de commit.

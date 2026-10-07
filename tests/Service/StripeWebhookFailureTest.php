@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\Order;
+use App\Entity\PaymentReceipt;
 use App\Entity\StripeProcessedEvent;
 use App\Repository\OrderRepository;
 use App\Service\StripeWebhookHandler;
@@ -35,9 +36,11 @@ final class StripeWebhookFailureTest extends BackendWebTestCase
         self::assertSame(0, $this->em->getRepository(StripeProcessedEvent::class)->count(['stripeEventId' => 'evt_flush_failure']));
         $order = $this->reload($order);
         self::assertFalse($order->isPaid());
+        self::assertSame(0, $this->em->getRepository(PaymentReceipt::class)->count([]));
         self::assertSame(200, self::service(StripeWebhookHandler::class)->handle($event));
         $order = $this->reload($order);
         self::assertTrue($order->isPaid());
+        self::assertSame(1, $this->em->getRepository(PaymentReceipt::class)->count([]));
         self::assertSame(1, $this->em->getRepository(StripeProcessedEvent::class)->count(['stripeEventId' => 'evt_flush_failure']));
     }
 }

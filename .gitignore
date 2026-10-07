@@ -99,3 +99,7 @@ compose.override.yml
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
+
+# Local recovery snapshots for development media changes
+/var/dev-slides-before-import.json
+/var/recovery/

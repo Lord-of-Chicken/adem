@@ -25,3 +25,7 @@ Ce dépôt a hébergé un projet antérieur (« Animaux Perdu ») jusqu'au commi
 
 ## Décisions audit backend 2026-10-06
 Frontend et modifications préexistantes exclus. Deux extensions PHPStan dev, niveau 10 sans ignorances. GD requis pour les uploads. Tests sur MySQL neuf isolé, mappings plutôt que migrations historiques destructives. CI sans déploiement ; publication prévue sur audit/backend-2026-10-06 avec autorisation explicite du texte joint. Aucun service prod modifié.
+
+## 2026-10-07 — Reçus de paiement
+
+Notification unique par commande dans payment_receipt, créée atomiquement avec le paiement ; SMTP après commit et reprise explicite par commande. Aucun envoi SMTP avant commit ; données payeur relues chez Stripe plutôt que dupliquées dans la notification. Un crash après acceptation SMTP peut doubler un envoi, limite documentée. Activation dev seulement (.env.dev), défaut général et tests désactivés.

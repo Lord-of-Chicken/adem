@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Entity\Order;
+use App\Entity\PaymentReceipt;
 use App\Entity\StripeProcessedEvent;
 use App\Tests\Support\BackendWebTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -52,12 +53,15 @@ final class StripeWebhookControllerTest extends BackendWebTestCase
         self::assertSame('pi_audit', $order->getStripePaymentIntentId());
         $this->deliver('evt_audit_paid', 'checkout.session.completed', $this->paid());
         self::assertResponseStatusCodeSame(200);
+        $this->deliver('evt_audit_paid_second', 'checkout.session.completed', $this->paid());
+        self::assertResponseStatusCodeSame(200);
+        self::assertSame(1, $this->em->getRepository(PaymentReceipt::class)->count(['order' => $order]));
         $this->deliver('evt_audit_failed', 'payment_intent.payment_failed', ['object' => 'payment_intent', 'id' => 'pi_audit']);
         self::assertResponseStatusCodeSame(200);
         $order = $this->reload($order);
         self::assertTrue($order->isPaid());
         self::assertEquals($paidAt, $order->getPaidAt());
-        self::assertSame(2, $this->em->getRepository(StripeProcessedEvent::class)->count([]));
+        self::assertSame(3, $this->em->getRepository(StripeProcessedEvent::class)->count([]));
     }
 
     public function testWrongSignatureDoesNotChangeOrderOrClaimEvent(): void
@@ -67,6 +71,7 @@ final class StripeWebhookControllerTest extends BackendWebTestCase
         self::assertResponseStatusCodeSame(400);
         $order = $this->reload($order);
         self::assertFalse($order->isPaid());
+        self::assertSame(0, $this->em->getRepository(PaymentReceipt::class)->count([]));
         self::assertSame(0, $this->em->getRepository(StripeProcessedEvent::class)->count([]));
     }
 
@@ -91,6 +96,7 @@ final class StripeWebhookControllerTest extends BackendWebTestCase
         self::assertSame(0, $this->em->getRepository(StripeProcessedEvent::class)->count([]));
         $order = $this->reload($order);
         self::assertFalse($order->isPaid());
+        self::assertSame(0, $this->em->getRepository(PaymentReceipt::class)->count([]));
         $this->deliver('evt_mismatch', 'checkout.session.completed', $this->paid());
         self::assertResponseStatusCodeSame(200);
         $order = $this->reload($order);

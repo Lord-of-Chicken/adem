@@ -22,3 +22,7 @@ Corrections implémentées et suites étendues : paiements/atomicité, images, p
 Validation finale locale : 128 tests/567 assertions, PHPStan 10 sans ignorances, Composer strict/audit, schéma/configuration, couverture 89,27 % lignes ; publication/CI distantes à vérifier.
 
 Publication code fb7178b confirmée après accord explicite dépôt public ; CI GitHub 37501405009 réussie. Aucune publication du site OVH ni modification de production.
+
+## 2026-10-07 — Slides dev et reçus
+
+Quatre slides publics de production repris dans le dev, anciennes photos retirées avec récupération. Reçus détaillés au site : notification durable, transaction atomique avec paiement, reprise et concurrence testées. Validation finale 172 tests/718 assertions, PHPStan10, qualité globale. Commit/push maintenant autorisés ; pas de déploiement. Voir docs/DEV-SLIDES-RECEIPTS-2026-10-07.md.

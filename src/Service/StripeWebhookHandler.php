@@ -20,6 +20,7 @@ final readonly class StripeWebhookHandler
         private EntityManagerInterface $entityManager,
         private OrderRepository $orders,
         private LoggerInterface $logger,
+        private ?PaymentReceiptSender $receipts = null,
     ) {}
 
     public function handle(Event $event): int
@@ -90,6 +91,11 @@ final readonly class StripeWebhookHandler
                 }
                 if (!$order->isPaid()) {
                     $order->markAsPaid();
+                    $connection->insert('payment_receipt', [
+                        'order_id' => $order->getId(),
+                        'created_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+                        'attempts' => 0,
+                    ]);
                 }
             } elseif (!$order->isPaid()) {
                 $order->markAsFailed();
@@ -101,6 +107,13 @@ final readonly class StripeWebhookHandler
             }
             $this->entityManager->flush();
             $connection->commit();
+            if ($order->isPaid() && $order->getId() !== null && $this->receipts !== null) {
+                try { $this->receipts->sendForOrder($order->getId()); }
+                catch (\Throwable $exception) {
+                    // A delivery failure must never undo or misreport a confirmed payment.
+                    $this->logger->error('Receipt dispatch failed; retry command required', ['order_id' => $order->getId(), 'error_class' => $exception::class]);
+                }
+            }
             return 200;
         } catch (\Throwable $exception) {
             if ($connection->isTransactionActive()) {

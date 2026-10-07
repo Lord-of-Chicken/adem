@@ -41,3 +41,7 @@ PHPStan analyse src, tests, migrations, configuration PHP, points d’entrée bi
 ## Limites
 Un pourcentage ne prouve pas une couverture métier complète. Aucun paiement Stripe réel, SMTP réel, déploiement, migration historique, cron/worker distant ni alerte n’est validé par ces tests. Les configurations de champs et interfaces EasyAdmin ne sont pas exhaustivement exercées. Les tests de reprise ne remplacent pas un rapprochement Stripe complet en staging, ni les tests de charge.
 Validation du 6 octobre : 128 tests / 567 assertions, couverture 89,27 % lignes et 73,08 % méthodes ; résultats précis et risques : [AUDIT-BACKEND-2026-10-06.md](AUDIT-BACKEND-2026-10-06.md). Voir également ../DEPLOYMENT.md.
+
+## Complément dev — 7 octobre 2026
+
+Validation locale de la galerie et des reçus : **172 tests / 718 assertions**, PHPStan 10 sans erreur, qualité globale et schémas dev/test validés. Base isolée `ruellenadem_test_audit_20261006`, `TEST_TOKEN=_audit_20261006`. Envoi externe désactivé en test ; API Stripe et SMTP simulés, concurrence réelle à deux processus. Voir `DEV-SLIDES-RECEIPTS-2026-10-07.md` pour les limites et l’activation SMTP : connexion/authentification OVH vérifiées, réception du reçu non vérifiée.

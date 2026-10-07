@@ -73,3 +73,10 @@ Plan priorisé avec preuves/fichiers/risques validé et exécuté dans docs/AUDI
 Validation finale locale : 128 tests/567 assertions, PHPStan 10 sans ignorances, Composer strict/audit, schéma/configuration, couverture 89,27 % lignes ; publication/CI distantes à vérifier.
 
 Publication code fb7178b confirmée après accord explicite dépôt public ; CI GitHub 37501405009 réussie. Aucune publication du site OVH ni modification de production.
+
+## 2026-10-07 — Publication demandée
+
+- Validation/relecture terminées : 172 tests/718 assertions, PHPStan10, qualité globale, pas de défaut bloquant confirmé.
+- Commit et push des slides/reçus sur audit/backend-2026-10-06 autorisés ; vérifier SHA distant et CI.
+- Exclure les suppressions de skills et le header préexistants, ainsi que secrets/configuration locale/récupération.
+- Aucun déploiement ; rotation SMTP par le propriétaire toujours nécessaire.
