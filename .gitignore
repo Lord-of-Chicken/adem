@@ -4,6 +4,7 @@
 
 # Répertoires de cache et logs
 /var/cache/*
+/var/share/
 /var/log/*
 !var/cache/.gitkeep
 !var/log/.gitkeep
@@ -53,8 +54,7 @@ Thumbs.db
 /public/uploads/
 !/public/uploads/.gitkeep
 
-# Fichiers de lock et dépendances
-composer.lock
+# composer.lock est versionné pour une installation reproductible.
 package-lock.json
 yarn.lock
 
@@ -99,3 +99,7 @@ compose.override.yml
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
+
+# Local recovery snapshots for development media changes
+/var/dev-slides-before-import.json
+/var/recovery/

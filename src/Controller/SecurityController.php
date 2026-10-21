@@ -101,8 +101,6 @@ final class SecurityController extends AbstractController
             $email = $form->get('email')->getData();
             $user = $userRepository->findOneByEmail($email);
 
-            $deliveryFailed = false;
-
             if ($user) {
                 // Stocker le hash du token (pas le token brut) pour protéger contre une fuite BDD
                 $user->setResetToken(hash('sha256', $resetToken));
@@ -126,18 +124,12 @@ final class SecurityController extends AbstractController
                     $mailer->send($email);
                 } catch (TransportExceptionInterface $e) {
                     // L'envoi a échoué : on logge sans révéler que l'email existe.
-                    $deliveryFailed = true;
-                    $logger->error('Password reset email delivery failed', ['exception' => $e]);
+                    $logger->error('Password reset email delivery failed', ['error_class' => $e::class]);
                 }
             }
 
             // Message identique que l'utilisateur existe ou non (anti-énumération).
-            // En cas d'échec d'envoi, avertir l'utilisateur sans confirmer l'existence du compte.
-            if ($deliveryFailed) {
-                $this->addFlash('warning', $translator->trans('security.reset_send_failed'));
-            } else {
-                $this->addFlash('success', $translator->trans('security.reset_sent'));
-            }
+            $this->addFlash('success', $translator->trans('security.reset_sent'));
 
             return $this->redirectToRoute('app_login');
         }

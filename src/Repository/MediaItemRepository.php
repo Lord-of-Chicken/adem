@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use SortDirection;
 use App\Entity\MediaItem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -41,8 +42,8 @@ class MediaItemRepository extends ServiceEntityRepository
         /** @var list<MediaItem> */
         return $this->createQueryBuilder('m')
             ->andWhere('m.published = true')
-            ->orderBy('m.sortOrder', 'ASC')
-            ->addOrderBy('m.id', 'ASC')
+            ->orderBy('m.sortOrder', SortDirection::Ascending)
+            ->addOrderBy('m.id', SortDirection::Ascending)
             ->getQuery()
             ->enableResultCache(self::PUBLISHED_CACHE_TTL, self::PUBLISHED_CACHE_ID)
             ->getResult();
@@ -60,10 +61,13 @@ class MediaItemRepository extends ServiceEntityRepository
     {
         $em = $this->getEntityManager();
 
-        foreach ($idToPosition as $id => $sortOrder) {
-            $mediaItem = $this->find($id);
-            if ($mediaItem !== null) {
-                $mediaItem->setSortOrder($sortOrder);
+        if ($idToPosition !== []) {
+            // Load the batch once; hydration preserves already-managed changes.
+            foreach ($this->findBy(['id' => array_keys($idToPosition)]) as $mediaItem) {
+                $id = $mediaItem->getId();
+                if ($id !== null && array_key_exists($id, $idToPosition)) {
+                    $mediaItem->setSortOrder($idToPosition[$id]);
+                }
             }
         }
 

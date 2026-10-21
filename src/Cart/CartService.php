@@ -34,7 +34,8 @@ final class CartService
      */
     private function session(): ?SessionInterface
     {
-        return $this->requestStack->getCurrentRequest()?->getSession();
+        $request = $this->requestStack->getCurrentRequest();
+        return $request !== null && $request->hasSession() ? $request->getSession() : null;
     }
 
     /**
@@ -45,8 +46,23 @@ final class CartService
     public function getLines(): array
     {
         $lines = $this->session()?->get(self::SESSION_KEY) ?? [];
-        /** @var array<int, array{line_id: string, tier_id: string, quantity: int, donor_name: string|null, custom_price_cents: int|null}> */
-        return $lines;
+        if (!is_array($lines)) {
+            throw new \UnexpectedValueException('Invalid cart session.');
+        }
+        $validated = [];
+        foreach ($lines as $line) {
+            if (!is_array($line) || !isset($line['line_id'], $line['tier_id'], $line['quantity'])
+                || !is_string($line['line_id']) || !is_string($line['tier_id']) || !is_int($line['quantity'])
+                || !array_key_exists('donor_name', $line) || (!is_string($line['donor_name']) && $line['donor_name'] !== null)
+                || !array_key_exists('custom_price_cents', $line) || (!is_int($line['custom_price_cents']) && $line['custom_price_cents'] !== null)) {
+                throw new \UnexpectedValueException('Invalid cart line.');
+            }
+            $validated[] = [
+                'line_id' => $line['line_id'], 'tier_id' => $line['tier_id'], 'quantity' => $line['quantity'],
+                'donor_name' => $line['donor_name'], 'custom_price_cents' => $line['custom_price_cents'],
+            ];
+        }
+        return $validated;
     }
 
     /**
@@ -58,14 +74,14 @@ final class CartService
     public function totalCents(ParticipationCatalog $catalog): int
     {
         $total = 0;
+        $firstTotals = [];
         foreach ($this->getLines() as $line) {
-            if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
-                $priceCents = (int) $line['custom_price_cents'];
-            } else {
-                $tier = $catalog->require($line['tier_id']);
-                $priceCents = ParticipationCatalog::eurToCents($tier['unit_price_eur']);
+            // Preserve the first matching line when an existing session contains duplicate IDs.
+            $lineId = $line['line_id'];
+            if (!array_key_exists($lineId, $firstTotals)) {
+                $firstTotals[$lineId] = $this->calculateLineTotal($line, $catalog);
             }
-            $total += $priceCents * $line['quantity'];
+            $total += $firstTotals[$lineId];
         }
         return $total;
     }
@@ -81,18 +97,23 @@ final class CartService
     {
         foreach ($this->getLines() as $line) {
             if ($line['line_id'] === $lineId) {
-                if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
-                    $priceCents = (int) $line['custom_price_cents'];
-                } else {
-                    $tier = $catalog->require($line['tier_id']);
-                    $priceCents = ParticipationCatalog::eurToCents($tier['unit_price_eur']);
-                }
-
-                return $priceCents * $line['quantity'];
+                return $this->calculateLineTotal($line, $catalog);
             }
         }
 
         return 0;
+    }
+
+    /**
+     * @param array{line_id: string, tier_id: string, quantity: int, donor_name: string|null, custom_price_cents: int|null} $line
+     */
+    private function calculateLineTotal(array $line, ParticipationCatalog $catalog): int
+    {
+        $tier = $catalog->require($line['tier_id']);
+        $customPrice = $line['custom_price_cents'];
+        return $customPrice !== null
+            ? $customPrice * $line['quantity']
+            : $catalog->lineTotalCents($tier, $line['quantity']);
     }
 
     /**
@@ -117,6 +138,10 @@ final class CartService
         if (!$session) return;
 
         $tier = $catalog->require($tierId);
+
+        if (($tierId === 'free_donation') !== ($customPriceCents !== null)) {
+            throw new \InvalidArgumentException('Custom price is required only for free donations.');
+        }
 
         if ($customPriceCents !== null) {
             if ($customPriceCents < self::MIN_CUSTOM_PRICE_CENTS || $customPriceCents > self::MAX_CUSTOM_PRICE_CENTS) {

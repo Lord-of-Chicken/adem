@@ -17,12 +17,13 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 /**
  * Form type for the contact page.
  */
+/** @extends AbstractType<array{name: string, email: string, message: string}> */
 final class ContactFormType extends AbstractType
 {
     /**
      * Builds the form.
      *
-     * @param FormBuilderInterface $builder The form builder
+     * @param FormBuilderInterface<array{name: string, email: string, message: string}|null> $builder The form builder
      * @param array<string, mixed> $options The options
      * @return void
      */

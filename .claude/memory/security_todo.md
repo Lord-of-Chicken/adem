@@ -121,3 +121,11 @@ git status --ignored | grep -E '\.env\.(local|production)'
   est désormais pleinement en sync (mapping + DB).
 - [ ] **i18n** : relire les traductions NL/EN des nouvelles clés (`newsletter.*`,
   `contact.privacy_*`, `home.donor_consent`, `registration.form.age_*`) par un locuteur natif.
+
+
+## État confirmé audit backend 2026-10-06
+Webhooks atomiques et retryables, uploads validés, prix forfaitaires cohérents, retour payé lié à session, tokens pending révoqués, newsletter anonymisée à effacement, reset anti-énumération, logs production masqués et hosts configurables. Configurations présentes ne prouvent pas les secrets/services actifs ; anciens TODO conservés comme actions opérateur à vérifier, pas résultats acquis.
+
+## 2026-10-07 — P1 SMTP confirmé
+
+- [ ] Renouveler dans OVH le mot de passe du compte SMTP : ancien commentaire versionné identique au compte actif, authentification vérifiée. Le commentaire est retiré ; l’historique public reste exposé. Ne pas recopier le secret. Mise à jour de la configuration privée après rotation ; aucune modification des accès de production effectuée.

@@ -74,11 +74,13 @@ class NewsletterConfirmation
         return $this->email;
     }
 
-    /**
-     * Gets the confirmation token.
-     *
-     * @return string The token
-     */
+    /** Removes the email while retaining historical confirmation dates. */
+    public function anonymize(string $anonymousEmail): void
+    {
+        $this->email = $anonymousEmail;
+        $this->expiresAt = new \DateTimeImmutable('-1 second');
+    }
+
     public function getToken(): string
     {
         return $this->token;

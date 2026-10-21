@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Repository\MediaItemRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -19,7 +18,6 @@ final class SitemapController extends AbstractController
     private const LOCALES = ['fr', 'en', 'nl'];
 
     public function __construct(
-        private readonly MediaItemRepository $mediaItemRepository,
         private readonly UrlGeneratorInterface $urlGenerator,
     ) {
     }
@@ -66,12 +64,17 @@ final class SitemapController extends AbstractController
                     UrlGeneratorInterface::ABSOLUTE_URL,
                 );
             }
+            $localeUrls = $alternates;
             // x-default points to the French (default) locale.
-            $alternates['x-default'] = $alternates['fr'];
+            $alternates['x-default'] = $this->urlGenerator->generate(
+                $route,
+                ['_locale' => 'fr'],
+                UrlGeneratorInterface::ABSOLUTE_URL,
+            );
 
-            foreach (self::LOCALES as $locale) {
+            foreach ($localeUrls as $loc) {
                 $urls[] = [
-                    'loc'        => $alternates[$locale],
+                    'loc'        => $loc,
                     'priority'   => $meta['priority'],
                     'changefreq' => $meta['changefreq'],
                     'lastmod'    => $today,

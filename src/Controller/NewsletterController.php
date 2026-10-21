@@ -84,11 +84,12 @@ final class NewsletterController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
+        $confirmationRepository->revokePendingForEmail($confirmation->getEmail());
         $user = $userRepository->findOneBy(['email' => $confirmation->getEmail()]);
         if ($user !== null) {
             $user->setNewsletter(false);
-            $entityManager->flush();
         }
+        $entityManager->flush();
 
         $this->addFlash('success', $translator->trans('newsletter.unsubscribe_success'));
         return $this->redirectToRoute('app_home');

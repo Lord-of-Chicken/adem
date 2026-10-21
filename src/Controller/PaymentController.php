@@ -42,7 +42,7 @@ final class PaymentController extends AbstractController
      * @return Response Redirect to Stripe checkout or cart page
      */
     #[Route('/checkout', name: 'app_checkout')]
-    public function checkout(TranslatorInterface $translator): Response
+    public function checkout(Request $request, TranslatorInterface $translator): Response
     {
         /** @var User|null $user */
         $user = $this->getUser();
@@ -59,8 +59,12 @@ final class PaymentController extends AbstractController
 
             foreach ($lines as $line) {
                 $tier = $this->catalog->require($line['tier_id']);
+                if ($line['quantity'] < $tier['min_qty'] || $line['quantity'] > $tier['max_qty']
+                    || (($line['tier_id'] === 'free_donation') !== ($line['custom_price_cents'] !== null))) {
+                    throw new \InvalidArgumentException('Invalid cart pricing or quantity.');
+                }
 
-                if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
+                if ($line['custom_price_cents'] !== null) {
                     $cents = (int) $line['custom_price_cents'];
                     if ($cents < CartService::MIN_CUSTOM_PRICE_CENTS || $cents > CartService::MAX_CUSTOM_PRICE_CENTS) {
                         $this->logger->warning('Checkout rejected: custom price out of range', [
@@ -79,7 +83,7 @@ final class PaymentController extends AbstractController
 
                 $tier = $this->catalog->translateTier($tier, $translator);
 
-                if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
+                if ($line['custom_price_cents'] !== null) {
                     $unitAmount = $line['custom_price_cents'];
                     $description = $translator->trans('payment.free_donation') . ($line['custom_price_cents'] / 100) . $translator->trans('cart.currency_symbol');
                 } else {
@@ -97,7 +101,7 @@ final class PaymentController extends AbstractController
                     $description .= $translator->trans('payment.donation_of') . $line['donor_name'];
                 }
 
-                if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
+                if ($line['custom_price_cents'] !== null) {
                     $itemMetadata['custom_price_eur'] = number_format($line['custom_price_cents'] / 100, 2, '.', '');
                 }
 
@@ -106,12 +110,12 @@ final class PaymentController extends AbstractController
                         'currency'     => 'eur',
                         'product_data' => [
                             'name' => $tier['title'],
-                            'description' => $description ?: null,
+                            'description' => $description ?: $tier['title'],
                             'metadata' => $itemMetadata,
                         ],
                         'unit_amount'  => $unitAmount,
                     ],
-                    'quantity' => $line['quantity'],
+                    'quantity' => $tier['priced_per_unit'] || $line['custom_price_cents'] !== null ? $line['quantity'] : 1,
                 ];
             }
 
@@ -135,14 +139,42 @@ final class PaymentController extends AbstractController
 
             $successUrl = $this->generateUrl(
                 'app_payment_success',
-                ['session_id' => '{CHECKOUT_SESSION_ID}'],
+                [],
                 UrlGeneratorInterface::ABSOLUTE_URL
-            );
+            ) . '?session_id={CHECKOUT_SESSION_ID}';
             $cancelUrl = $this->generateUrl(
                 'app_payment_cancel',
                 [],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
+
+            $cartHash = hash('sha256', json_encode($lines, JSON_THROW_ON_ERROR));
+            $snapshot = $request->getSession()->get('stripe_checkout_snapshot');
+            if (is_array($snapshot) && ($snapshot['cart_hash'] ?? null) === $cartHash
+                && is_string($snapshot['session_id'] ?? null)) {
+                $existing = $this->orderRepository->findByStripeCheckoutSessionId($snapshot['session_id']);
+                if ($existing !== null && $existing->isPaid()) {
+                    return $this->redirectToRoute('app_payment_success', ['session_id' => $snapshot['session_id']]);
+                }
+                if ($existing !== null && !$existing->isFailed()
+                    && is_int($snapshot['reuse_until'] ?? null) && $snapshot['reuse_until'] > time()
+                    && is_string($snapshot['checkout_url'] ?? null)) {
+                    return $this->redirect($snapshot['checkout_url'], 303);
+                }
+            }
+
+            // Persist the business snapshot before the external side effect. Signed
+            // Stripe metadata can recover the association if the response is lost.
+            $order = (new Order())
+                ->setStripeCheckoutSessionId('draft_'.bin2hex(random_bytes(16)))
+                ->setTotalCents($this->cartService->totalCents($this->catalog))
+                ->setCartData($lines)->setUser($user);
+            $this->orderRepository->save($order, flush: true);
+            $orderId = $order->getId();
+            if ($orderId === null) {
+                throw new \LogicException('Missing persisted checkout order.');
+            }
+            $metadata['order_id'] = (string) $orderId;
 
             $checkoutSession = $this->stripePaymentService->createCheckoutSession(
                 $lineItems,
@@ -152,18 +184,24 @@ final class PaymentController extends AbstractController
                 $cancelUrl
             );
 
-            $order = (new Order())
-                ->setStripeCheckoutSessionId($checkoutSession->id)
-                ->setTotalCents($this->cartService->totalCents($this->catalog))
-                ->setCartData($this->cartService->getLines())
-                ->setUser($user);
+            if (!is_string($checkoutSession->id) || $checkoutSession->id === '' || !is_string($checkoutSession->url) || $checkoutSession->url === '') {
+                throw new \UnexpectedValueException('Incomplete Stripe checkout session.');
+            }
+
+            $order->setStripeCheckoutSessionId($checkoutSession->id);
 
             $this->orderRepository->save($order, flush: true);
 
+            $request->getSession()->set('stripe_checkout_snapshot', [
+                'session_id' => $checkoutSession->id,
+                'cart_hash' => $cartHash,
+                'checkout_url' => $checkoutSession->url,
+                'reuse_until' => min(time() + 300, is_int($checkoutSession->expires_at) ? $checkoutSession->expires_at : time() + 300),
+            ]);
             return $this->redirect($checkoutSession->url, 303);
 
         } catch (\Exception $e) {
-            $this->logger->error('Stripe checkout error', ['exception' => $e]);
+            $this->logger->error('Stripe checkout error', ['error_class' => $e::class]);
             $this->addFlash('error', $translator->trans('payment.stripe_error'));
             return $this->redirectToRoute('app_cart_index');
         }
@@ -187,10 +225,14 @@ final class PaymentController extends AbstractController
         // Only clear the cart if we actually have an order matching this session
         // (prevents manual URL access from wiping a user's cart).
         $order = $this->orderRepository->findByStripeCheckoutSessionId($sessionId);
-        if (!$order) {
+        $snapshot = $request->getSession()->get('stripe_checkout_snapshot');
+        if (!$order || !$order->isPaid() || !is_array($snapshot)
+            || ($snapshot['session_id'] ?? null) !== $sessionId
+            || ($snapshot['cart_hash'] ?? null) !== hash('sha256', json_encode($this->cartService->getLines(), JSON_THROW_ON_ERROR))) {
             return $this->redirectToRoute('app_cart_index');
         }
 
+        $request->getSession()->remove('stripe_checkout_snapshot');
         $this->cartService->clear();
         $this->addFlash('success', $translator->trans('payment.success'));
 

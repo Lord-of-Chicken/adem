@@ -1,3 +1,50 @@
+# Optimisation code/performance — 8 octobre 2026
+
+Demande actuelle : optimiser avec mesures avant/après et cycle complet ; aucun commit/push/déploiement autorisé. Trois améliorations retenues terminées : panier O(N) (une lecture validée/session), réordonnancement médias groupé (un SELECT), PaymentIntent/Charge Stripe récupérés ensemble (un appel en moins). Interfaces, styles, photos, métier, validations et APIs publiques préservés ; aucun cache durable ni migration/dépendance ajoutés.
+
+Validation : 183 tests/961 assertions, PHPStan10, Composer strict/audit, YAML/conteneur/schéma, 48 Twig et Compose valides. Mesures répétées, fixtures DB annulées, Stripe/SMTP non réels. Rapport complet et preuves : docs/PERFORMANCE-2026-10-08.md et mesures JSON associées ; outils scripts/benchmark-backend.php, scripts/benchmark-stripe-receipts.php. Revue indépendante sans défaut confirmé. Contrôles finaux diff/secrets/documentation réussis ; améliorations retenues terminées et validées. Préexistants (skills supprimés/header, documents de blocage SSH) préservés. Aucun commit/push/déploiement réalisé.
+
+--- État précédent conservé ---
+
+# Déploiement OVH demandé — 2026-10-07
+
+L’utilisateur a explicitement demandé « déploie » après le commit/push. Cible : production https://www.ruelledadem.com ; SSH ruellen@ssh.cluster121.hosting.ovh.net:22. Commit prévu : 8e04c41ab6516056fd9813d1210b70ae41dbd305, CI 37645662167 réussie.
+
+État : NON DÉPLOYÉ. Test SSH initial avec known_hosts système : hôte inconnu. Clés publiques relevées dans un fichier temporaire, puis test BatchMode avec clé d’hôte épinglée : refus d’authentification « Permission denied (publickey,password) ». Aucun accès distant authentifié, aucun fichier/donnée/configuration de production modifié. Une question utilisateur est en attente pour autoriser la clé publique de ce Mac ; aucun mot de passe demandé dans le chat.
+
+Archive préparée depuis un export Git isolé du SHA exact, sans les 109 modifications préexistantes : /var/folders/vx/szrv25n12d5494x377g943500000gn/T/ruelle-ovh-8e04c41-0ksmz1q8/adem-8e04c41.tar.gz. SHA256 f0bb1ba089331838c2930e819b1448e7e8aeace7371c1d7b457ea6fcf6d51031 ; 684 entrées ; bin/console, public/index.php, composer.lock et migration des reçus présents ; .env.local, .env.dev, clés privées de déchiffrement, var et .git absents. Archive source applicative : dépendances PHP de production et compilation d’assets restent à réaliser dans un environnement compatible après accès. Aucun déploiement de cette archive prétendu vérifié.
+
+Revue indépendante : le script deploy.sh générique ne fonctionne pas tel quel avec l’hôte SSH distinct du domaine web ; adapter la procédure aux chemins constatés sans lancer ce script aveuglément. Vérifier PHP >=8.4 HTTP/CLI, extensions, configuration et schéma réels. Sauvegarder DB/config/médias et préparer le retour arrière. Appliquer uniquement l’ajout Version20261007120000 après contrôle/sauvegarde : la table payment_receipt est requise même si l’envoi reste désactivé. Ne jamais lancer les migrations historiques globalement ni le seeder de galerie en production. Préserver données, médias, APP_SECRET et clés Stripe live existants. Renouvellement du SMTP exposé toujours requis. Santé, réception des reçus, sauvegarde/restauration et cron de production NON VÉRIFIÉS.
+
+--- État précédent conservé ---
+
+# Reprise dev — 2026-10-07
+
+Priorité actuelle : exclusivement dev ; seuls les quatre visuels de slides ont été repris en lecture seule de production. Commit et push explicitement autorisés ensuite par l’utilisateur (« commit et push ») le 7 octobre ; publication en cours sur audit/backend-2026-10-06, aucun déploiement. Les modifications préexistantes du header et les suppressions de skills restent préservées.
+
+Slides corrigés et vérifiés : dev auparavant sans média ; maintenant 4/4 publiés, mêmes fichiers et ordre que la production. Après demande explicite de suppression puis continuation, 15 anciens fichiers et 11 anciennes entrées retirés avec sauvegarde vérifiée dans var/recovery/dev-slides-2026-10-07 (ignorée Git). Quatre nouvelles sources remplacent celles du seeder ; son exécution conserve 4/4.
+
+Nouvelle exigence : reçu de chaque paiement confirmé à info@ruelledadem.com. Implémenté : notification durable unique, transaction avec paiement, envoi après commit, reprise app:send-payment-receipts, détails Stripe vérifiés et lien officiel. Migration additive appliquée exclusivement dev/test isolé. SMTP effectif OVH ssl0.ovh.net:465 vérifié en TLS/authentification sans email ; Stripe local en mode test ; .env.dev active les notifications pour les futurs paiements de test. Livraison générale/prod et tests isolés désactivés par défaut ; réception email et API/paiement Stripe réels non vérifiés. Risque résiduel de doublon SMTP en cas de crash après acceptation documenté.
+
+Contrôles globaux exécutés : 172 tests/718 assertions, PHPStan10 sans erreur, Composer strict/audit et schémas dev/test synchronisés. Détails/preuves/activation : docs/DEV-SLIDES-RECEIPTS-2026-10-07.md. P1 confirmé : ancien secret SMTP commenté identique au compte actif (auth réussie) ; commentaire retiré mais historique public inchangé. Renouvellement urgent OVH par propriétaire et mise à jour configuration privée, sans divulgation du secret. SSH OVH jamais connecté (clé d'hôte inconnue), aucune production modifiée.
+
+--- État précédent conservé ---
+
+# Reprise audit backend — 2026-10-06
+
+Demande active : audit/corrections backend seulement, PHPUnit manquant, PHPStan complet, DevOps, puis commit/push autorisés après validation. Production interdite. Le texte joint remplace les anciens ordres de commit.
+Dépôt /Users/gaellayeux/Dev/RuelleDAdem, main, origin public https://github.com/Lord-of-Chicken/adem.git.
+Préexistant à préserver/exclure : suppressions .claude/skills et header templates/components/SiteHeader.html.twig.
+Plan/preuves : docs/AUDIT-BACKEND-2026-10-06.md. Skills sécurité, revue PHP, qualité Symfony et DevOps lus. Dépendances ajoutées seulement phpstan-doctrine/phpstan-symfony.
+Corrections déjà écrites : transaction webhook/lock/rollback, routes webhook/upload racine, validation upload partagée, prix forfaitaire, retour paiement lié session/snapshot/statut, contraintes formulaires, reset public uniforme/logs sans PII, désinscription révoque pending sans inventer consentement, cache invalidé après flush, MySQL bind localhost, hosts prod configurables.
+DevOps écrit : CI sans déploiement, scripts qualité/package/deploy explicite/backup/restore isolé, health, exemples cron/worker et DEPLOYMENT.md réécrit.
+Validation initiale 20 tests/63 assertions ; dernier contrôle complet 128 tests/567 assertions, zéro skip. PHPStan niveau 10 sans ignorances ni erreurs. Composer strict/audit et schéma dédiés verts. Couverture finale 89,27 % lignes / 73,08 % méthodes. Sauvegarde/restauration locale et refus overwrite vérifiés (voir audit).
+Base dédiée ruellenadem_test_audit_20261006, TEST_TOKEN=_audit_20261006, schéma mapping créé sans migrations historiques, 5 tiers seed. Pas de données dev/prod modifiées. SMTP nul en test.
+Contrôles locaux terminés (voir audit). Publication code fb7178b vérifiée sur audit/backend-2026-10-06 ; CI GitHub 37501405009 réussie. Complément documentation à publier, puis vérifier son SHA distant. main inchangée. Corrélation PI précoce et perte réponse Stripe corrigées ensuite : draft persistant + metadata order_id + clé idempotence API ; contrôles finaux relancés et réussis (2 tests supplémentaires). Risques anciens événements sans metadata/drafts interrompus/migrations historiques/ops réelles décrits dans audit.
+Pourcentage contexte inaccessible ; état sauvegardé régulièrement. Commit local fb7178b8e21e9196646a675a42228e159273ad88 créé. Après refus auto-review, accord explicite reçu (« site dev :oui ») pour destination publique ; push normal effectué et SHA distant vérifié. CI 37501405009 réussie (installation propre, tests, PHPStan, Composer, couverture, packaging). Aucun merge/déploiement.
+
+--- Historique juin (conservé, peut être périmé) ---
+
 # État de session — Audit & correction global
 
 _Dernière mise à jour : 2026-06-15_
@@ -60,3 +107,5 @@ Inclut le nettoyage du cache compilé `src/var/` (447 fichiers) + `/src/var/` aj
 - Voir `security_todo.md` (secrets manager, purge cron tokens newsletter, durées de conservation à valider DPO).
 TODO transverse : table orpheline `nom_entite` (migration de drop à décider), traductions natives EN/NL du corps légal, placeholders légaux utilisateur. Voir `security_todo.md`.
 Commits : transformation Animaux Perdu→Ruelle d'Adem non commitée — jalon utilisateur séparé.
+
+Question suivante utilisateur : comment faire la CI avec OVH. CI actuelle exécutée sur GitHub, publication OVH séparée. Type d’hébergement demandé (VPS/serveur ou mutualisé), pas encore répondu. Aucun déploiement OVH autorisé/exécuté.

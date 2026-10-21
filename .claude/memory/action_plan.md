@@ -65,3 +65,22 @@ SEO IA (visibilité/citabilité par moteurs IA — le projet n'a PAS de feature 
 
 ## Ordre recommandé (utilisateur : commencer par l'architecture)
 A(commit) → **D(archi)** → B(RGPD) → C(tests) → E(perf) → F(polish)
+
+
+## Plan audit backend 2026-10-06
+Plan priorisé avec preuves/fichiers/risques validé et exécuté dans docs/AUDIT-BACKEND-2026-10-06.md. Prochaines étapes : résultats finaux, revue du diff et secrets, commit/push branche dédiée, observer CI. SMTP/Stripe sandbox/ops de production nécessitent environnement et autorisation distincts.
+
+Validation finale locale : 128 tests/567 assertions, PHPStan 10 sans ignorances, Composer strict/audit, schéma/configuration, couverture 89,27 % lignes ; publication/CI distantes à vérifier.
+
+Publication code fb7178b confirmée après accord explicite dépôt public ; CI GitHub 37501405009 réussie. Aucune publication du site OVH ni modification de production.
+
+## 2026-10-07 — Publication demandée
+
+- Validation/relecture terminées : 172 tests/718 assertions, PHPStan10, qualité globale, pas de défaut bloquant confirmé.
+- Commit et push des slides/reçus sur audit/backend-2026-10-06 autorisés ; vérifier SHA distant et CI.
+- Exclure les suppressions de skills et le header préexistants, ainsi que secrets/configuration locale/récupération.
+- Aucun déploiement ; rotation SMTP par le propriétaire toujours nécessaire.
+
+## 2026-10-08 — Optimisation locale
+
+Trois goulots mesurés corrigés : panier linéaire, réordonnancement médias groupé, reçu Stripe sans requête PI redondante. Contrats sensibles et cache galerie préservés ; 183 tests/961 assertions, PHPStan10, Composer/lint/schéma valides. Mesures avant/après et limites : docs/PERFORMANCE-2026-10-08.md. Aucun commit/push/déploiement autorisé ou effectué pour ce lot.

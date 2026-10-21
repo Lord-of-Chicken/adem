@@ -21,3 +21,15 @@
 
 ## Note historique
 Ce dépôt a hébergé un projet antérieur (« Animaux Perdu ») jusqu'au commit du 2026-05-14, puis a été reconstruit en « Ruelle d'Adem ». Les anciennes décisions (API-First, modules feature-based, PostGIS/pgvector) ne s'appliquent plus.
+
+
+## Décisions audit backend 2026-10-06
+Frontend et modifications préexistantes exclus. Deux extensions PHPStan dev, niveau 10 sans ignorances. GD requis pour les uploads. Tests sur MySQL neuf isolé, mappings plutôt que migrations historiques destructives. CI sans déploiement ; publication prévue sur audit/backend-2026-10-06 avec autorisation explicite du texte joint. Aucun service prod modifié.
+
+## 2026-10-07 — Reçus de paiement
+
+Notification unique par commande dans payment_receipt, créée atomiquement avec le paiement ; SMTP après commit et reprise explicite par commande. Aucun envoi SMTP avant commit ; données payeur relues chez Stripe plutôt que dupliquées dans la notification. Un crash après acceptation SMTP peut doubler un envoi, limite documentée. Activation dev seulement (.env.dev), défaut général et tests désactivés.
+
+## 2026-10-08 — Optimisations ciblées et contrats conservés
+
+Mesurer avant/après puis retenir uniquement trois goulots confirmés. Panier : helper commun et première occurrence par line_id pour garder le comportement historique en cas de doublons ; mémo uniquement pendant un calcul, jamais entre appels/utilisateurs. Médias : findBy sur le lot pour garder entités/hydratation/flush/cache ; IDs inconnus ignorés et batch vide garde son flush. Stripe : PaymentIntent développé unique, méthode Charge publique conservée, mêmes validations. Pas de migrations/cache durable ni modifications visuelles ; pics mémoire batch augmentés temporairement contre forte réduction SQL, chiffres dans docs/PERFORMANCE-2026-10-08.md.

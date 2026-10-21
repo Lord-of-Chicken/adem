@@ -4,59 +4,33 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Service\MediaUploadService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_ADMIN')]
 final class MediaItemUploadController extends AbstractController
 {
-    private const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
-    private const ALLOWED_MIME_TYPES  = ['image/jpeg', 'image/png', 'image/webp'];
-    private const MAX_FILE_SIZE       = 5 * 1024 * 1024; // 5 MB
-
     #[Route('/admin/media-item/upload', name: 'admin_media_item_upload_image', methods: ['POST'])]
-    public function uploadImage(Request $request, SluggerInterface $slugger, TranslatorInterface $translator): Response
+    public function uploadImage(Request $request, MediaUploadService $uploads, TranslatorInterface $translator): JsonResponse
     {
         if (!$this->isCsrfTokenValid('media_upload', (string) $request->headers->get('X-CSRF-Token'))) {
-            return new JsonResponse(['error' => $translator->trans('admin.csrf_invalid')], Response::HTTP_FORBIDDEN);
+            return new JsonResponse(['error' => $translator->trans('admin.csrf_invalid')], 403);
         }
-
         $file = $request->files->get('file');
-
         if (!$file instanceof UploadedFile) {
-            return new JsonResponse(['error' => $translator->trans('admin.upload_no_file')], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => $translator->trans('admin.upload_no_file')], 400);
         }
-
-        if ($file->getSize() > self::MAX_FILE_SIZE) {
-            return new JsonResponse(['error' => $translator->trans('admin.upload_file_too_large')], Response::HTTP_BAD_REQUEST);
+        try {
+            $path = $uploads->store($file);
+        } catch (\InvalidArgumentException) {
+            return new JsonResponse(['error' => $translator->trans('admin.upload_invalid_type')], 400);
         }
-
-        $extension = strtolower($file->guessExtension() ?? '');
-        if (
-            !in_array($extension, self::ALLOWED_EXTENSIONS, true) ||
-            !in_array($file->getMimeType(), self::ALLOWED_MIME_TYPES, true)
-        ) {
-            return new JsonResponse(['error' => $translator->trans('admin.upload_invalid_type')], Response::HTTP_BAD_REQUEST);
-        }
-
-        $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeName  = $slugger->slug($originalName);
-        $fileName  = $safeName . '-' . uniqid() . '.' . $extension;
-
-        // Use kernel.project_dir to avoid relying on web-server-controlled DOCUMENT_ROOT.
-        $destination = $this->getParameter('kernel.project_dir') . '/public/img/ruelle';
-        $file->move($destination, $fileName);
-
-        return new JsonResponse([
-            'path'     => 'img/ruelle/' . $fileName,
-            'filename' => $fileName,
-        ]);
+        return new JsonResponse(['path' => $path, 'filename' => basename($path)]);
     }
 }

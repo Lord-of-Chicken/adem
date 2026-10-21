@@ -26,7 +26,7 @@ class LocaleListener
         $path = $request->getPathInfo();
 
         // Sitemap, Symfony dev tools and static assets must be accessible at root without redirect
-        if ($path === '/sitemap.xml' || preg_match('#^/(_wdt|_profiler|assets|bundles|build|img|admin)(/|$)#', $path)) {
+        if ($path === '/stripe/webhook' || $path === '/health' || $path === '/sitemap.xml' || preg_match('#^/(_wdt|_profiler|assets|bundles|build|img|admin)(/|$)#', $path)) {
             return;
         }
 

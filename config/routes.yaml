@@ -12,6 +12,18 @@ sitemap:
     resource: ../src/Controller/SitemapController.php
     type: attribute
 
+health:
+    resource: ../src/Controller/HealthController.php
+    type: attribute
+
+media_upload:
+    resource: ../src/Controller/Admin/MediaItemUploadController.php
+    type: attribute
+
+stripe_webhook:
+    resource: ../src/Controller/StripeWebhookController.php
+    type: attribute
+
 root:
     resource: ../src/Controller/RootController.php
     type: attribute
