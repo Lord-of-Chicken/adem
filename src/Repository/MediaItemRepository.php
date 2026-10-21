@@ -61,10 +61,13 @@ class MediaItemRepository extends ServiceEntityRepository
     {
         $em = $this->getEntityManager();
 
-        foreach ($idToPosition as $id => $sortOrder) {
-            $mediaItem = $this->find($id);
-            if ($mediaItem !== null) {
-                $mediaItem->setSortOrder($sortOrder);
+        if ($idToPosition !== []) {
+            // Load the batch once; hydration preserves already-managed changes.
+            foreach ($this->findBy(['id' => array_keys($idToPosition)]) as $mediaItem) {
+                $id = $mediaItem->getId();
+                if ($id !== null && array_key_exists($id, $idToPosition)) {
+                    $mediaItem->setSortOrder($idToPosition[$id]);
+                }
             }
         }
 

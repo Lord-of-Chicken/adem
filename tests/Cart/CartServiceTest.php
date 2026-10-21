@@ -277,4 +277,79 @@ final class CartServiceTest extends TestCase
         $this->expectException(\UnexpectedValueException::class);
         (new CartService($stack))->getLines();
     }
+
+    /** @param list<array<string, mixed>> $lines */
+    private function serviceWithLines(array $lines): CartService
+    {
+        $session = new Session(new MockArraySessionStorage());
+        $session->set('participation_cart_v1', $lines);
+        $request = new Request();
+        $request->setSession($session);
+        $stack = new RequestStack();
+        $stack->push($request);
+        return new CartService($stack);
+    }
+
+    /** @return array{line_id: string, tier_id: string, quantity: int, donor_name: null, custom_price_cents: int|null} */
+    private function rawLine(string $id, string $tier = 'begonia_unit', int $quantity = 3, ?int $customPrice = null): array
+    {
+        return ['line_id' => $id, 'tier_id' => $tier, 'quantity' => $quantity,
+            'donor_name' => null, 'custom_price_cents' => $customPrice];
+    }
+
+    public function testManyMixedLinesPreserveUnitFlatAndCustomTotals(): void
+    {
+        $lines = [];
+        for ($i = 0; $i < 100; ++$i) {
+            $lines[] = $this->rawLine('unit-'.$i);
+            $lines[] = $this->rawLine('flat-'.$i, 'vip_20', 7);
+            $lines[] = $this->rawLine('custom-'.$i, 'free_donation', 2, 123);
+        }
+        self::assertSame(100 * (300 + 2000 + 246), $this->serviceWithLines($lines)->totalCents($this->catalog()));
+    }
+
+    public function testDuplicateIdsKeepFirstAmountAndIgnoreLaterUnknownTier(): void
+    {
+        $cart = $this->serviceWithLines([
+            $this->rawLine('same'),
+            $this->rawLine('other', 'vip_20', 5),
+            $this->rawLine('same', 'unknown', 999),
+        ]);
+        $catalog = $this->catalog();
+        self::assertSame(2600, $cart->totalCents($catalog));
+        self::assertSame(300, $cart->getLineTotal('same', $catalog));
+    }
+
+    public function testMalformedLateDuplicateIsStillRejected(): void
+    {
+        $cart = $this->serviceWithLines([$this->rawLine('same'), ['line_id' => 'same', 'quantity' => 'invalid']]);
+        $this->expectException(\UnexpectedValueException::class);
+        $cart->totalCents($this->catalog());
+    }
+
+    public function testUnknownTierInFirstOccurrenceIsRejectedEvenWithCustomAmount(): void
+    {
+        $cart = $this->serviceWithLines([$this->rawLine('first', 'unknown', 1, 100)]);
+        $this->expectException(\InvalidArgumentException::class);
+        $cart->totalCents($this->catalog());
+    }
+
+    public function testTotalReadsSessionOnceAndObservesLaterMutation(): void
+    {
+        $session = $this->createMock(\Symfony\Component\HttpFoundation\Session\SessionInterface::class);
+        $session->expects(self::exactly(2))->method('get')->with('participation_cart_v1', null)
+            ->willReturnOnConsecutiveCalls(
+                [$this->rawLine('first'), $this->rawLine('second', 'vip_20', 8)],
+                [$this->rawLine('first', 'begonia_unit', 4)],
+            );
+        $request = new Request();
+        $request->setSession($session);
+        $stack = new RequestStack();
+        $stack->push($request);
+        $cart = new CartService($stack);
+        $catalog = $this->catalog();
+        self::assertSame(2300, $cart->totalCents($catalog));
+        self::assertSame(400, $cart->totalCents($catalog));
+    }
+
 }

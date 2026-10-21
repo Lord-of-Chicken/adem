@@ -74,8 +74,14 @@ final class CartService
     public function totalCents(ParticipationCatalog $catalog): int
     {
         $total = 0;
+        $firstTotals = [];
         foreach ($this->getLines() as $line) {
-            $total += $this->getLineTotal($line['line_id'], $catalog);
+            // Preserve the first matching line when an existing session contains duplicate IDs.
+            $lineId = $line['line_id'];
+            if (!array_key_exists($lineId, $firstTotals)) {
+                $firstTotals[$lineId] = $this->calculateLineTotal($line, $catalog);
+            }
+            $total += $firstTotals[$lineId];
         }
         return $total;
     }
@@ -91,15 +97,23 @@ final class CartService
     {
         foreach ($this->getLines() as $line) {
             if ($line['line_id'] === $lineId) {
-                $tier = $catalog->require($line['tier_id']);
-                $customPrice = $line['custom_price_cents'];
-                return $customPrice !== null
-                    ? $customPrice * $line['quantity']
-                    : $catalog->lineTotalCents($tier, $line['quantity']);
+                return $this->calculateLineTotal($line, $catalog);
             }
         }
 
         return 0;
+    }
+
+    /**
+     * @param array{line_id: string, tier_id: string, quantity: int, donor_name: string|null, custom_price_cents: int|null} $line
+     */
+    private function calculateLineTotal(array $line, ParticipationCatalog $catalog): int
+    {
+        $tier = $catalog->require($line['tier_id']);
+        $customPrice = $line['custom_price_cents'];
+        return $customPrice !== null
+            ? $customPrice * $line['quantity']
+            : $catalog->lineTotalCents($tier, $line['quantity']);
     }
 
     /**

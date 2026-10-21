@@ -25,8 +25,12 @@ readonly class StripeReceiptProvider
         }
 
         $session = $this->stripe->getPaymentReceiptSession($sessionId)->toArray();
-        $intent = $this->stripe->getPaymentIntent($intentId)->toArray();
-        $charge = $this->stripe->getPaymentReceiptCharge($intentId)->toArray();
+        $paymentIntent = $this->stripe->getPaymentReceiptIntent($intentId);
+        if (!$paymentIntent->latest_charge instanceof \Stripe\Charge) {
+            throw new \UnexpectedValueException('Stripe receipt charge is not available yet.');
+        }
+        $intent = $paymentIntent->toArray();
+        $charge = $paymentIntent->latest_charge->toArray();
         $chargeId = $charge['id'] ?? null;
         $latestCharge = $intent['latest_charge'] ?? null;
         if (is_array($latestCharge)) {

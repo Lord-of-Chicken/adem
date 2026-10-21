@@ -1,0 +1,319 @@
+{
+  "backend_before": {
+    "environment": {
+      "php": "8.5.11",
+      "xdebug_mode": "off",
+      "opcache_cli": "0"
+    },
+    "cart": {
+      "10": {
+        "samples": 21,
+        "median_ms": 0.0339125,
+        "p95_ms": 0.03465,
+        "session_reads": 11,
+        "total_cents": 14469
+      },
+      "100": {
+        "samples": 21,
+        "median_ms": 2.3297708,
+        "p95_ms": 2.3451167,
+        "session_reads": 101,
+        "total_cents": 155469
+      },
+      "1000": {
+        "samples": 21,
+        "median_ms": 225.630417,
+        "p95_ms": 230.421459,
+        "session_reads": 1001,
+        "total_cents": 1565469
+      }
+    },
+    "media": {
+      "4": {
+        "samples": 21,
+        "median_ms": 1.130083,
+        "p95_ms": 1.558458,
+        "selects": 4
+      },
+      "50": {
+        "samples": 21,
+        "median_ms": 11.33125,
+        "p95_ms": 17.74825,
+        "selects": 50
+      },
+      "200": {
+        "samples": 21,
+        "median_ms": 43.908291,
+        "p95_ms": 63.268583,
+        "selects": 200
+      }
+    },
+    "database_fixture_rollback_verified": true
+  },
+  "backend_after": {
+    "environment": {
+      "php": "8.5.11",
+      "xdebug_mode": "off",
+      "opcache_cli": "0"
+    },
+    "cart": {
+      "10": {
+        "samples": 21,
+        "median_ms": 0.0053667,
+        "p95_ms": 0.0054084,
+        "session_reads": 1,
+        "total_cents": 14469
+      },
+      "100": {
+        "samples": 21,
+        "median_ms": 0.0455958,
+        "p95_ms": 0.05245,
+        "session_reads": 1,
+        "total_cents": 155469
+      },
+      "1000": {
+        "samples": 21,
+        "median_ms": 0.453167,
+        "p95_ms": 0.464083,
+        "session_reads": 1,
+        "total_cents": 1565469
+      }
+    },
+    "media": {
+      "4": {
+        "samples": 21,
+        "median_ms": 0.33225,
+        "p95_ms": 0.655,
+        "selects": 1
+      },
+      "50": {
+        "samples": 21,
+        "median_ms": 0.698167,
+        "p95_ms": 0.997792,
+        "selects": 1
+      },
+      "200": {
+        "samples": 21,
+        "median_ms": 2.030791,
+        "p95_ms": 2.22025,
+        "selects": 1
+      }
+    },
+    "database_fixture_rollback_verified": true
+  },
+  "stripe_before": {
+    "simulation": "SDK fake HTTP, 5ms per request; no real Stripe or SMTP",
+    "repetitions": 15,
+    "scenarios": [
+      {
+        "pages": 1,
+        "requests_each": [
+          4
+        ],
+        "median_ms": 25.179,
+        "p95_ms": 86.238,
+        "result": "same two verified lines, 2000 EUR cents"
+      },
+      {
+        "pages": 2,
+        "requests_each": [
+          5
+        ],
+        "median_ms": 31.714,
+        "p95_ms": 41.388,
+        "result": "same two verified lines, 2000 EUR cents"
+      }
+    ]
+  },
+  "stripe_after": {
+    "simulation": "SDK fake HTTP, 5ms per request; no real Stripe or SMTP",
+    "repetitions": 15,
+    "scenarios": [
+      {
+        "pages": 1,
+        "requests_each": [
+          3
+        ],
+        "median_ms": 19.346,
+        "p95_ms": 68.512,
+        "result": "same two verified lines, 2000 EUR cents"
+      },
+      {
+        "pages": 2,
+        "requests_each": [
+          4
+        ],
+        "median_ms": 32.372,
+        "p95_ms": 40.479,
+        "result": "same two verified lines, 2000 EUR cents"
+      }
+    ]
+  },
+  "notes": [
+    "Initial measurements before all edits; backend PHP 8.5.11 Xdebug off OPcache CLI off",
+    "Synthetic fixtures; no real Stripe/SMTP/OVH latency measured",
+    "Media times isolate SELECT/hydration on unchanged positions; changed positions validated by regression tests"
+  ],
+  "repeat_backend_before_with_memory": {
+    "environment": {
+      "php": "8.5.11",
+      "xdebug_mode": "off",
+      "opcache_cli": "0"
+    },
+    "cart": {
+      "10": {
+        "samples": 21,
+        "median_ms": 0.033075,
+        "p95_ms": 0.0341375,
+        "peak_extra_bytes": 8272,
+        "session_reads": 11,
+        "total_cents": 14469
+      },
+      "100": {
+        "samples": 21,
+        "median_ms": 2.3335875,
+        "p95_ms": 2.371775,
+        "peak_extra_bytes": 80432,
+        "session_reads": 101,
+        "total_cents": 155469
+      },
+      "1000": {
+        "samples": 21,
+        "median_ms": 223.668625,
+        "p95_ms": 228.069792,
+        "peak_extra_bytes": 793072,
+        "session_reads": 1001,
+        "total_cents": 1565469
+      }
+    },
+    "media": {
+      "4": {
+        "samples": 21,
+        "median_ms": 1.364666,
+        "p95_ms": 2.149333,
+        "peak_extra_bytes": 23440,
+        "selects": 4
+      },
+      "50": {
+        "samples": 21,
+        "median_ms": 12.686084,
+        "p95_ms": 21.071083,
+        "peak_extra_bytes": 23440,
+        "selects": 50
+      },
+      "200": {
+        "samples": 21,
+        "median_ms": 46.067208,
+        "p95_ms": 60.477375,
+        "peak_extra_bytes": 23440,
+        "selects": 200
+      }
+    },
+    "database_fixture_rollback_verified": true
+  },
+  "repeat_backend_after_with_memory": {
+    "environment": {
+      "php": "8.5.11",
+      "xdebug_mode": "off",
+      "opcache_cli": "0"
+    },
+    "cart": {
+      "10": {
+        "samples": 21,
+        "median_ms": 0.0055459,
+        "p95_ms": 0.0063709000000000005,
+        "peak_extra_bytes": 5152,
+        "session_reads": 1,
+        "total_cents": 14469
+      },
+      "100": {
+        "samples": 21,
+        "median_ms": 0.045470899999999995,
+        "p95_ms": 0.0478375,
+        "peak_extra_bytes": 51024,
+        "session_reads": 1,
+        "total_cents": 155469
+      },
+      "1000": {
+        "samples": 21,
+        "median_ms": 0.450917,
+        "p95_ms": 0.480833,
+        "peak_extra_bytes": 458032,
+        "session_reads": 1,
+        "total_cents": 1565469
+      }
+    },
+    "media": {
+      "4": {
+        "samples": 21,
+        "median_ms": 0.271292,
+        "p95_ms": 0.7025,
+        "peak_extra_bytes": 23672,
+        "selects": 1
+      },
+      "50": {
+        "samples": 21,
+        "median_ms": 0.692667,
+        "p95_ms": 0.809708,
+        "peak_extra_bytes": 34152,
+        "selects": 1
+      },
+      "200": {
+        "samples": 21,
+        "median_ms": 2.079541,
+        "p95_ms": 2.358208,
+        "peak_extra_bytes": 85576,
+        "selects": 1
+      }
+    },
+    "database_fixture_rollback_verified": true
+  },
+  "repeat_stripe_before": {
+    "simulation": "SDK fake HTTP, 5ms per request; no real Stripe or SMTP",
+    "repetitions": 15,
+    "scenarios": [
+      {
+        "pages": 1,
+        "requests_each": [
+          4
+        ],
+        "median_ms": 25.128,
+        "p95_ms": 83.991,
+        "result": "same two verified lines, 2000 EUR cents"
+      },
+      {
+        "pages": 2,
+        "requests_each": [
+          5
+        ],
+        "median_ms": 30.679,
+        "p95_ms": 31.775,
+        "result": "same two verified lines, 2000 EUR cents"
+      }
+    ]
+  },
+  "repeat_stripe_after": {
+    "simulation": "SDK fake HTTP, 5ms per request; no real Stripe or SMTP",
+    "repetitions": 15,
+    "scenarios": [
+      {
+        "pages": 1,
+        "requests_each": [
+          3
+        ],
+        "median_ms": 19.014,
+        "p95_ms": 67.418,
+        "result": "same two verified lines, 2000 EUR cents"
+      },
+      {
+        "pages": 2,
+        "requests_each": [
+          4
+        ],
+        "median_ms": 24.403,
+        "p95_ms": 25.475,
+        "result": "same two verified lines, 2000 EUR cents"
+      }
+    ]
+  }
+}

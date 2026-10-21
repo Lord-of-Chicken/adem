@@ -1,6 +1,6 @@
 <header class="site-header">
     <div class="site-header__inner">
-        <a href="{{ path('app_home') }}" class="site-brand" data-turbo="false">
+        <a href="{{ path('app_home') }}" class="site-brand" data-turbo="false" aria-label="{{ site_brand.title }}">
             {% if logoAsset %}
                 <img class="site-brand__logo" src="{{ asset(logoAsset) }}" alt="" width="128" height="128" fetchpriority="high" decoding="async">
             {% endif %}

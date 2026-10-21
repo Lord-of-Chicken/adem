@@ -80,3 +80,7 @@ Publication code fb7178b confirmée après accord explicite dépôt public ; CI 
 - Commit et push des slides/reçus sur audit/backend-2026-10-06 autorisés ; vérifier SHA distant et CI.
 - Exclure les suppressions de skills et le header préexistants, ainsi que secrets/configuration locale/récupération.
 - Aucun déploiement ; rotation SMTP par le propriétaire toujours nécessaire.
+
+## 2026-10-08 — Optimisation locale
+
+Trois goulots mesurés corrigés : panier linéaire, réordonnancement médias groupé, reçu Stripe sans requête PI redondante. Contrats sensibles et cache galerie préservés ; 183 tests/961 assertions, PHPStan10, Composer/lint/schéma valides. Mesures avant/après et limites : docs/PERFORMANCE-2026-10-08.md. Aucun commit/push/déploiement autorisé ou effectué pour ce lot.

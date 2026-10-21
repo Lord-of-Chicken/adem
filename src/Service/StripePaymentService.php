@@ -100,10 +100,16 @@ class StripePaymentService
         return $session;
     }
 
+    /** Retrieves payment and receipt data together for one consistent API response. */
+    public function getPaymentReceiptIntent(string $paymentIntentId): PaymentIntent
+    {
+        return PaymentIntent::retrieve(['id' => $paymentIntentId, 'expand' => ['latest_charge']]);
+    }
+
     /** Retrieves the real Stripe receipt without changing the customer's receipt destination. */
     public function getPaymentReceiptCharge(string $paymentIntentId): \Stripe\Charge
     {
-        $intent = PaymentIntent::retrieve(['id' => $paymentIntentId, 'expand' => ['latest_charge']]);
+        $intent = $this->getPaymentReceiptIntent($paymentIntentId);
         if (!$intent->latest_charge instanceof \Stripe\Charge) {
             throw new \UnexpectedValueException('Stripe receipt charge is not available yet.');
         }

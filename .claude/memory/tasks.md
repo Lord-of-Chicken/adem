@@ -26,3 +26,7 @@ Publication code fb7178b confirmée après accord explicite dépôt public ; CI 
 ## 2026-10-07 — Slides dev et reçus
 
 Quatre slides publics de production repris dans le dev, anciennes photos retirées avec récupération. Reçus détaillés au site : notification durable, transaction atomique avec paiement, reprise et concurrence testées. Validation finale 172 tests/718 assertions, PHPStan10, qualité globale. Commit/push maintenant autorisés ; pas de déploiement. Voir docs/DEV-SLIDES-RECEIPTS-2026-10-07.md.
+
+## 2026-10-08 — Optimisation locale
+
+Trois goulots mesurés corrigés : panier linéaire, réordonnancement médias groupé, reçu Stripe sans requête PI redondante. Contrats sensibles et cache galerie préservés ; 183 tests/961 assertions, PHPStan10, Composer/lint/schéma valides. Mesures avant/après et limites : docs/PERFORMANCE-2026-10-08.md. Aucun commit/push/déploiement autorisé ou effectué pour ce lot.

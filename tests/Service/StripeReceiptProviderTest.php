@@ -10,7 +10,6 @@ use App\Service\StripePaymentService;
 use App\Service\StripeReceiptProvider;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Stripe\Charge;
 use Stripe\Checkout\Session;
 use Stripe\PaymentIntent;
 
@@ -51,7 +50,8 @@ final class StripeReceiptProviderTest extends TestCase
         yield 'wrong currency' => ['intent', ['currency' => 'usd']];
         yield 'partial payment' => ['intent', ['amount_received' => 1200]];
         yield 'pending intent' => ['intent', ['status' => 'processing']];
-        yield 'different charge' => ['intent', ['latest_charge' => 'ch_other']];
+        yield 'unexpanded charge' => ['intent', ['latest_charge' => 'ch_other']];
+        yield 'missing charge' => ['intent', ['latest_charge' => null]];
         yield 'uncaptured charge' => ['charge', ['captured' => false]];
         yield 'partial captured amount' => ['charge', ['amount_captured' => 1200]];
         yield 'failed charge' => ['charge', ['status' => 'failed']];
@@ -143,8 +143,10 @@ final class StripeReceiptProviderTest extends TestCase
         }
         $stripe = $this->createStub(StripePaymentService::class);
         $stripe->method('getPaymentReceiptSession')->willReturn(Session::constructFrom($objects['session']));
-        $stripe->method('getPaymentIntent')->willReturn(PaymentIntent::constructFrom($objects['intent']));
-        $stripe->method('getPaymentReceiptCharge')->willReturn(Charge::constructFrom($objects['charge']));
+        if ($objects['intent']['latest_charge'] === 'ch_fixture') {
+            $objects['intent']['latest_charge'] = $objects['charge'] + ['object' => 'charge'];
+        }
+        $stripe->method('getPaymentReceiptIntent')->willReturn(PaymentIntent::constructFrom($objects['intent']));
         return new StripeReceiptProvider($stripe);
     }
 }

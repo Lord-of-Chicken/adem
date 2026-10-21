@@ -29,3 +29,7 @@ Frontend et modifications préexistantes exclus. Deux extensions PHPStan dev, ni
 ## 2026-10-07 — Reçus de paiement
 
 Notification unique par commande dans payment_receipt, créée atomiquement avec le paiement ; SMTP après commit et reprise explicite par commande. Aucun envoi SMTP avant commit ; données payeur relues chez Stripe plutôt que dupliquées dans la notification. Un crash après acceptation SMTP peut doubler un envoi, limite documentée. Activation dev seulement (.env.dev), défaut général et tests désactivés.
+
+## 2026-10-08 — Optimisations ciblées et contrats conservés
+
+Mesurer avant/après puis retenir uniquement trois goulots confirmés. Panier : helper commun et première occurrence par line_id pour garder le comportement historique en cas de doublons ; mémo uniquement pendant un calcul, jamais entre appels/utilisateurs. Médias : findBy sur le lot pour garder entités/hydratation/flush/cache ; IDs inconnus ignorés et batch vide garde son flush. Stripe : PaymentIntent développé unique, méthode Charge publique conservée, mêmes validations. Pas de migrations/cache durable ni modifications visuelles ; pics mémoire batch augmentés temporairement contre forte réduction SQL, chiffres dans docs/PERFORMANCE-2026-10-08.md.
