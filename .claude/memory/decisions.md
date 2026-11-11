@@ -1,23 +1,9 @@
 # Décisions techniques — Ruelle d'Adem
 
-## 2026-06-15 — Pilotage par skills projet
-- `.claude/CLAUDE.md` et les skills `.claude/skills/` font foi : architecture **MVC classique** (contrôleurs fins, logique en Services, modules métier `src/Cart` + `src/Participation`), style de réponse direct (code d'abord, pas de scope creep), Definition of Done (`strict_types`, PHPStan, tests pertinents, pas d'entités exposées en sortie).
-- Mémoire locale `.claude/memory/` utilisée pour tracer tâches/décisions/état après changements significatifs.
-
-## 2026-06-15 — Sécurité paiement Stripe
-- Webhook durci : vérification signature + **idempotence** (table `stripe_processed_event`) + **validation du montant** (`session.amount_total` vs `Order.totalCents`) avant passage en `paid`. Anti-falsification du panier.
-- Plafonnement serveur des montants libres (1 €–100 000 €), `donor_name` ≤ 255.
-- Statuts d'échec gérés : `payment_intent.payment_failed` / `checkout.session.expired` → `failed`.
-
-## 2026-06-15 — Dépendances & en-têtes
-- Mise à jour CVE : symfony/security-http, http-foundation, routing, easyadmin, twig. `composer audit` propre.
-- `SecurityHeadersListener` : X-Frame-Options, X-Content-Type-Options, Referrer-Policy, HSTS (si HTTPS), CSP (Stripe/GA/Fonts autorisés, `'unsafe-inline'` assumé tant que les scripts inline existent).
-
-## 2026-06-16 — Skills projet adaptés au site
-- Les fiches `.claude/skills/*.md` étaient des vestiges « Animaux Perdu » (DDD/CQRS, AnimalReport, pgvector/CLIP).
-- Supprimées (features inexistantes) : `ai-vector.md`, `search.md`, `state-machine.md`.
-- `architecture.md` réécrit : MVC classique (PAS DDD/CQRS), domaine Order/Tier/Cart/Stripe.
-- 12 fiches adaptées (exemples AnimalReport→Order/ParticipationTier, PostgreSQL→MySQL, etc.). Plus aucun résidu de l'ancien projet.
-
-## Note historique
-Ce dépôt a hébergé un projet antérieur (« Animaux Perdu ») jusqu'au commit du 2026-05-14, puis a été reconstruit en « Ruelle d'Adem ». Les anciennes décisions (API-First, modules feature-based, PostGIS/pgvector) ne s'appliquent plus.
+- **Architecture** : MVC classique (pas DDD/CQRS), contrôleurs fins, modules `src/Cart` et `src/Participation`. Le dépôt a hébergé « Animaux Perdu » jusqu'au 2026-05-14 : ses anciennes décisions ne s'appliquent plus.
+- **Stripe (2026-06-15)** : signature + idempotence (`stripe_processed_event`) + `amount_total` vs `Order.totalCents` ; montants libres 1 €–100 000 €, `donor_name` ≤ 255 ; échecs → `failed`.
+- **En-têtes (2026-06-15)** : `SecurityHeadersListener` (X-Frame-Options, nosniff, Referrer-Policy, HSTS, CSP avec `'unsafe-inline'` assumé tant que des scripts inline existent).
+- **Tiers** : source de vérité en base (4c51e1d), plus le YAML.
+- **Audit backend (2026-10-06)** : PHPStan 10 sans ignorances (extensions doctrine/symfony), GD requis pour les uploads, tests sur MySQL jetable avec mappings plutôt que migrations historiques, CI sans déploiement.
+- **Reçus (2026-10-07)** : une notification par commande dans `payment_receipt`, créée dans la transaction du paiement ; SMTP après commit, reprise par commande ; données payeur relues chez Stripe ; doublon possible après crash SMTP (documenté) ; activation dev seulement.
+- **Optimisations (2026-10-08)** : mesurer avant/après, trois goulots retenus (panier, médias, reçu Stripe) ; contrats, cache galerie 3600 s et visuels inchangés ; pas de cache durable ni de migration. Preuves : `docs/PERFORMANCE-2026-10-08.md`.

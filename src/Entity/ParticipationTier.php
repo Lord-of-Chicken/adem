@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Repository\ParticipationTierRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Represents a participation tier with pricing and quantity rules.
@@ -17,36 +18,52 @@ class ParticipationTier
 {
     #[ORM\Id]
     #[ORM\Column(length: 32)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 32)]
     private string $id;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private string $title;
 
     #[ORM\Column(type: Types::TEXT)]
     private string $detail;
 
     #[ORM\Column(name: 'price_label', length: 64)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 64)]
     private string $priceLabel;
 
     #[ORM\Column(name: 'price_unit', length: 8)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 8)]
     private string $priceUnit = '€';
 
     #[ORM\Column(name: 'price_suffix', length: 64, nullable: true)]
     private ?string $priceSuffix = null;
 
     #[ORM\Column(name: 'unit_price_eur', type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Assert\Regex(pattern: '/^\\d{1,8}(?:\\.\\d{1,2})?$/')]
+    #[Assert\PositiveOrZero]
     private string $unitPriceEur;
 
     #[ORM\Column(name: 'priced_per_unit')]
     private bool $pricedPerUnit = false;
 
     #[ORM\Column(name: 'min_qty')]
+    #[Assert\Positive]
+    #[Assert\LessThanOrEqual(2147483647)]
     private int $minQty = 1;
 
     #[ORM\Column(name: 'max_qty')]
+    #[Assert\Positive]
+    #[Assert\LessThanOrEqual(2147483647)]
+    #[Assert\GreaterThanOrEqual(propertyPath: "minQty")]
     private int $maxQty = 1;
 
     #[ORM\Column(name: 'tier_group', length: 16)]
+    #[Assert\Choice(choices: ['standard', 'vip'])]
     private string $tierGroup = 'standard';
 
     #[ORM\Column(name: 'donor_field')]

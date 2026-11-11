@@ -55,9 +55,16 @@ final class ContactController extends AbstractController
             }
 
             $data = $form->getData();
+            if (!is_array($data) || !isset($data['name'], $data['email'], $data['message'])
+                || !is_string($data['name']) || !is_string($data['email']) || !is_string($data['message'])) {
+                throw new \UnexpectedValueException('Invalid contact form data.');
+            }
 
             try {
                 $contactEmail = $this->getParameter('app.contact_email');
+                if (!is_string($contactEmail)) {
+                    throw new \LogicException('Contact sender must be a string.');
+                }
 
                 $email = (new Email())
                     ->from($contactEmail)
@@ -80,7 +87,6 @@ final class ContactController extends AbstractController
                 $logger->error('Contact form mail failure', [
                     'sender_email' => PiiMasker::maskEmail(\is_string($data['email'] ?? null) ? $data['email'] : null),
                     'error_class'  => $e::class,
-                    'error_message' => $e->getMessage(),
                 ]);
                 $this->addFlash('error', $translator->trans('contact.error', ['%error%' => '']));
             }

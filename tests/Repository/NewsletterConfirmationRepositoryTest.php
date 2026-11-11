@@ -20,6 +20,22 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 final class NewsletterConfirmationRepositoryTest extends KernelTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        self::bootKernel();
+        $this->ensureDatabase();
+        $this->em()->getConnection()->beginTransaction();
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->em()->getConnection()->isTransactionActive()) {
+            $this->em()->getConnection()->rollBack();
+        }
+        parent::tearDown();
+    }
+
     private function em(): EntityManagerInterface
     {
         /** @var ManagerRegistry $registry */
@@ -53,9 +69,6 @@ final class NewsletterConfirmationRepositoryTest extends KernelTestCase
      */
     public function testDeleteExpiredUnconfirmedKeepsConfirmedAndFresh(): void
     {
-        self::bootKernel();
-        $this->ensureDatabase();
-
         $em = $this->em();
         // Isolate: start from an empty table.
         $em->createQuery('DELETE FROM '.NewsletterConfirmation::class.' nc')->execute();
@@ -89,9 +102,6 @@ final class NewsletterConfirmationRepositoryTest extends KernelTestCase
      */
     public function testDeleteExpiredUnconfirmedKeepsFreshToken(): void
     {
-        self::bootKernel();
-        $this->ensureDatabase();
-
         $em = $this->em();
         $em->createQuery('DELETE FROM '.NewsletterConfirmation::class.' nc')->execute();
 

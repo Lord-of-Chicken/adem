@@ -1,92 +1,47 @@
-# Tests — Ruelle d'Adem
+# Tests backend — Ruelle d’Adem
 
-Infra de test PHPUnit pour le projet (Symfony 8 / PHP ≥ 8.4).
+Symfony 8.1, PHP ≥ 8.4, PHPUnit 13.3, MySQL 8.4, PHPStan niveau 10. Frontend exclu de l’audit du 6 octobre 2026.
 
-## Stack
-
-- **PHPUnit 13.1** (`phpunit/phpunit`)
-- **Symfony BrowserKit + CssSelector** (tests fonctionnels `WebTestCase`)
-- Pas de Pest, pas de Panther (à ajouter seulement si justifié)
-
-## Fichiers de configuration
-
-| Fichier | Rôle |
-|---------|------|
-| `phpunit.dist.xml` | Config PHPUnit standard. Bootstrap `tests/bootstrap.php`, testsuite `tests/`, `APP_ENV=test`. |
-| `tests/bootstrap.php` | Charge l'autoloader + `.env` (via `Dotenv::bootEnv`). |
-| `.env.test` | Variables d'env du `test` : `DATABASE_URL` pointant sur le MySQL Docker. |
-
-> ⚠️ `config/packages/doctrine.yaml` ajoute `dbname_suffix: '_test'` en env `test`.
-> La `DATABASE_URL` de `.env.test` cible donc la base **`ruellenadem`** ; Doctrine y ajoute
-> `_test` → la base réelle utilisée est **`ruellenadem_test`**. Ne pas remettre le suffixe à la main.
-
-## Prérequis
-
-1. **Docker MySQL** démarré :
-   ```bash
-   docker compose up -d        # conteneur ruelledadem-database-1 (port 3306)
-   docker compose ps           # vérifier "healthy"
-   ```
-2. **Base de test** créée + migrations appliquées :
-   ```bash
-   # L'utilisateur applicatif `user` n'a pas le droit CREATE DATABASE :
-   # créer la base et donner les droits via root (mot de passe par défaut !ChangeMe!).
-   docker exec ruelledadem-database-1 \
-     mysql -uroot -p'!ChangeMe!' \
-     -e "CREATE DATABASE IF NOT EXISTS ruellenadem_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-         GRANT ALL PRIVILEGES ON \`ruellenadem_test\`.* TO 'user'@'%'; FLUSH PRIVILEGES;"
-
-   php bin/console --env=test doctrine:migrations:migrate -n
-   ```
-   (Une fois les droits accordés, `php bin/console --env=test doctrine:database:create --if-not-exists`
-   fonctionne aussi.)
-
-## Lancer les tests
+## Isolation et préparation
+Ne jamais pointer les tests vers une base de production. Doctrine ajoute `_test${TEST_TOKEN}` au nom de base de DATABASE_URL. Choisir un suffixe unique, créer cette nouvelle base avec droits dédiés, puis :
 
 ```bash
-# Toute la suite
-vendor/bin/phpunit
-
-# Uniquement les tests unitaires (aucune DB requise — toujours exécutables)
-vendor/bin/phpunit tests/Cart
-
-# Un seul fichier
-vendor/bin/phpunit tests/Controller/PaymentControllerTest.php
+export APP_ENV=test TEST_TOKEN=_ci
+php bin/console doctrine:schema:create --env=test
+php bin/console app:seed-participation-tiers --env=test
+bash scripts/quality.sh
 ```
 
-### Sans base de données
+Le schéma est créé uniquement dans une base neuve. Les migrations historiques contiennent l’ancien projet et des drops ; aucune exécution automatique pendant les tests. SMTP est forcé à null en test. Stripe utilise des doubles et des signatures de fixture, aucune vraie clé ni API distante.
+Le test bootstrap refuse un environnement différent de test. Les fixtures HTTP/repositories utilisent des transactions avec rollback. Les tests de concurrence ont besoin de commits visibles à deux processus MySQL : ils utilisent leurs propres identifiants et nettoient uniquement ces fixtures. Ne pas paralléliser plusieurs suites sur la même base.
 
-Les tests fonctionnels (`WebTestCase`) détectent l'absence de connexion DB et
-se **marquent `skipped`** proprement (méthode `ensureDatabase()`), sans faire
-échouer la suite. Les tests unitaires `CartService`, eux, tournent toujours.
+Validation locale de l’audit : TEST_TOKEN=_audit_20261006, base ruellenadem_test_audit_20261006. Les données dev/prod sont préservées.
 
-## Couverture actuelle
+## Commandes
 
-| Test | Type | DB | Ce qui est vérifié |
-|------|------|----|--------------------|
-| `tests/Cart/CartServiceTest.php` | Unitaire | non | `totalCents()` avec don libre (`custom_price_cents`) ; panier mixte tier + don ; bornes `addLine()` (prix libre < 100 ou > 10 000 000 → `InvalidArgumentException`) ; `donor_name` > 255 → exception ; tier inconnu → exception ; valeurs aux bornes acceptées. |
-| `tests/Controller/SecurityControllerTest.php` | Fonctionnel | oui | Régression Phase 1 : reset password avec `resetTokenExpiresAt = null` → pas de 500, redirection propre vers la page de demande. |
-| `tests/Controller/PaymentControllerTest.php` | Fonctionnel | oui | Anti-IDOR : `/payment/success?session_id=` inexistant → pas de 500, redirection vers le panier, **panier non vidé**. |
-| `tests/Controller/AboutControllerTest.php` | Fonctionnel | oui | Page « Qui est Adem ? » répond 200 (URL générée via le routeur, routes localisées). |
+```bash
+bash scripts/quality.sh
+XDEBUG_MODE=coverage vendor/bin/phpunit --fail-on-skipped --coverage-clover coverage/clover.xml --coverage-text=coverage/summary.txt
+composer install --prefer-dist --no-interaction --no-scripts
+```
 
-## Conventions
+La chaîne vérifie YAML (app, traductions, CI, Compose), conteneur, mappings et schéma, PHPStan, PHPUnit sans skips/dépréciations, Composer strict/audit et syntaxe shell. `docker compose config --quiet` est un contrôle local complémentaire si Docker est disponible. La CI construit son propre MySQL et produit la couverture et une archive d’installation sans secrets. Elle ne déploie rien.
 
-- Routes **localisées** (`/{_locale}` → `/fr`, `/en`, `/nl`) : générer les URLs via
-  `router->generate('route_name')` plutôt que de coder un chemin en dur.
-- Tests unitaires du domaine : pas de kernel, pas de Doctrine. Session via
-  `MockArraySessionStorage`, catalogue réel (lecture YAML, sans I/O DB).
-- Noms de tests décrivant le comportement (`testResetWithNullExpiry...`).
+PHPStan analyse src, tests, migrations, configuration PHP, points d’entrée bin/public et importmap au niveau 10, avec extensions Doctrine/Symfony. Aucune baseline ni ignoreErrors ; seule exclusion src/var (ancien cache généré). Le chargeur Doctrine utilise la métadonnée ORM sans requête DB ; cache:warmup dev fournit le conteneur compilé pour l’analyse. Les extensions sont uniquement des dépendances de développement.
 
-## Reste à couvrir (TODO)
+## Comportements couverts
+- Catalogue/panier : prix forfaitaire et unitaire, arrondis, dons libres/bornes, quantités, consentement donneur, sessions invalides, mutations CSRF.
+- Paiement : payload SDK, variable URL Stripe littérale, timeout simulé, conservation panier, réutilisation courte checkout, retour lié à la session et au panier payé, événements signés, devise/montant, rejeu, échec partiel et reprise, deux processus concurrents MySQL.
+- Identité : inscription/validation, connexion/refus, permissions utilisateur/admin, reset expiré/consommé, réponse uniforme après échec mail, modification rôle interdite, changement mot de passe et anonymisation des données du compte/newsletter/commandes.
+- Newsletter : double opt-in, expiration, confirmation/rejeu, désinscription par lien et profil, révocation pending, échec transport, purge.
+- Médias : validation image réelle, refus PHP/SVG/corruption/taille, stockage aléatoire, cache après écriture ORM, réordonnancement validé sans écriture partielle, actions admin protégées.
+- Persistance/commandes : pagination/filtrage, mise à niveau hash, isolation propriétaire commande, admin upsert/refus, seed formules et galerie, chemins médias répétables.
+- Exploitation : santé 200/503 sans fuite, masquage logs, archive runtime sans secrets/refus overwrite, refus de déploiement implicite/partiel. Sauvegarde/restauration locale documentées dans l’audit.
 
-- **Webhook Stripe** (`StripeWebhookController`) : vérification de signature,
-  idempotence (`stripe_processed_event`), contrôle `amount_total === Order.totalCents`,
-  passage `pending → paid` / `failed`.
-- **Formulaires** : `ResetPasswordRequestFormType`, `ResetPasswordFormType`,
-  contact, newsletter (validation, soumission, flux complet).
-- **`ParticipationCatalog`** : tests unitaires dédiés (`translateTier`,
-  `getTranslatedTiers`, `lineTotalCents`, `formatEurosFromCents`).
-- **CartService** : `updateQuantity` (clamp min/max), `removeLine`, fusion de
-  lignes identiques, normalisation du `donor_name` selon `donor_field`.
-- **Flux de paiement** complet (checkout → succès) avec Order persistée réelle.
-- **i18n** : cohérence des routes/traductions FR/EN/NL.
+## Limites
+Un pourcentage ne prouve pas une couverture métier complète. Aucun paiement Stripe réel, SMTP réel, déploiement, migration historique, cron/worker distant ni alerte n’est validé par ces tests. Les configurations de champs et interfaces EasyAdmin ne sont pas exhaustivement exercées. Les tests de reprise ne remplacent pas un rapprochement Stripe complet en staging, ni les tests de charge.
+Validation du 6 octobre : 128 tests / 567 assertions, couverture 89,27 % lignes et 73,08 % méthodes ; résultats précis et risques : [AUDIT-BACKEND-2026-10-06.md](AUDIT-BACKEND-2026-10-06.md). Voir également ../DEPLOYMENT.md.
+
+## Complément dev — 7 octobre 2026
+
+Validation locale de la galerie et des reçus : **172 tests / 718 assertions**, PHPStan 10 sans erreur, qualité globale et schémas dev/test validés. Base isolée `ruellenadem_test_audit_20261006`, `TEST_TOKEN=_audit_20261006`. Envoi externe désactivé en test ; API Stripe et SMTP simulés, concurrence réelle à deux processus. Voir `DEV-SLIDES-RECEIPTS-2026-10-07.md` pour les limites et l’activation SMTP : connexion/authentification OVH vérifiées, réception du reçu non vérifiée.

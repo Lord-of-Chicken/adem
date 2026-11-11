@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\MediaItem;
+use App\Service\MediaUploadService;
+use Symfony\Component\Validator\Constraints\Image;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -23,6 +25,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class MediaItemCrudController extends AbstractCrudController
 {
+    public function __construct(private readonly MediaUploadService $uploads) {}
+
     public static function getEntityFqcn(): string
     {
         return MediaItem::class;
@@ -50,6 +54,7 @@ class MediaItemCrudController extends AbstractCrudController
                 ->setFormType(FileType::class)
                 ->setFormTypeOptions([
                     'mapped' => false,
+                    'constraints' => [new Image(maxSize: 5 * 1024 * 1024, mimeTypes: ['image/jpeg', 'image/png', 'image/webp'], maxPixels: 40_000_000, detectCorrupted: true)],
                     'required' => $pageName === Crud::PAGE_NEW,
                     'attr' => [
                         'accept' => 'image/*',
@@ -80,21 +85,27 @@ class MediaItemCrudController extends AbstractCrudController
             ->add(Crud::PAGE_EDIT, $editImageAction);
     }
 
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        $this->storeFile($entityInstance);
+        parent::updateEntity($entityManager, $entityInstance);
+    }
+
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        $this->storeFile($entityInstance);
+        parent::persistEntity($entityManager, $entityInstance);
+    }
+
+    private function storeFile(MediaItem $entityInstance): void
     {
         $request = $this->getContext()?->getRequest();
         $files = $request?->files->get('MediaItem');
         $file = is_array($files) ? ($files['file'] ?? null) : null;
 
-        if ($file instanceof UploadedFile && $entityInstance instanceof MediaItem) {
-            $fileName = uniqid('', true) . '.' . $file->guessExtension();
-
-            $destination = $this->getParameter('kernel.project_dir') . '/public/img/ruelle/';
-            $file->move($destination, $fileName);
-
-            $entityInstance->setAssetPath('img/ruelle/' . $fileName);
+        if ($file instanceof UploadedFile) {
+            $entityInstance->setAssetPath($this->uploads->store($file));
         }
 
-        parent::persistEntity($entityManager, $entityInstance);
     }
 }

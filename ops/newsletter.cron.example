@@ -1,0 +1,3 @@
+# Example only: install after checking server paths, timezone, user, env and alert routing.
+# Daily Europe/Brussels time; protect against overlapping runs with flock.
+15 3 * * * www-data cd /var/www/adem/current && APP_ENV=prod APP_DEBUG=0 /usr/bin/flock -n /var/www/adem/shared/newsletter.lock /usr/bin/php bin/console app:newsletter:purge-expired >> /var/www/adem/shared/log/newsletter-cron.log 2>&1

@@ -1,0 +1,52 @@
+name: Backend checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: ci-only-password
+          MYSQL_DATABASE: ruellenadem_test_ci
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    env:
+      APP_ENV: test
+      APP_SECRET: isolated-ci-fixture
+      DATABASE_URL: mysql://root:ci-only-password@127.0.0.1:3306/ruellenadem?serverVersion=8.4.0&charset=utf8mb4
+      TEST_TOKEN: _ci
+      STRIPE_SECRET_KEY: sk_test_fixture
+      STRIPE_PUBLISHABLE_KEY: pk_test_fixture
+      STRIPE_WEBHOOK_SECRET: whsec_audit_fixture
+      MAILER_DSN: null://null
+      DEFAULT_URI: http://localhost
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: ctype, iconv, intl, mbstring, pdo_mysql, gd, sodium
+          coverage: xdebug
+          tools: composer:v2
+      - run: composer install --prefer-dist --no-interaction --no-scripts
+      # Fresh isolated schema: historical migrations include destructive statements and old-project tables.
+      - run: php bin/console doctrine:schema:create --env=test
+      - run: php bin/console app:seed-participation-tiers --env=test
+      - run: bash scripts/quality.sh
+      - run: XDEBUG_MODE=coverage vendor/bin/phpunit --fail-on-skipped --coverage-clover coverage/clover.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-coverage
+          path: coverage/
+      - run: bash scripts/package.sh /tmp/adem-release.tar.gz

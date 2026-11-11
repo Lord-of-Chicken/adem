@@ -187,7 +187,11 @@ final class ParticipationCatalog
      */
     public static function eurToCents(string|float $eur): int
     {
-        return (int) round((float) $eur * 100);
+        if (!is_numeric($eur) || !is_finite((float) $eur)) {
+            throw new \InvalidArgumentException('Invalid monetary amount.');
+        }
+        // Round EUR first: 1.005 * 100 can be 100.49999999999999 in binary floating point.
+        return (int) round(round((float) $eur, 2) * 100);
     }
 
     /**

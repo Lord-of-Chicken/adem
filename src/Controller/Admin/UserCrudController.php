@@ -86,7 +86,8 @@ class UserCrudController extends AbstractCrudController
         $request = $context->getRequest();
         // EasyAdmin form name is "User"; pull the unmapped password field directly.
         $payload = $request->request->all('User');
-        $plain = $payload['password']['first'] ?? null;
+        $password = $payload['password'] ?? null;
+        $plain = is_array($password) ? ($password['first'] ?? null) : null;
         if (\is_string($plain) && $plain !== '') {
             $user->setPassword($this->passwordHasher->hashPassword($user, $plain));
         }

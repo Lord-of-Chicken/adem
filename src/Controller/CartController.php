@@ -63,7 +63,7 @@ final class CartController extends AbstractController
             $tier = $catalog->translateTier($catalog->require($line['tier_id']), $translator);
 
             // Calcul du total de la ligne (Don Libre ou Standard)
-            if (isset($line['custom_price_cents']) && $line['custom_price_cents'] !== null) {
+            if ($line['custom_price_cents'] !== null) {
                 $lineTotal = $line['custom_price_cents'] * $line['quantity'];
             } else {
                 $lineTotal = $catalog->lineTotalCents($tier, $line['quantity']);

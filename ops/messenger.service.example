@@ -1,0 +1,15 @@
+# Not installed or enabled. Needed only when Chat/Sms messages are actually dispatched.
+[Unit]
+Description=Adem Messenger worker
+After=network.target
+[Service]
+User=www-data
+WorkingDirectory=/var/www/adem/current
+Environment=APP_ENV=prod APP_DEBUG=0
+ExecStart=/usr/bin/php bin/console messenger:consume async --time-limit=3600 --memory-limit=128M
+Restart=always
+RestartSec=10
+NoNewPrivileges=true
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target

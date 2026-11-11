@@ -28,7 +28,7 @@ final class TwigGlobalsSubscriber implements EventSubscriberInterface
     /**
      * Gets the subscribed events.
      *
-     * @return array<string, string|array> The subscribed events
+     * @return array<string, array{string, int}> The subscribed events
      */
     public static function getSubscribedEvents(): array
     {

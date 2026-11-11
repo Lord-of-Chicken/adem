@@ -30,3 +30,6 @@
   n'est câblé qu'en `when@prod` ; en dev/test le cache est un no-op (ArrayAdapter
   par requête). Invalidation automatique sur save/remove/updateSortOrders via
   `Configuration::getResultCache()->deleteItem('media_published')`.
+
+## 2026-10-08 — Mesures backend
+Panier O(N), réordonnancement médias en un SELECT, appel Stripe redondant retiré (183 tests, PHPStan 10) : `docs/PERFORMANCE-2026-10-08.md`. Photos, fontes, styles, templates et cache galerie inchangés ; autres pistes SQL/index non retenues sans mesures ; perf OVH non mesurée.

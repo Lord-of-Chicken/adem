@@ -47,6 +47,15 @@ class NewsletterConfirmationRepository extends ServiceEntityRepository
         }
     }
 
+    public function revokePendingForEmail(string $email): void
+    {
+        $this->createQueryBuilder('nc')->update()
+            ->set('nc.expiresAt', ':expired')->where('nc.email = :email')
+            ->andWhere('nc.confirmedAt IS NULL')
+            ->setParameter('expired', new \DateTimeImmutable('-1 second'))
+            ->setParameter('email', $email)->getQuery()->execute();
+    }
+
     /**
      * Deletes expired, never-confirmed tokens (GDPR data minimisation).
      *

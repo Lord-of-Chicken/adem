@@ -13,18 +13,20 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Form type for user registration.
  */
+/** @extends AbstractType<User> */
 final class RegistrationFormType extends AbstractType
 {
     /**
      * Builds the form.
      *
-     * @param FormBuilderInterface $builder The form builder
+     * @param FormBuilderInterface<User|null> $builder The form builder
      * @param array<string, mixed> $options The options
      * @return void
      */
@@ -35,11 +37,13 @@ final class RegistrationFormType extends AbstractType
                 'label' => 'registration.form.first_name',
                 'required' => false,
                 'attr' => ['autocomplete' => 'given-name'],
+                'constraints' => [new Length(max: 100)],
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'registration.form.last_name',
                 'required' => false,
                 'attr' => ['autocomplete' => 'family-name'],
+                'constraints' => [new Length(max: 100)],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'registration.form.email',
@@ -47,6 +51,7 @@ final class RegistrationFormType extends AbstractType
                 'constraints' => [
                     new NotBlank(message: 'Veuillez entrer votre e-mail.'),
                     new Email(message: 'Veuillez entrer une adresse e-mail valide.'),
+                    new Length(max: 180),
                 ],
             ])
             ->add('newsletter', CheckboxType::class, [
