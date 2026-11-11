@@ -1,80 +1,11 @@
-# Security TODO — Phase 0 (durcissement)
+# Security TODO — Ruelle d'Adem
 
-> NE PAS exécuter automatiquement. Actions manuelles à réaliser par un humain avec accès aux vrais secrets.
+> Actions manuelles (humain, vrais secrets). Ne rien exécuter automatiquement.
 
-## 1. Migrer les secrets prod vers le Symfony Secrets Manager
-
-Ne pas garder les secrets de production en clair dans `.env.production`.
-Utiliser le vault chiffré de Symfony :
-
-```bash
-# Générer les clés du vault prod (une seule fois)
-php bin/console secrets:generate-keys --env=prod
-
-# Définir chaque secret (valeur saisie interactivement, jamais en clair dans le shell)
-php bin/console secrets:set APP_SECRET --env=prod
-php bin/console secrets:set DATABASE_URL --env=prod
-php bin/console secrets:set MAILER_DSN --env=prod
-php bin/console secrets:set STRIPE_SECRET_KEY --env=prod
-php bin/console secrets:set STRIPE_WEBHOOK_SECRET --env=prod
-php bin/console secrets:set STRIPE_PUBLISHABLE_KEY --env=prod
-```
-
-- Committer UNIQUEMENT `config/secrets/prod/*.encrypt.public.php` et les `*.*.php` chiffrés.
-- La clé privée `config/secrets/prod/prod.decrypt.private.php` reste hors Git (déjà gitignorée) et est déployée hors-source (variable d'env / CI secret).
-
-## 2. Régénérer les clés Stripe LIVE si `.env.production` a pu fuiter
-
-Si `.env.production` (ou tout fichier contenant des secrets live) a pu être exposé
-(commit accidentel, partage, fuite) :
-
-- Stripe Dashboard → Developers → API keys → **Roll** la Secret Key live.
-- Régénérer le **Webhook signing secret** des endpoints live concernés.
-- Mettre à jour les valeurs dans le Secrets Manager (étape 1), pas dans le fichier.
-- Vérifier l'historique Git : `git log -p -- .env.production` (doit être vide / inexistant).
-  Si présent dans l'historique, purger (git filter-repo / BFG) ET considérer les clés
-  comme compromises → roll obligatoire.
-
-## 3. Vérifier le .gitignore des fichiers d'environnement
-
-Déjà couvert par `.gitignore` (vérifié) :
-
-```
-.env.local
-.env.*.local
-.env.production
-.env.local.php
-.env.*.php
-```
-
-À valider en plus :
-
-```bash
-# Aucun fichier d'env sensible ne doit être suivi par Git
-git ls-files | grep -E '^\.env(\.|$)' | grep -vE '\.env$|\.env\.dev$|\.env\.test$'
-# (doit ne rien retourner)
-
-git status --ignored | grep -E '\.env\.(local|production)'
-# (doit apparaître comme "ignored")
-```
-
-- `.env` (valeurs par défaut non sensibles) peut rester versionné.
-- Tout secret réel doit vivre dans `.env.local` / `.env.production` (gitignorés)
-  ou, mieux, dans le Secrets Manager (étape 1).
-
-## Statut
-
-- [~] **Secrets Manager prod INITIALISÉ** (2026-06-16) : keypair sodium généré
-  (`config/secrets/prod/` — clé publique committée, clé privée gitignorée + perms 600).
-  Vault vide. **Reste à faire (humain, valeurs réelles)** :
-  - `php bin/console secrets:set APP_SECRET --env=prod` (puis DATABASE_URL, MAILER_DSN,
-    STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PUBLISHABLE_KEY) avec les vraies valeurs.
-  - Déployer `config/secrets/prod/prod.decrypt.private.php` hors-source (serveur/CI), JAMAIS dans git.
-    Idéalement la régénérer sur le serveur prod (la clé privée a été générée sur la machine de dev).
-- [ ] Roll des clés Stripe live (si fuite suspectée)
-- [ ] Audit historique Git pour fichiers d'env
-
----
+## Secrets prod
+- [~] Symfony Secrets Manager prod initialisé (2026-06-16) : clé publique committée dans `config/secrets/prod/`, clé privée gitignorée. **Vault vide** : `secrets:set` pour APP_SECRET, DATABASE_URL, MAILER_DSN, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PUBLISHABLE_KEY (`--env=prod`, valeurs saisies interactivement). Déployer `prod.decrypt.private.php` hors-source, idéalement générée sur le serveur.
+- [ ] Renouveler (roll) les clés Stripe live si `.env.production` a pu fuiter ; vérifier `git log -p -- .env.production` (doit être vide) et que `git ls-files | grep -E '^\.env(\.|$)'` ne renvoie que `.env`, `.env.dev`, `.env.test`.
+- [ ] **P1 — SMTP OVH** : renouveler le mot de passe du compte SMTP (ancien commentaire versionné identique au compte actif, authentification vérifiée ; commentaire retiré mais historique public exposé). Ne pas recopier le secret ; mettre à jour la configuration privée après rotation.
 
 # Lot B2 — Droits RGPD côté code (implémenté 2026-06-16)
 
@@ -125,7 +56,3 @@ git status --ignored | grep -E '\.env\.(local|production)'
 
 ## État confirmé audit backend 2026-10-06
 Webhooks atomiques et retryables, uploads validés, prix forfaitaires cohérents, retour payé lié à session, tokens pending révoqués, newsletter anonymisée à effacement, reset anti-énumération, logs production masqués et hosts configurables. Configurations présentes ne prouvent pas les secrets/services actifs ; anciens TODO conservés comme actions opérateur à vérifier, pas résultats acquis.
-
-## 2026-10-07 — P1 SMTP confirmé
-
-- [ ] Renouveler dans OVH le mot de passe du compte SMTP : ancien commentaire versionné identique au compte actif, authentification vérifiée. Le commentaire est retiré ; l’historique public reste exposé. Ne pas recopier le secret. Mise à jour de la configuration privée après rotation ; aucune modification des accès de production effectuée.

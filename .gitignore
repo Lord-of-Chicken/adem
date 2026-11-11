@@ -103,3 +103,5 @@ phpstan.neon
 # Local recovery snapshots for development media changes
 /var/dev-slides-before-import.json
 /var/recovery/
+
+/.php-cs-fixer.cache

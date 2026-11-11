@@ -31,6 +31,5 @@
   par requête). Invalidation automatique sur save/remove/updateSortOrders via
   `Configuration::getResultCache()->deleteItem('media_published')`.
 
-## 2026-10-08 — Mesures backend vérifiées
-
-Panier O(N), réordonnancement en un SELECT et appel Stripe redondant retiré, avec contrats/tests conservés. 183 tests/961 assertions et PHPStan10 valides ; mesures avant/après dans docs/PERFORMANCE-2026-10-08.md. Aucun changement des photos, fontes, styles ou templates. Cache galerie 3600 s/invalidation inchangés ; pas de cache durable de panier/paiement. Autres pistes SQL/index non retenues sans mesures, performances OVH non mesurées. Aucun commit/push/déploiement pour ce lot.
+## 2026-10-08 — Mesures backend
+Panier O(N), réordonnancement médias en un SELECT, appel Stripe redondant retiré (183 tests, PHPStan 10) : `docs/PERFORMANCE-2026-10-08.md`. Photos, fontes, styles, templates et cache galerie inchangés ; autres pistes SQL/index non retenues sans mesures ; perf OVH non mesurée.
