@@ -18,6 +18,11 @@ final class Version20260616180507 extends AbstractMigration
         return 'Widen participation_tier price_label/price_suffix to 64 chars (hold translation keys)';
     }
 
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function up(Schema $schema): void
     {
         $this->addSql('ALTER TABLE participation_tier CHANGE price_label price_label VARCHAR(64) NOT NULL, CHANGE price_suffix price_suffix VARCHAR(64) DEFAULT NULL');

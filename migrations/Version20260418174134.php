@@ -17,6 +17,11 @@ final class Version20260418174134 extends AbstractMigration
         return 'Add firstName and lastName fields to User entity';
     }
 
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function up(Schema $schema): void
     {
         $this->addSql('ALTER TABLE `user` ADD first_name VARCHAR(100) DEFAULT NULL, ADD last_name VARCHAR(100) DEFAULT NULL');

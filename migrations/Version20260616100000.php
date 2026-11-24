@@ -19,6 +19,11 @@ final class Version20260616100000 extends AbstractMigration
         return 'Drop orphan table nom_entite (entity removed from code)';
     }
 
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function up(Schema $schema): void
     {
         $this->skipIf(

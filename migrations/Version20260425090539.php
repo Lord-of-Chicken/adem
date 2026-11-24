@@ -17,6 +17,11 @@ final class Version20260425090539 extends AbstractMigration
         return 'Supprime les tables orphelines nom_entite et participation_tier (entités supprimées)';
     }
 
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs

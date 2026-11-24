@@ -14,6 +14,11 @@ final class Version20260420113900 extends AbstractMigration
         return 'Legacy placeholder migration restored to keep migration history consistent.';
     }
 
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function up(Schema $schema): void
     {
     }

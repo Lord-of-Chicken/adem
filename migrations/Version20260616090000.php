@@ -17,6 +17,11 @@ final class Version20260616090000 extends AbstractMigration
         return 'GDPR: add user.anonymized_at for account anonymisation (right to erasure)';
     }
 
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function up(Schema $schema): void
     {
         $this->addSql('ALTER TABLE `user` ADD anonymized_at DATETIME DEFAULT NULL');

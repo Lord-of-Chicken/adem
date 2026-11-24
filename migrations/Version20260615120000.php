@@ -17,6 +17,11 @@ final class Version20260615120000 extends AbstractMigration
         return 'Stripe security hardening: idempotency table + order payment_intent column';
     }
 
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function up(Schema $schema): void
     {
         $this->addSql('CREATE TABLE stripe_processed_event (id INT AUTO_INCREMENT NOT NULL, stripe_event_id VARCHAR(255) NOT NULL, processed_at DATETIME NOT NULL, UNIQUE INDEX uniq_stripe_event_id (stripe_event_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
