@@ -58,14 +58,14 @@ final class SitemapController extends AbstractController
 
         foreach ($pages as $route => $meta) {
             // Pre-compute the hreflang alternates shared by every locale variant.
-            $alternates = [];
-            foreach (self::LOCALES as $altLocale) {
-                $alternates[$altLocale] = $this->urlGenerator->generate(
+            $alternates = array_combine(self::LOCALES, array_map(
+                fn (string $altLocale): string => $this->urlGenerator->generate(
                     $route,
                     ['_locale' => $altLocale],
                     UrlGeneratorInterface::ABSOLUTE_URL,
-                );
-            }
+                ),
+                self::LOCALES,
+            ));
             // x-default points to the French (default) locale.
             $alternates['x-default'] = $alternates['fr'];
 

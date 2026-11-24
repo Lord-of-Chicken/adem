@@ -29,7 +29,7 @@ class StripePaymentService
     public function createCheckoutSession(array $lineItems, ?string $customerEmail = null, array $metadata = [], ?string $successUrl = null, ?string $cancelUrl = null): Session
     {
         $sessionData = [
-            'payment_method_types' => ['card'],
+            'allowed_payment_method_types' => ['card'],
             'line_items' => $lineItems,
             'mode' => 'payment',
             'metadata' => $metadata,

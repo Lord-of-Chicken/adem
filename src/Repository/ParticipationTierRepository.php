@@ -32,8 +32,8 @@ class ParticipationTierRepository extends ServiceEntityRepository
         /** @var list<ParticipationTier> */
         return $this->createQueryBuilder('t')
             ->andWhere('t.active = true')
-            ->orderBy('t.sortOrder', 'ASC')
-            ->addOrderBy('t.id', 'ASC')
+            ->orderBy('t.sortOrder', \SortDirection::Ascending)
+            ->addOrderBy('t.id', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -51,8 +51,8 @@ class ParticipationTierRepository extends ServiceEntityRepository
             ->andWhere('t.tierGroup = :g')
             ->andWhere('t.active = true')
             ->setParameter('g', $group)
-            ->orderBy('t.sortOrder', 'ASC')
-            ->addOrderBy('t.id', 'ASC')
+            ->orderBy('t.sortOrder', \SortDirection::Ascending)
+            ->addOrderBy('t.id', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

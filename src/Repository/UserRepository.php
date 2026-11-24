@@ -67,7 +67,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $perPage = max(1, $perPage);
 
         $qb = $this->createQueryBuilder('u')
-            ->orderBy('u.id', 'ASC')
+            ->orderBy('u.id', \SortDirection::Ascending)
             ->setFirstResult(($page - 1) * $perPage)
             ->setMaxResults($perPage);
 
