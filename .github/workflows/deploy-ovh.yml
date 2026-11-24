@@ -1,0 +1,135 @@
+name: Déploiement OVH
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-ovh
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      APP_ENV: prod
+      APP_DEBUG: '0'
+      SSH_HOST: ${{ secrets.OVH_SSH_HOST }}
+      SSH_USER: ${{ secrets.OVH_SSH_USER }}
+      SSH_PORT: ${{ secrets.OVH_SSH_PORT || '22' }}
+      REMOTE_PATH: ${{ secrets.OVH_PATH }}
+
+    steps:
+      - name: Vérifier les secrets
+        env:
+          SSH_KEY: ${{ secrets.OVH_SSH_KEY }}
+        run: |
+          missing=""
+          [ -n "$SSH_HOST" ]    || missing="$missing OVH_SSH_HOST"
+          [ -n "$SSH_USER" ]    || missing="$missing OVH_SSH_USER"
+          [ -n "$SSH_KEY" ]     || missing="$missing OVH_SSH_KEY"
+          [ -n "$REMOTE_PATH" ] || missing="$missing OVH_PATH"
+          if [ -n "$missing" ]; then
+            echo "::error::Secrets manquants :$missing"
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - name: PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: ctype, iconv, intl, pdo_mysql, mbstring
+          tools: composer:v2
+          coverage: none
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Build (vendor prod + assets)
+        run: |
+          composer install --no-dev --optimize-autoloader --classmap-authoritative --no-interaction --no-progress --no-scripts
+          php bin/console importmap:install
+          php bin/console assets:install public
+          php bin/console asset-map:compile
+          rm -rf var/cache var/log
+
+      - name: Configurer SSH
+        env:
+          SSH_KEY: ${{ secrets.OVH_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          cat > ~/.ssh/config <<EOF
+          Host ovh
+            HostName $SSH_HOST
+            User $SSH_USER
+            Port $SSH_PORT
+            IdentityFile ~/.ssh/id_ed25519
+            IdentitiesOnly yes
+            ServerAliveInterval 30
+          EOF
+
+      - name: Pré-vérification serveur
+        run: |
+          ssh ovh bash -s -- "$REMOTE_PATH" <<'EOF'
+          set -e
+          mkdir -p "$1"
+          cd "$1"
+          if [ ! -f .env.local ] && [ ! -f .env.local.php ]; then
+            echo "::error::.env.local absent dans $1 : créez-le sur le serveur (APP_ENV=prod, APP_SECRET, DATABASE_URL, STRIPE_*, MAILER_DSN) avant le premier déploiement."
+            exit 1
+          fi
+          EOF
+
+      - name: Synchroniser les fichiers (rsync)
+        run: |
+          rsync -az --delete \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='.claude/' \
+            --exclude='.windsurf/' \
+            --exclude='.ai/' \
+            --exclude='.mcp.json' \
+            --exclude='node_modules/' \
+            --exclude='tests/' \
+            --exclude='/var/' \
+            --exclude='/public/uploads/' \
+            --exclude='/.env.local' \
+            --exclude='/.env.local.php' \
+            --exclude='/.env.*.local' \
+            --exclude='/.ovhconfig' \
+            ./ "ovh:$REMOTE_PATH/"
+
+      - name: Migrations + cache prod
+        run: |
+          ssh ovh bash -s -- "$REMOTE_PATH" <<'EOF'
+          set -e
+          cd "$1"
+          PHP=php
+          for p in /usr/local/php8.4/bin/php /usr/bin/php8.4; do
+            if [ -x "$p" ]; then PHP="$p"; break; fi
+          done
+          echo "PHP utilisé : $($PHP -r 'echo PHP_VERSION;') ($PHP)"
+          mkdir -p var/cache var/log public/uploads
+          APP_ENV=prod $PHP bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=prod
+          APP_ENV=prod $PHP bin/console cache:clear --env=prod --no-debug
+          APP_ENV=prod $PHP bin/console cache:warmup --env=prod --no-debug
+          echo "Déploiement terminé : $(date -u +%FT%TZ)"
+          EOF
+
+      - name: Nettoyer la clé
+        if: always()
+        run: rm -f ~/.ssh/id_ed25519
