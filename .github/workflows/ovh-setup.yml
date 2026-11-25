@@ -59,8 +59,8 @@ jobs:
 
       - name: Inspecter et sauvegarder l'ancien site (lecture + archive, rien supprimé)
         run: |
-          ssh -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -i ~/.ssh/id_ed25519 "$SSH_USER@$SSH_HOST" bash -s <<'EOF'
-          set -e
+          ssh -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -i ~/.ssh/id_ed25519 "$SSH_USER@$SSH_HOST" bash -s -- "$REMOTE_PATH" <<'EOF'
+          set -eo pipefail
           cd ~
           echo "--- www (noms) :"; ls -A www | head -50
           [ -d www/public ] && { echo "--- www/public :"; ls -A www/public | head -30; }
@@ -68,9 +68,18 @@ jobs:
           for f in ~/.env www/.env www/.env.local www/.env.local.php www/.env.prod; do
             [ -f "$f" ] && { echo "--- Variables de $f (noms) :"; grep -E '^[A-Z_]+=' "$f" | cut -d= -f1 | sort | tr '\n' ' '; echo; grep -E '^APP_ENV=' "$f" || true; }
           done
-          B=~/backup-www-$(date +%Y%m%d-%H%M%S).tar.gz
-          tar -czf "$B" www
-          echo "Sauvegarde : $B ($(du -h "$B" | cut -f1))"
+          ls ~/backup-www-*.tar.gz >/dev/null 2>&1 || { B=~/backup-www-$(date +%Y%m%d-%H%M%S).tar.gz; tar -czf "$B" www; echo "Sauvegarde : $B"; }
+          ls -1 ~/backup-* 2>/dev/null
+          # .env.local de la nouvelle appli = .env prod de l'ancien site (si absent)
+          T="$1"
+          if [ ! -e "$T/.env.local" ] && grep -qE '^APP_ENV=prod' www/.env; then
+            cp -p www/.env "$T/.env.local"; chmod 600 "$T/.env.local"; echo ".env.local : créé depuis www/.env (prod)"
+          fi
+          # Sauvegarde BDD avant migrations
+          eval "$(php -r '$e=[];foreach(file($argv[1])as$l){if(preg_match("/^DATABASE_URL=\"?([^\"\n]*)/",$l,$m))$u=$m[1];}$p=parse_url($u);printf("DBH=%s DBP=%s DBU=%s DBN=%s DBW=%s\n",escapeshellarg($p["host"]),escapeshellarg($p["port"]??3306),escapeshellarg(urldecode($p["user"])),escapeshellarg(ltrim($p["path"],"/")),escapeshellarg(urldecode($p["pass"]??"")));' "$T/.env.local")"
+          D=~/backup-db-$(date +%Y%m%d-%H%M%S).sql.gz
+          MYSQL_PWD="$DBW" mysqldump -h "$DBH" -P "$DBP" -u "$DBU" --single-transaction --no-tablespaces "$DBN" | gzip > "$D"
+          echo "Sauvegarde BDD : $D ($(du -h "$D" | cut -f1))"
           EOF
 
       - name: Nettoyer la clé
