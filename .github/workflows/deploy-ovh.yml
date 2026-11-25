@@ -71,6 +71,7 @@ jobs:
           install -m 700 -d ~/.ssh
           printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
+          echo "Empreinte de la clé OVH_SSH_KEY : $(ssh-keygen -y -f ~/.ssh/id_ed25519 | ssh-keygen -lf -)"
           ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
           cat > ~/.ssh/config <<EOF
           Host ovh
@@ -79,6 +80,7 @@ jobs:
             Port $SSH_PORT
             IdentityFile ~/.ssh/id_ed25519
             IdentitiesOnly yes
+            BatchMode yes
             ServerAliveInterval 30
           EOF
 
