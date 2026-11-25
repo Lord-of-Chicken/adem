@@ -127,6 +127,21 @@ jobs:
           rsync -a --ignore-existing --itemize-changes ~/www/public/img/ public/img/ | grep -c '^>f' || true
           EOF
 
+      - name: Contenu BDD + offres (seed si table vide)
+        run: |
+          ssh -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -i ~/.ssh/id_ed25519 "$SSH_USER@$SSH_HOST" bash -s -- "$REMOTE_PATH" <<'EOF'
+          cd "$1"
+          PHP=/usr/local/php8.4/bin/php; [ -x "$PHP" ] || PHP=php
+          C="APP_ENV=prod $PHP bin/console --env=prod --no-debug"
+          for t in participation_tier media_item user \`order\` newsletter_confirmation; do
+            echo "$t : $(env APP_ENV=prod $PHP bin/console dbal:run-sql --env=prod --no-debug "SELECT COUNT(*) AS n FROM $t" 2>&1 | grep -oE '[0-9]+' | tail -1)"
+          done
+          env APP_ENV=prod $PHP bin/console dbal:run-sql --env=prod --no-debug "SELECT id, tier_group, active, sort_order FROM participation_tier" 2>&1 | tail -20 | cut -c1-160 || true
+          N=$(env APP_ENV=prod $PHP bin/console dbal:run-sql --env=prod --no-debug "SELECT COUNT(*) FROM participation_tier" 2>&1 | grep -oE '[0-9]+' | tail -1)
+          if [ "${N:-0}" = "0" ]; then echo "Table vide -> seed"; env APP_ENV=prod $PHP bin/console app:seed-participation-tiers --env=prod --no-debug 2>&1 | tail -3; fi
+          echo "--- Erreurs récentes (var/log) :"; ls var/log; tail -c 3000 var/log/*.log 2>/dev/null | grep -E 'ERROR|CRITICAL' | tail -8 | cut -c1-300
+          EOF
+
       - name: Nettoyer la clé
         if: always()
         run: rm -f ~/.ssh/id_ed25519
