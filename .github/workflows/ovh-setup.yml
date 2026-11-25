@@ -57,6 +57,22 @@ jobs:
           echo "--- Cible :"; ls -A "$T"
           EOF
 
+      - name: Inspecter et sauvegarder l'ancien site (lecture + archive, rien supprimé)
+        run: |
+          ssh -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -i ~/.ssh/id_ed25519 "$SSH_USER@$SSH_HOST" bash -s <<'EOF'
+          set -e
+          cd ~
+          echo "--- www (noms) :"; ls -A www | head -50
+          [ -d www/public ] && { echo "--- www/public :"; ls -A www/public | head -30; }
+          echo "--- Taille www :"; du -sh www
+          for f in ~/.env www/.env www/.env.local www/.env.local.php www/.env.prod; do
+            [ -f "$f" ] && { echo "--- Variables de $f (noms) :"; grep -E '^[A-Z_]+=' "$f" | cut -d= -f1 | sort | tr '\n' ' '; echo; grep -E '^APP_ENV=' "$f" || true; }
+          done
+          B=~/backup-www-$(date +%Y%m%d-%H%M%S).tar.gz
+          tar -czf "$B" www
+          echo "Sauvegarde : $B ($(du -h "$B" | cut -f1))"
+          EOF
+
       - name: Nettoyer la clé
         if: always()
         run: rm -f ~/.ssh/id_ed25519
