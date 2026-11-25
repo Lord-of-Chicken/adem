@@ -101,6 +101,16 @@ jobs:
           APP_ENV=prod $PHP bin/console doctrine:migrations:version 'DoctrineMigrations\Version20260510125840' --add --no-interaction --env=prod --no-debug 2>&1 | grep -vE '^\{' | tail -5 || true
           EOF
 
+      - name: Vérifier le site (HTTP + logs prod)
+        run: |
+          ssh -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -i ~/.ssh/id_ed25519 "$SSH_USER@$SSH_HOST" bash -s -- "$REMOTE_PATH" <<'EOF'
+          cd "$1"
+          U=$(grep -E '^DEFAULT_URI=' .env.local | cut -d= -f2- | tr -d '"')
+          echo "DEFAULT_URI : $U"
+          for p in / /fr /fr/faq; do echo "$p -> $(curl -s -o /dev/null -w '%{http_code} %{time_total}s' -L "${U%/}$p")"; done
+          echo "--- prod.log (dernières erreurs) :"; [ -f var/log/prod.log ] && grep -E 'ERROR|CRITICAL' var/log/prod.log | tail -15 | cut -c1-300 || echo "pas de prod.log"
+          EOF
+
       - name: Nettoyer la clé
         if: always()
         run: rm -f ~/.ssh/id_ed25519
