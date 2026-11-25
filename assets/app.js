@@ -7,4 +7,3 @@ import './js/confirm-modal.js';
 import './js/toast.js';
 import './js/admin-media-item-form.js';
 import './js/stripe-init.js';
-import './styles/ruelle.css';
