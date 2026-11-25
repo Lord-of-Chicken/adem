@@ -82,6 +82,17 @@ jobs:
           echo "Sauvegarde BDD : $D ($(du -h "$D" | cut -f1))"
           EOF
 
+      - name: Diagnostic BDD (lecture seule)
+        run: |
+          ssh -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -i ~/.ssh/id_ed25519 "$SSH_USER@$SSH_HOST" bash -s -- "$REMOTE_PATH" <<'EOF'
+          cd "$1"
+          PHP=/usr/local/php8.4/bin/php; [ -x "$PHP" ] || PHP=php
+          echo "--- Sauvegardes :"; ls -l ~/backup-* ; for f in ~/backup-db-*.sql.gz; do echo "$f"; zcat "$f" | head -c 600; echo; zcat "$f" | grep -c "CREATE TABLE" || true; done
+          echo "--- migrations:status"; APP_ENV=prod $PHP bin/console doctrine:migrations:status --env=prod --no-debug -q 2>&1 | grep -vE '^\{' | tail -30
+          echo "--- migrations:list"; APP_ENV=prod $PHP bin/console doctrine:migrations:list --env=prod --no-debug 2>&1 | grep -vE '^\{' | tail -60
+          echo "--- schema diff (SQL qui serait exécuté, non appliqué)"; APP_ENV=prod $PHP bin/console doctrine:schema:update --dump-sql --env=prod --no-debug 2>&1 | grep -vE '^\{' | tail -60
+          EOF
+
       - name: Nettoyer la clé
         if: always()
         run: rm -f ~/.ssh/id_ed25519
