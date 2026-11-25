@@ -1,0 +1,62 @@
+name: Préparation serveur OVH (one-shot)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SSH_HOST: ${{ secrets.OVH_SSH_HOST }}
+      SSH_USER: ${{ secrets.OVH_SSH_USER }}
+      SSH_PORT: ${{ secrets.OVH_SSH_PORT || '22' }}
+      REMOTE_PATH: ${{ secrets.OVH_PATH }}
+    steps:
+      - name: Configurer SSH
+        env:
+          SSH_KEY: ${{ secrets.OVH_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Créer le dossier et copier la config (sans rien supprimer ni écraser)
+        run: |
+          ssh -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -i ~/.ssh/id_ed25519 "$SSH_USER@$SSH_HOST" bash -s -- "$REMOTE_PATH" <<'EOF'
+          set -e
+          T="$1"
+          HOME_P="$(cd ~ && pwd -P)"
+          echo "Home : $HOME_P"
+          echo "Cible : $T"
+          if [ "$T" = "$HOME_P" ] || [ "$T" = "$HOME_P/" ]; then echo "::error::OVH_PATH = home"; exit 1; fi
+          mkdir -p "$T"
+          echo "--- Contenu du home (noms seulement) :"; ls -A ~
+          for f in .env.local .ovhconfig; do
+            if [ -e "$T/$f" ]; then echo "$f : déjà présent dans la cible, inchangé"; continue; fi
+            src=""
+            for d in "$HOME_P" "$HOME_P/www" "$HOME_P/www/adem"; do
+              if [ -f "$d/$f" ]; then src="$d/$f"; break; fi
+            done
+            if [ -n "$src" ]; then cp -p "$src" "$T/$f"; echo "$f : copié depuis $src (original conservé)"; else echo "$f : introuvable dans ~, ~/www"; fi
+          done
+          if [ ! -e "$T/.ovhconfig" ]; then
+            printf 'app.engine=php\napp.engine.version=8.4\nhttp.firewall=none\nenvironment=production\ncontainer.image=stable64\n' > "$T/.ovhconfig"
+            echo ".ovhconfig : créé (PHP 8.4, production)"
+          fi
+          echo "--- .ovhconfig :"; cat "$T/.ovhconfig"
+          if [ -f "$T/.env.local" ]; then
+            echo "--- Variables définies dans .env.local (noms seulement) :"
+            grep -E '^[A-Z_]+=' "$T/.env.local" | cut -d= -f1 | sort
+            grep -qE '^APP_ENV=prod' "$T/.env.local" && echo "APP_ENV=prod : OK" || echo "::warning::APP_ENV n'est pas prod"
+          fi
+          echo "--- Cible :"; ls -A "$T"
+          EOF
+
+      - name: Nettoyer la clé
+        if: always()
+        run: rm -f ~/.ssh/id_ed25519

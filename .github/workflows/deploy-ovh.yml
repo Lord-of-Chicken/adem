@@ -3,6 +3,8 @@ name: Déploiement OVH
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '.github/workflows/ovh-setup.yml'
   workflow_dispatch:
 
 concurrency:
