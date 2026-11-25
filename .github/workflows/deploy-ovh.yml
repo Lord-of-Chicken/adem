@@ -90,6 +90,10 @@ jobs:
           set -e
           mkdir -p "$1"
           cd "$1"
+          if [ "$(pwd -P)" = "$(cd ~ && pwd -P)" ] || [ "$(pwd -P)" = "/" ]; then
+            echo "::error::OVH_PATH pointe sur le dossier personnel : rsync --delete effacerait ~/.ssh, www, etc. Utilisez un sous-dossier dédié (ex. ~/adem)."
+            exit 1
+          fi
           if [ ! -f .env.local ] && [ ! -f .env.local.php ]; then
             echo "::error::.env.local absent dans $1 : créez-le sur le serveur (APP_ENV=prod, APP_SECRET, DATABASE_URL, STRIPE_*, MAILER_DSN) avant le premier déploiement."
             exit 1
