@@ -10,6 +10,9 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    {# CSS cropper liés ici : l'autoimport Stimulus passe par un module data: bloqué par la CSP #}
+    <link rel="stylesheet" href="{{ asset('vendor/cropperjs/dist/cropper.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('@symfony/ux-cropperjs/style.min.css') }}">
 {% endblock %}
 
 {% block body %}
