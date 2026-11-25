@@ -142,6 +142,19 @@ jobs:
           echo "--- Erreurs récentes (var/log) :"; ls var/log; tail -c 3000 var/log/*.log 2>/dev/null | grep -E 'ERROR|CRITICAL' | tail -8 | cut -c1-300
           EOF
 
+      - name: Galerie (lecture seule)
+        run: |
+          ssh -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -i ~/.ssh/id_ed25519 "$SSH_USER@$SSH_HOST" bash -s -- "$REMOTE_PATH" <<'EOF'
+          cd "$1"
+          PHP=/usr/local/php8.4/bin/php; [ -x "$PHP" ] || PHP=php
+          U=$(grep -E '^DEFAULT_URI=' .env.local | cut -d= -f2- | tr -d '"'); U=${U%/}
+          env APP_ENV=prod $PHP bin/console dbal:run-sql --env=prod --no-debug "SELECT id, asset_path, published, sort_order FROM media_item" 2>&1 | grep -E 'img|id' | cut -c1-160
+          for f in $(env APP_ENV=prod $PHP bin/console dbal:run-sql --env=prod --no-debug "SELECT asset_path FROM media_item" 2>&1 | grep -oE 'img/[^ ]+'); do
+            echo "$f fichier:$([ -f public/$f ] && echo oui || echo NON) http:$(curl -s -o /dev/null -w '%{http_code}' "$U/$f")"
+          done
+          echo "Images dans la page galerie :"; curl -sL "$U/fr/galerie" 2>/dev/null | grep -oE '(/assets)?/img/ruelle/[^"? ]+' | sort -u
+          EOF
+
       - name: Nettoyer la clé
         if: always()
         run: rm -f ~/.ssh/id_ed25519
