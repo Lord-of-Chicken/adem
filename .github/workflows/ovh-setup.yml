@@ -111,6 +111,22 @@ jobs:
           echo "--- prod.log (dernières erreurs) :"; [ -f var/log/prod.log ] && grep -E 'ERROR|CRITICAL' var/log/prod.log | tail -15 | cut -c1-300 || echo "pas de prod.log"
           EOF
 
+      - name: Diagnostic assets/images + reprise des médias de l'ancien site
+        run: |
+          ssh -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -i ~/.ssh/id_ed25519 "$SSH_USER@$SSH_HOST" bash -s -- "$REMOTE_PATH" <<'EOF'
+          cd "$1"
+          U=$(grep -E '^DEFAULT_URI=' .env.local | cut -d= -f2- | tr -d '"'); U=${U%/}
+          echo "--- Fichiers de www/public absents de adem/public :"
+          (cd ~/www/public && find . -type f ! -path './assets/*' ! -path './bundles/*') | while read f; do [ -e "public/$f" ] || echo "$f"; done | head -40
+          echo "(total : $( (cd ~/www/public && find . -type f ! -path './assets/*' ! -path './bundles/*') | while read f; do [ -e "public/$f" ] || echo x; done | wc -l))"
+          echo "--- Ressources de la home :"
+          curl -s "$U/fr" > /tmp/home.html
+          grep -oE '(src|href)="/[^"]+"' /tmp/home.html | cut -d'"' -f2 | sort -u | grep -vE '^/(fr|en|nl)(/|$)' | head -40 | while read r; do echo "$(curl -s -o /dev/null -w '%{http_code}' "$U$r") $r"; done
+          ls public/assets | head -5; echo "assets compilés : $(find public/assets -type f | wc -l)"
+          echo "--- Reprise des médias (sans écraser) :"
+          rsync -a --ignore-existing --itemize-changes ~/www/public/img/ public/img/ | grep -c '^>f' || true
+          EOF
+
       - name: Nettoyer la clé
         if: always()
         run: rm -f ~/.ssh/id_ed25519

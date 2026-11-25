@@ -115,6 +115,7 @@ jobs:
             --exclude='tests/' \
             --exclude='/var/' \
             --exclude='/public/uploads/' \
+            --filter='protect /public/img/**' \
             --exclude='/.env.local' \
             --exclude='/.env.local.php' \
             --exclude='/.env.*.local' \
